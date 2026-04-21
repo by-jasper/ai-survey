@@ -5,442 +5,457 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Facilitator Dashboard — HR & AI Survey</title>
 <style>
-  :root{
-    --green:#0F6E56;--green-l:#1D9E75;--green-xl:#E1F5EE;--green-dark:#085041;
-    --navy:#0A2240;--text:#1E293B;--muted:#64748B;--border:#E2E8F0;
-    --bg:#F8FAFC;--white:#FFFFFF;--red:#993C1D;--red-l:#FAECE7;
-    --blue-bg:#E6F1FB;--blue-txt:#042C53;
-    --amber-bg:#FAEEDA;--amber-txt:#412402;
-    --coral-bg:#FAECE7;--coral-txt:#4A1B0C;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+:root{
+  --green:#0F6E56;--green-l:#1D9E75;--green-xl:#E1F5EE;--green-dark:#085041;
+  --navy:#0A2240;--text:#1E293B;--muted:#64748B;--border:#E2E8F0;
+  --bg:#F8FAFC;--white:#FFFFFF;--red:#993C1D;--red-l:#FAECE7;
+  --blue-bg:#E6F1FB;--blue-txt:#042C53;--amber-bg:#FAEEDA;--amber-txt:#412402;
+  --coral-bg:#FAECE7;--coral-txt:#4A1B0C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topbar{background:var(--navy);color:#fff;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.t1{font-size:16px;font-weight:700}.t2{font-size:11px;opacity:0.5;margin-top:2px}
+.t-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green-l);display:inline-block;margin-right:5px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.t-ts{font-size:11px;opacity:0.45}
+.icon-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff}
+.icon-btn:hover{background:rgba(255,255,255,0.16)}
+.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;display:flex;overflow-x:auto}
+.tab-nav::-webkit-scrollbar{display:none}
+.tn{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s}
+.tn:hover{color:var(--text)}
+.tn.active{color:var(--navy);border-bottom-color:var(--green-l)}
+.page{display:none;max-width:1000px;margin:0 auto;padding:28px 24px}
+.page.active{display:block}
+.status-bar{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;margin-bottom:22px}
+.s-ok{background:var(--green-xl);color:var(--green-dark)}
+.s-err{background:var(--red-l);color:var(--red)}
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.sc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative}
+.sc-lbl{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:0.3px;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.sc-val{font-size:30px;font-weight:700;color:var(--text);line-height:1}
+.sc-sub{font-size:11px;color:var(--muted);margin-top:5px}
+.info-i{width:16px;height:16px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
+.info-i .tip{display:none;position:absolute;top:22px;left:0;background:var(--navy);color:#fff;font-size:12px;line-height:1.6;padding:10px 14px;border-radius:8px;width:280px;z-index:30;font-weight:400;pointer-events:none}
+.info-i:hover .tip{display:block}
+.axis-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:0 4px;margin-bottom:5px;font-weight:600}
+.ml{display:flex;gap:8px}
+.ax-y{font-size:11px;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;align-self:center;margin-right:4px;font-weight:600}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;flex:1;border-radius:10px;overflow:hidden}
+.quad{padding:16px 14px;min-height:120px;transition:box-shadow .2s}
+.quad.winner{box-shadow:inset 0 0 0 3px var(--green)}
+.qn{font-size:12px;font-weight:700;margin-bottom:3px}
+.qs{font-size:10px;opacity:0.6;line-height:1.3;margin-bottom:8px}
+.qc{font-size:36px;font-weight:700;line-height:1}
+.qp{font-size:12px;opacity:0.65;margin-top:4px}
+.q1{background:var(--green-xl);color:var(--green-dark)}
+.q2{background:var(--blue-bg);color:var(--blue-txt)}
+.q3{background:var(--amber-bg);color:var(--amber-txt)}
+.q4{background:var(--coral-bg);color:var(--coral-txt)}
+.ax-x{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;font-weight:600}
 
-  .topbar{background:var(--navy);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .topbar-left .t1{font-size:16px;font-weight:700}
-  .topbar-left .t2{font-size:12px;opacity:0.55;margin-top:2px}
-  .topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green-l);display:inline-block;margin-right:6px;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-  .refresh-indicator{font-size:11px;opacity:0.5}
+/* ── Explanation ── */
+.exp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px}
+@media(max-width:640px){.exp-grid{grid-template-columns:1fr}}
+.ec{border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.ec-top{display:flex;align-items:flex-start;justify-content:space-between}
+.ec-name{font-size:18px;font-weight:700;line-height:1.2}
+.ec-tag{font-size:12px;opacity:0.65;font-weight:500;margin-top:3px}
+.ec-n{font-size:28px;font-weight:700;flex-shrink:0}
+.ec-div{height:1px;background:currentColor;opacity:0.15}
+.ec-lbl{font-size:10px;font-weight:700;letter-spacing:0.6px;opacity:0.55;margin-bottom:4px}
+.ec-txt{font-size:13px;line-height:1.65;opacity:0.85}
+.ec-traits{display:flex;flex-wrap:wrap;gap:5px}
+.ec-trait{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,0.1)}
+.sb-track{height:5px;background:rgba(0,0,0,0.12);border-radius:99px;overflow:hidden;margin-top:5px}
+.sb-fill{height:5px;border-radius:99px;background:currentColor;opacity:0.65}
+.fac-guide{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px}
+.fg-title{font-size:15px;font-weight:700;margin-bottom:14px}
+.fg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.fg-item{background:var(--bg);border-radius:10px;padding:14px}
+.fg-lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.5px;margin-bottom:5px}
+.fg-txt{font-size:13px;color:var(--text);line-height:1.55}
 
-  .content{max-width:960px;margin:0 auto;padding:24px 20px}
+/* ── Draw ── */
+.draw-toggle{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content;gap:4px}
+.dt{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
+.dt.active{background:var(--navy);color:#fff}
+.dp{display:none}.dp.active{display:block}
+.draw-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:30px;text-align:center}
+.dw{font-size:38px;font-weight:700;color:var(--green);min-height:50px;margin:14px 0 6px;letter-spacing:-0.5px;transition:all .08s}
+.dm{font-size:13px;color:var(--muted);min-height:20px;margin-bottom:20px}
+.dhint{font-size:13px;color:var(--muted);margin-bottom:14px}
+.dmg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:10px;overflow:hidden;margin-bottom:16px}
+@media(max-width:520px){.dmg{grid-template-columns:repeat(2,1fr)}}
+.dq{padding:14px 10px;cursor:pointer;transition:box-shadow .15s;text-align:left}
+.dq:hover{filter:brightness(0.96)}
+.dq.picked{box-shadow:inset 0 0 0 3px var(--green)}
+.dq-nm{font-size:11px;font-weight:700;opacity:0.85;margin-bottom:5px;line-height:1.3}
+.dq-ct{font-size:22px;font-weight:700}
+.pool-box{background:var(--bg);border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:16px}
+.pool-n{font-size:52px;font-weight:700;color:var(--text)}
+.pool-l{font-size:13px;color:var(--muted);line-height:1.55}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-  .status-bar{padding:8px 14px;border-radius:8px;font-size:13px;margin-bottom:20px;font-weight:500}
-  .s-ok{background:var(--green-xl);color:var(--green-dark)}
-  .s-err{background:var(--red-l);color:var(--red)}
+/* ── Buttons ── */
+.btn{padding:12px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;display:inline-block;text-align:center}
+.btn:hover{background:var(--bg)}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.primary:hover{background:var(--green-dark)}
+.btn.primary:disabled{opacity:0.38;cursor:not-allowed}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn.lg{padding:15px 28px;font-size:15px;border-radius:12px}
 
-  /* Stats row */
-  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
-  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative}
-  .stat-lbl{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:0.3px;margin-bottom:4px;display:flex;align-items:center;gap:5px}
-  .stat-val{font-size:28px;font-weight:700;color:var(--text);line-height:1}
-  .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
-  .info-btn{width:16px;height:16px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0}
-  .tooltip{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:var(--navy);color:#fff;font-size:12px;line-height:1.6;padding:10px 14px;border-radius:8px;width:260px;z-index:10;font-weight:400}
-  .info-btn:hover+.tooltip,.tooltip:hover{display:block}
+/* ── Grouping ── */
+.g-setup{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.g-inp{width:80px;padding:10px 14px;font-size:16px;font-weight:700;border:2px solid var(--border);border-radius:10px;text-align:center;color:var(--text);background:var(--white);outline:none}
+.g-inp:focus{border-color:var(--green-l)}
+.g-lbl{font-size:14px;color:var(--muted);font-weight:500}
+.g-out{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.gc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px}
+.gc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.gc-title{font-size:14px;font-weight:700;color:var(--text)}
+.gc-cnt{font-size:12px;color:var(--muted)}
+.gc-members{display:flex;flex-direction:column;gap:5px}
+.gc-mem{font-size:13px;font-weight:500;color:var(--text);padding:5px 8px;background:var(--bg);border-radius:6px}
+.gc-mem-q{font-size:10px;color:var(--muted);font-weight:400;margin-left:4px}
 
-  /* Matrix */
-  .matrix-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px}
-  .card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-  .axis-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:0 4px;margin-bottom:6px;font-weight:600}
-  .matrix-layout{display:flex;gap:8px}
-  .axis-y{font-size:11px;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;align-self:center;margin-right:2px;font-weight:600}
-  .matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;flex:1;border-radius:10px;overflow:hidden}
-  .quad{padding:16px 14px;min-height:130px;transition:box-shadow .2s;cursor:pointer;position:relative}
-  .quad:hover{filter:brightness(0.97)}
-  .quad.winner{box-shadow:inset 0 0 0 3px var(--green)}
-  .quad-name{font-size:12px;font-weight:700;margin-bottom:3px}
-  .quad-sub{font-size:10px;opacity:0.6;line-height:1.3;margin-bottom:8px}
-  .quad-count{font-size:38px;font-weight:700;line-height:1}
-  .quad-pct{font-size:12px;opacity:0.65;margin-top:4px}
-  .q1{background:var(--green-xl);color:var(--green-dark)}
-  .q2{background:var(--blue-bg);color:var(--blue-txt)}
-  .q3{background:var(--amber-bg);color:var(--amber-txt)}
-  .q4{background:var(--coral-bg);color:var(--coral-txt)}
-  .axis-x{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;font-weight:600}
-
-  /* Quadrant insight cards */
-  .quad-insights{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
-  @media(max-width:640px){.quad-insights{grid-template-columns:1fr}}
-  .qi-card{border-radius:12px;padding:16px}
-  .qi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-  .qi-name{font-size:13px;font-weight:700}
-  .qi-count{font-size:20px;font-weight:700}
-  .qi-tagline{font-size:11px;opacity:0.65;margin-bottom:10px}
-  .qi-praise{font-size:12px;line-height:1.6;opacity:0.85;margin-bottom:8px}
-  .qi-tip-lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;opacity:0.55;margin-bottom:4px}
-  .qi-tip{font-size:12px;line-height:1.55;opacity:0.8}
-
-  /* Tabs */
-  .tabs{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;background:var(--white)}
-  .tab{flex:1;padding:11px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;text-align:center}
-  .tab.active{background:var(--navy);color:#fff}
-  .panel{display:none}.panel.active{display:block}
-
-  /* Lucky Draw */
-  .draw-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  @media(max-width:640px){.draw-wrap{grid-template-columns:1fr}}
-  .draw-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center}
-  .draw-box-title{font-size:14px;font-weight:700;margin-bottom:4px}
-  .draw-box-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
-  .winner-name{font-size:28px;font-weight:700;color:var(--green);min-height:38px;margin-bottom:6px;transition:all .08s}
-  .winner-meta{font-size:12px;color:var(--muted);min-height:18px}
-  .draw-hint{font-size:12px;color:var(--muted);margin-bottom:16px;min-height:18px}
-  .draw-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;border-radius:10px;overflow:hidden;margin-bottom:14px}
-  .dq{padding:12px;cursor:pointer;transition:box-shadow .15s}
-  .dq:hover{filter:brightness(0.96)}
-  .dq.picked{box-shadow:inset 0 0 0 3px var(--green)}
-  .dq-name{font-size:11px;font-weight:700;opacity:0.9;margin-bottom:4px}
-  .dq-count{font-size:20px;font-weight:700}
-  .btn{padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:background .15s;display:inline-block;text-align:center}
-  .btn:hover{background:var(--bg)}
-  .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
-  .btn.primary:hover{background:var(--green-dark)}
-  .btn.primary:disabled{opacity:0.4;cursor:not-allowed}
-  .btn.danger{background:var(--red);border-color:var(--red);color:#fff}
-  .btn.full{width:100%;display:block;margin-bottom:10px}
-  .btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-
-  /* Responses list */
-  .resp-list{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--white)}
-  .resp-item{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px}
-  .resp-item:last-child{border-bottom:none}
-  .resp-name{font-weight:700}
-  .resp-meta{font-size:12px;color:var(--muted)}
-  .list-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-  .list-count{font-size:13px;color:var(--muted)}
-
-  /* Reset */
-  .danger-zone{background:var(--red-l);border-radius:12px;padding:20px;margin-bottom:16px}
-  .danger-title{font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px}
-  .danger-desc{font-size:14px;color:var(--red);line-height:1.6}
-
-  @media(max-width:600px){
-    .stats-row{grid-template-columns:repeat(2,1fr)}
-    .stat-val{font-size:22px}
-    .content{padding:16px}
-    .draw-wrap{grid-template-columns:1fr}
-  }
+/* ── Reset ── */
+.reset-pg{max-width:480px;margin:0 auto;text-align:center;padding-top:10px}
+.reset-icon{width:72px;height:72px;border-radius:50%;background:var(--red-l);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.reset-icon svg{width:32px;height:32px;stroke:var(--red);fill:none;stroke-width:2}
+.reset-h{font-size:22px;font-weight:700;margin-bottom:10px}
+.reset-s{font-size:15px;color:var(--muted);line-height:1.65;margin-bottom:24px}
+.reset-warn{background:var(--red-l);border-radius:12px;padding:16px 20px;margin-bottom:22px;text-align:left}
+.rw-h{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.rw-l{font-size:13px;color:var(--red);line-height:1.8}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}.sc-val{font-size:22px}.page{padding:18px 16px}.tab-nav{padding:0 16px}.topbar{padding:14px 16px}.dw{font-size:28px}}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="topbar-left">
+  <div>
     <div class="t1"><span class="live-dot"></span>Facilitator Dashboard</div>
-    <div class="t2">HR & AI Adoption Survey · Refreshing every 2 seconds</div>
+    <div class="t2">HR & AI Adoption Survey · SMRT Corporation · Refreshes every 2s</div>
   </div>
-  <div class="topbar-right">
-    <span class="refresh-indicator" id="last-refresh">—</span>
-    <button class="btn" onclick="loadData(true)" style="padding:8px 14px;font-size:12px;background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:#fff">↻ Now</button>
+  <div class="t-right">
+    <span class="t-ts" id="ts">—</span>
+    <button class="icon-btn" onclick="loadData(true)">↻ Refresh</button>
   </div>
 </div>
 
-<div class="content">
-  <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
+<div class="tab-nav">
+  <button class="tn active" id="tn-dashboard" onclick="go('dashboard')">Live Dashboard</button>
+  <button class="tn" id="tn-explanation" onclick="go('explanation')">Explanation</button>
+  <button class="tn" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
+  <button class="tn" id="tn-grouping" onclick="go('grouping')">Grouping</button>
+  <button class="tn" id="tn-reset" onclick="go('reset')">Reset Data</button>
+</div>
 
+<!-- ═══════════════════════════════ TAB 1: DASHBOARD ═══════════════════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
   <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-lbl">Total Responses</div>
-      <div class="stat-val" id="f-total">0</div>
-      <div class="stat-sub">participants submitted</div>
+    <div class="sc">
+      <div class="sc-lbl">Total Responses</div>
+      <div class="sc-val" id="f-total">0</div>
+      <div class="sc-sub">participants submitted</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-lbl">
-        Avg Readiness Score
-        <span class="info-btn" tabindex="0">?</span>
-        <div class="tooltip">Each answer scores 0–3 (0 = lowest, 3 = highest). The Avg Score is the mean of all participants' total scores expressed as a percentage of the maximum possible. <br><br>Below 40% = Early stage · 40–59% = Emerging · 60–74% = Progressing · 75%+ = AI-Ready</div>
-      </div>
-      <div class="stat-val" id="f-avg">—</div>
-      <div class="stat-sub" id="f-avg-label">—</div>
+    <div class="sc">
+      <div class="sc-lbl">Avg Readiness Score <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0, B=1, C=2, D=3). The Avg Score is all participants' totals as a % of the maximum possible score.<br><br>Below 40% = Early Stage<br>40–59% = Emerging<br>60–74% = Progressing<br>75%+ = AI-Ready</div></span></div>
+      <div class="sc-val" id="f-avg">—</div>
+      <div class="sc-sub" id="f-avg-lbl">No data yet</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-lbl">Largest Quadrant</div>
-      <div class="stat-val" id="f-top" style="font-size:14px;padding-top:6px;line-height:1.3">—</div>
-      <div class="stat-sub" id="f-top-count">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-lbl">Completion Rate</div>
-      <div class="stat-val" id="f-rate">—</div>
-      <div class="stat-sub">of 150 target</div>
+    <div class="sc">
+      <div class="sc-lbl">Largest Quadrant</div>
+      <div class="sc-val" id="f-top" style="font-size:14px;padding-top:7px;line-height:1.3">—</div>
+      <div class="sc-sub" id="f-top-n">—</div>
     </div>
   </div>
-
-  <div class="matrix-card">
+  <div class="card">
     <div class="card-title"><span class="live-dot"></span>Live 2×2 AI Readiness Matrix</div>
     <div class="axis-row"><span>← Low awareness</span><span>High awareness →</span></div>
-    <div class="matrix-layout">
-      <div class="axis-y">High excitement ↑ Low excitement</div>
+    <div class="ml">
+      <div class="ax-y">High excitement ↑ Low excitement</div>
       <div style="flex:1">
-        <div class="matrix-grid">
-          <div class="quad q1" id="mq-TL"><div class="quad-name">Enthusiastic Learners</div><div class="quad-sub">High excitement · Low awareness</div><div class="quad-count" id="mc-TL">0</div><div class="quad-pct" id="mp-TL">0%</div></div>
-          <div class="quad q2" id="mq-TR"><div class="quad-name">AI Champions</div><div class="quad-sub">High excitement · High awareness</div><div class="quad-count" id="mc-TR">0</div><div class="quad-pct" id="mp-TR">0%</div></div>
-          <div class="quad q3" id="mq-BL"><div class="quad-name">Cautious Observers</div><div class="quad-sub">Low excitement · Low awareness</div><div class="quad-count" id="mc-BL">0</div><div class="quad-pct" id="mp-BL">0%</div></div>
-          <div class="quad q4" id="mq-BR"><div class="quad-name">Informed Sceptics</div><div class="quad-sub">Low excitement · High awareness</div><div class="quad-count" id="mc-BR">0</div><div class="quad-pct" id="mp-BR">0%</div></div>
+        <div class="mgrid">
+          <div class="quad q1" id="mq-TL"><div class="qn">Enthusiastic Learners</div><div class="qs">High excitement · Low awareness</div><div class="qc" id="mc-TL">0</div><div class="qp" id="mp-TL">0%</div></div>
+          <div class="quad q2" id="mq-TR"><div class="qn">AI Champions</div><div class="qs">High excitement · High awareness</div><div class="qc" id="mc-TR">0</div><div class="qp" id="mp-TR">0%</div></div>
+          <div class="quad q3" id="mq-BL"><div class="qn">Cautious Observers</div><div class="qs">Low excitement · Low awareness</div><div class="qc" id="mc-BL">0</div><div class="qp" id="mp-BL">0%</div></div>
+          <div class="quad q4" id="mq-BR"><div class="qn">Informed Sceptics</div><div class="qs">Low excitement · High awareness</div><div class="qc" id="mc-BR">0</div><div class="qp" id="mp-BR">0%</div></div>
         </div>
-        <div class="axis-x">← Awareness →</div>
+        <div class="ax-x">← Awareness →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ TAB 2: EXPLANATION ═══════════════════════════════ -->
+<div class="page" id="page-explanation">
+  <div class="exp-grid" id="exp-grid"></div>
+  <div class="fac-guide">
+    <div class="fg-title">Facilitator guide — how to use these results</div>
+    <div class="fg-grid">
+      <div class="fg-item"><div class="fg-lbl">OPEN THE DEBRIEF</div><div class="fg-txt">Show the live matrix. Let the team see where the majority land — this opens honest conversation without singling anyone out.</div></div>
+      <div class="fg-item"><div class="fg-lbl">CELEBRATE ALL FOUR</div><div class="fg-txt">Every quadrant has value. Champions drive momentum, Learners bring energy, Sceptics add rigour, Observers provide balance.</div></div>
+      <div class="fg-item"><div class="fg-lbl">FOCUS YOUR TIME</div><div class="fg-txt">Spend the most debrief time on the two largest quadrants. Address the top concern from Sceptics and Observers explicitly.</div></div>
+      <div class="fg-item"><div class="fg-lbl">CLOSE WITH A COMMITMENT</div><div class="fg-txt">Ask each group: "What is one thing you will do in 30 days?" Write it on a shared board. Ownership starts with a public declaration.</div></div>
+      <div class="fg-item"><div class="fg-lbl">MIX THE GROUPS</div><div class="fg-txt">Use the Grouping tab to form mixed-quadrant teams. Diversity of AI attitude within a group drives richer peer learning.</div></div>
+      <div class="fg-item"><div class="fg-lbl">FOLLOW UP</div><div class="fg-txt">Share the anonymised matrix with all participants after the session. Transparency builds trust and sustains the conversation.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ TAB 3: LUCKY DRAW ═══════════════════════════════ -->
+<div class="page" id="page-draw">
+  <div class="draw-toggle">
+    <button class="dt active" id="dt-quad" onclick="swDraw('quad')">Draw from Quadrant</button>
+    <button class="dt" id="dt-all" onclick="swDraw('all')">Draw from Everyone</button>
+  </div>
+
+  <div class="dp active" id="dp-quad">
+    <div class="draw-box">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from a Quadrant</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Select a quadrant below, then spin</div>
+      <div class="dmg">
+        <div class="dq q1" id="dq-TL" onclick="pickQ('TL')"><div class="dq-nm">Enthusiastic Learners</div><div class="dq-ct" id="dc-TL">0</div></div>
+        <div class="dq q2" id="dq-TR" onclick="pickQ('TR')"><div class="dq-nm">AI Champions</div><div class="dq-ct" id="dc-TR">0</div></div>
+        <div class="dq q3" id="dq-BL" onclick="pickQ('BL')"><div class="dq-nm">Cautious Observers</div><div class="dq-ct" id="dc-BL">0</div></div>
+        <div class="dq q4" id="dq-BR" onclick="pickQ('BR')"><div class="dq-nm">Informed Sceptics</div><div class="dq-ct" id="dc-BR">0</div></div>
+      </div>
+      <div class="dhint" id="q-hint">Tap the quadrant you want to draw from</div>
+      <div class="dw" id="q-win">—</div>
+      <div class="dm" id="q-meta"></div>
+      <div class="btn-row">
+        <button class="btn primary lg" id="btn-q" onclick="spinQuad()" disabled>Spin Lucky Draw</button>
+        <button class="btn lg" onclick="clearQ()">Clear</button>
       </div>
     </div>
   </div>
 
-  <!-- Quadrant insight cards (populated from questions.js) -->
-  <div class="quad-insights" id="quad-insights"></div>
-
-  <div class="tabs">
-    <div class="tab active" id="tab-draw" onclick="switchTab('draw')">Lucky Draw</div>
-    <div class="tab" id="tab-list" onclick="switchTab('list')">Responses</div>
-    <div class="tab" id="tab-reset" onclick="switchTab('reset')">Reset</div>
-  </div>
-
-  <!-- LUCKY DRAW -->
-  <div class="panel active" id="panel-draw">
-    <div class="draw-wrap">
-
-      <!-- Draw from a quadrant -->
-      <div class="draw-box">
-        <div class="draw-box-title">Draw from a Quadrant</div>
-        <div class="draw-box-sub">Select one quadrant, then spin</div>
-        <div class="winner-name" id="win-q-name">—</div>
-        <div class="winner-meta" id="win-q-meta"></div>
-        <div class="draw-hint" id="draw-q-hint" style="margin-top:8px">Tap a quadrant below to select</div>
-        <div class="draw-mini-grid">
-          <div class="dq q1" id="dq-TL" onclick="pickQ('TL')"><div class="dq-name">Enthusiastic Learners</div><div class="dq-count" id="dc-TL">0</div></div>
-          <div class="dq q2" id="dq-TR" onclick="pickQ('TR')"><div class="dq-name">AI Champions</div><div class="dq-count" id="dc-TR">0</div></div>
-          <div class="dq q3" id="dq-BL" onclick="pickQ('BL')"><div class="dq-name">Cautious Observers</div><div class="dq-count" id="dc-BL">0</div></div>
-          <div class="dq q4" id="dq-BR" onclick="pickQ('BR')"><div class="dq-name">Informed Sceptics</div><div class="dq-count" id="dc-BR">0</div></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary" id="btn-spin-q" onclick="spinQuad()" disabled style="flex:1">Spin Draw</button>
-          <button class="btn" onclick="clearQuadDraw()">Clear</button>
-        </div>
+  <div class="dp" id="dp-all">
+    <div class="draw-box">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from Everyone</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Pick a winner from all participants who responded</div>
+      <div class="pool-box">
+        <div class="pool-n" id="pool-n">0</div>
+        <div class="pool-l">participants<br>in the draw pool</div>
       </div>
-
-      <!-- Draw from ALL respondents -->
-      <div class="draw-box">
-        <div class="draw-box-title">Draw from Everyone</div>
-        <div class="draw-box-sub">Pick a winner from all <span id="all-count">0</span> participants</div>
-        <div class="winner-name" id="win-all-name">—</div>
-        <div class="winner-meta" id="win-all-meta"></div>
-        <div class="draw-hint" id="draw-all-hint" style="margin-top:8px">Click spin to draw from the full pool</div>
-        <div style="margin:16px 0;background:var(--bg);border-radius:10px;padding:14px;text-align:center">
-          <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:6px">ALL PARTICIPANTS</div>
-          <div style="font-size:40px;font-weight:700;color:var(--text)" id="all-pool-count">0</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">in the draw pool</div>
-        </div>
-        <div class="btn-row">
-          <button class="btn primary" id="btn-spin-all" onclick="spinAll()" style="flex:1" disabled>Spin Draw</button>
-          <button class="btn" onclick="clearAllDraw()">Clear</button>
-        </div>
+      <div class="dhint" id="all-hint">Everyone who submitted is in this draw</div>
+      <div class="dw" id="all-win">—</div>
+      <div class="dm" id="all-meta"></div>
+      <div class="btn-row">
+        <button class="btn primary lg" id="btn-all" onclick="spinAll()" disabled>Spin Lucky Draw</button>
+        <button class="btn lg" onclick="clearAll()">Clear</button>
       </div>
-
     </div>
   </div>
+</div>
 
-  <!-- RESPONSES LIST -->
-  <div class="panel" id="panel-list">
-    <div class="list-hdr">
-      <div class="list-count" id="list-count">Loading…</div>
-      <button class="btn" onclick="loadData(true);setTimeout(renderList,600)" style="padding:8px 14px;font-size:12px">↻ Refresh</button>
+<!-- ═══════════════════════════════ TAB 4: GROUPING ═══════════════════════════════ -->
+<div class="page" id="page-grouping">
+  <div class="card">
+    <div class="card-title">Random Group Generator</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Participants are randomly distributed across groups — mixing quadrants for richer discussion. Each card shows the member name and their quadrant.</p>
+    <div class="g-setup">
+      <input type="number" id="g-n" class="g-inp" min="1" max="50" value="5">
+      <span class="g-lbl">groups from</span>
+      <span style="font-size:16px;font-weight:700" id="g-pool">0</span>
+      <span class="g-lbl">participants</span>
+      <button class="btn primary" onclick="genGroups()">Generate Groups</button>
+      <button class="btn" id="btn-reshuffle" style="display:none" onclick="genGroups()">↻ Reshuffle</button>
     </div>
-    <div class="resp-list" id="resp-list">
-      <div class="resp-item" style="color:var(--muted);justify-content:center">Loading…</div>
-    </div>
+    <div id="g-out"></div>
   </div>
+</div>
 
-  <!-- RESET -->
-  <div class="panel" id="panel-reset">
-    <div class="danger-zone">
-      <div class="danger-title">Reset All Data</div>
-      <div class="danger-desc">This permanently deletes all responses from Google Sheets and resets the matrix to zero. This action cannot be undone.</div>
+<!-- ═══════════════════════════════ TAB 5: RESET ═══════════════════════════════ -->
+<div class="page" id="page-reset">
+  <div class="reset-pg">
+    <div class="reset-icon">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
     </div>
-    <button class="btn danger full" onclick="doReset()">Reset All Responses</button>
+    <div class="reset-h">Reset All Survey Data</div>
+    <div class="reset-s">This will permanently erase all submitted responses from Google Sheets and return the dashboard to zero.</div>
+    <div class="reset-warn">
+      <div class="rw-h">The following will be permanently deleted:</div>
+      <div class="rw-l">· All participant names and survey answers<br>· All quadrant placements and scores<br>· All timestamps<br>· Any generated groups will also clear</div>
+    </div>
+    <button class="btn danger" style="width:100%;padding:16px;font-size:16px;border-radius:12px" onclick="doReset()">Yes, Reset All Data</button>
   </div>
 </div>
 
 <script src="questions.js"></script>
 <script>
 const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
+const QCSS={TL:'q1',TR:'q2',BL:'q3',BR:'q4'};
 const QNAMES={TL:'Enthusiastic Learners',TR:'AI Champions',BL:'Cautious Observers',BR:'Informed Sceptics'};
-const QCOLORS={TL:{bg:'q1',card:['var(--green-xl)','var(--green-dark)']},TR:{bg:'q2',card:['var(--blue-bg)','var(--blue-txt)']},BL:{bg:'q3',card:['var(--amber-bg)','var(--amber-txt)']},BR:{bg:'q4',card:['var(--coral-bg)','var(--coral-txt)']}};
-const TARGET=150;
+const EXP={
+  TR:{traits:['Hands-on with AI','Confident & vocal','Early adopter','Peer educator'],challenge:'May move ahead of colleagues — needs to bring others along rather than leaving them behind.',strategy:'Assign as AI Ambassadors. Involve them in piloting tools and co-designing training. Their peer credibility is high.',range:70},
+  TL:{traits:['Enthusiastic','Curious','Growth mindset','Willing to experiment'],challenge:'May over-commit before fully understanding the tools, leading to frustration if results fall short.',strategy:'Pair with an AI Champion for structured mentoring. Channel enthusiasm into a real task using one AI tool within two weeks.',range:55},
+  BR:{traits:['Analytically strong','Risk-aware','Evidence-driven','Constructive critic'],challenge:'May slow adoption if concerns are not actively acknowledged and addressed by leadership.',strategy:'Involve them early in governance and policy design. Their critical lens is an asset — give them a seat at the table.',range:62},
+  BL:{traits:['Cautious','Steady','Process-oriented','Values stability'],challenge:'Risk of being left behind if not actively supported, leading to disengagement as adoption accelerates.',strategy:'Start with low-risk, high-reward tasks (e.g. using AI to draft a routine email). Celebrate small wins loudly.',range:35},
+};
 
-let allData=[], selDrawQ=null;
+let allData=[], selQ=null, expBuilt=false;
 
-function readinessLabel(score){
-  if(score>=75)return'AI-Ready';
-  if(score>=60)return'Progressing';
-  if(score>=40)return'Emerging';
-  return'Early Stage';
-}
-
-function buildQuadInsights(){
-  const el=document.getElementById('quad-insights');
-  if(!el||!QUADRANTS)return;
-  const order=['TR','TL','BR','BL'];
-  el.innerHTML=order.map(q=>{
-    const d=QUADRANTS[q];
-    const counts={TL:0,TR:0,BL:0,BR:0};
-    allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
-    const n=counts[q];
-    return`<div class="qi-card" style="background:${d.color};color:${d.textColor}">
-      <div class="qi-top"><div class="qi-name">${d.name}</div><div class="qi-count">${n}</div></div>
-      <div class="qi-tagline">${d.tagline}</div>
-      <div class="qi-praise">${d.praise}</div>
-      <div class="qi-tip-lbl">SUGGESTED ACTION</div>
-      <div class="qi-tip">${d.suggestion}</div>
-    </div>`;
-  }).join('');
-}
-
-function switchTab(t){
-  ['draw','list','reset'].forEach(x=>{
-    document.getElementById('tab-'+x).className='tab'+(x===t?' active':'');
-    document.getElementById('panel-'+x).className='panel'+(x===t?' active':'');
+function go(t){
+  ['dashboard','explanation','draw','grouping','reset'].forEach(x=>{
+    document.getElementById('tn-'+x).className='tn'+(x===t?' active':'');
+    document.getElementById('page-'+x).className='page'+(x===t?' active':'');
   });
-  if(t==='list')renderList();
-  if(t==='draw')updateDrawCounts();
+  if(t==='explanation'&&!expBuilt){buildExp();expBuilt=false;}
+  if(t==='explanation') refreshExp();
+  if(t==='draw') updDrawCounts();
+  if(t==='grouping') document.getElementById('g-pool').textContent=allData.length;
 }
 
-async function loadData(showFeedback){
+function swDraw(d){
+  ['quad','all'].forEach(x=>{
+    document.getElementById('dt-'+x).className='dt'+(x===d?' active':'');
+    document.getElementById('dp-'+x).className='dp'+(x===d?' active':'');
+  });
+}
+
+async function loadData(fb){
   try{
-    const res=await fetch(GAS+'?action=getAll',{cache:'no-store'});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const json=await res.json();
-    allData=Array.isArray(json.data)?json.data:Array.isArray(json)?json:[];
-    updateMatrix();
-    updateDrawCounts();
-    buildQuadInsights();
-    const now=new Date();
-    document.getElementById('last-refresh').textContent='Updated '+now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
-    if(showFeedback)setStatus(true,'Connected · '+allData.length+' response'+(allData.length!==1?'s':'')+' loaded');
-  }catch(e){
-    if(showFeedback)setStatus(false,'Cannot reach Google Sheets — check deployment access settings');
-  }
+    const r=await fetch(GAS+'?action=getAll',{cache:'no-store'});
+    if(!r.ok) throw new Error();
+    const j=await r.json();
+    allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
+    updMatrix(); updDrawCounts();
+    const n=new Date();
+    document.getElementById('ts').textContent=
+      n.getHours().toString().padStart(2,'0')+':'+
+      n.getMinutes().toString().padStart(2,'0')+':'+
+      n.getSeconds().toString().padStart(2,'0');
+    if(fb) setStatus(true,'Connected · '+allData.length+' response'+(allData.length!==1?'s':'')+' loaded');
+  }catch(e){if(fb) setStatus(false,'Cannot reach Google Sheets — check deployment settings');}
 }
 
 function setStatus(ok,msg){const el=document.getElementById('status');el.textContent=msg;el.className='status-bar '+(ok?'s-ok':'s-err');}
 
-function updateMatrix(){
-  const counts={TL:0,TR:0,BL:0,BR:0},scores=[];
-  allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;if(r.score)scores.push(Number(r.score));});
-  const total=allData.length;
-  document.getElementById('f-total').textContent=total;
-  const avgScore=scores.length?Math.round(scores.reduce((a,b)=>a+b)/scores.length):null;
-  document.getElementById('f-avg').textContent=avgScore!==null?avgScore+'%':'—';
-  document.getElementById('f-avg-label').textContent=avgScore!==null?readinessLabel(avgScore):'No data yet';
-  document.getElementById('f-rate').textContent=Math.round(total/TARGET*100)+'%';
-  document.getElementById('all-count').textContent=total;
-  document.getElementById('all-pool-count').textContent=total;
-  document.getElementById('btn-spin-all').disabled=total===0;
+function rlabel(s){return s>=75?'AI-Ready':s>=60?'Progressing':s>=40?'Emerging':'Early Stage';}
+
+function updMatrix(){
+  const c={TL:0,TR:0,BL:0,BR:0},sc=[];
+  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score)sc.push(Number(r.score));});
+  const tot=allData.length;
+  document.getElementById('f-total').textContent=tot;
+  const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
+  document.getElementById('f-avg').textContent=avg!==null?avg+'%':'—';
+  document.getElementById('f-avg-lbl').textContent=avg!==null?rlabel(avg):'No data yet';
+  document.getElementById('g-pool').textContent=tot;
+  document.getElementById('pool-n').textContent=tot;
+  document.getElementById('btn-all').disabled=tot===0;
   let maxQ='',maxN=0;
   ['TL','TR','BL','BR'].forEach(q=>{
-    const n=counts[q],pct=total?Math.round(n/total*100):0;
+    const n=c[q],pct=tot?Math.round(n/tot*100):0;
     document.getElementById('mc-'+q).textContent=n;
     document.getElementById('mp-'+q).textContent=pct+'%';
-    document.getElementById('mq-'+q).className='quad '+QCOLORS[q].bg+(n===maxN&&n>0?' winner':'');
+    document.getElementById('mq-'+q).className='quad '+QCSS[q];
     if(n>maxN){maxN=n;maxQ=q;}
   });
-  // re-apply winner to max only
   if(maxN>0){
-    ['TL','TR','BL','BR'].forEach(q=>{
-      const el=document.getElementById('mq-'+q);
-      if(q===maxQ)el.classList.add('winner');else el.classList.remove('winner');
-    });
+    document.getElementById('mq-'+maxQ).classList.add('winner');
     document.getElementById('f-top').textContent=QNAMES[maxQ];
-    document.getElementById('f-top-count').textContent=maxN+' participants ('+Math.round(maxN/total*100)+'%)';
-  }else{
-    document.getElementById('f-top').textContent='—';
-    document.getElementById('f-top-count').textContent='—';
-  }
+    document.getElementById('f-top-n').textContent=maxN+' ('+Math.round(maxN/allData.length*100)+'%)';
+  } else {document.getElementById('f-top').textContent='—';document.getElementById('f-top-n').textContent='—';}
 }
 
-function updateDrawCounts(){
+function buildExp(){
   const counts={TL:0,TR:0,BL:0,BR:0};
   allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
-  ['TL','TR','BL','BR'].forEach(q=>{const el=document.getElementById('dc-'+q);if(el)el.textContent=counts[q];});
-  if(selDrawQ){
-    const pool=allData.filter(r=>r.quad===selDrawQ);
-    document.getElementById('draw-q-hint').textContent=pool.length+' participant'+(pool.length!==1?'s':'')+' in this quadrant';
-    document.getElementById('btn-spin-q').disabled=pool.length===0;
-  }
+  const order=['TR','TL','BR','BL'];
+  document.getElementById('exp-grid').innerHTML=order.map(q=>{
+    const d=QUADRANTS[q],ex=EXP[q],n=counts[q];
+    return`<div class="ec" style="background:${d.color};color:${d.textColor}">
+      <div class="ec-top"><div><div class="ec-name">${d.name}</div><div class="ec-tag">${d.tagline}</div></div><div class="ec-n" id="ecn-${q}">${n}</div></div>
+      <div class="ec-div"></div>
+      <div><div class="ec-lbl">WHAT DRIVES THEM</div><div class="ec-txt">${d.praise}</div></div>
+      <div><div class="ec-lbl">KEY TRAITS</div><div class="ec-traits">${ex.traits.map(t=>`<span class="ec-trait">${t}</span>`).join('')}</div></div>
+      <div><div class="ec-lbl">WHAT TO WATCH OUT FOR</div><div class="ec-txt">${ex.challenge}</div></div>
+      <div><div class="ec-lbl">HOW TO SUPPORT THIS GROUP</div><div class="ec-txt">${ex.strategy}</div></div>
+      <div><div class="ec-lbl">SUGGESTED NEXT STEP FOR THEM</div><div class="ec-txt">${d.suggestion}</div></div>
+      <div><div class="ec-lbl">TYPICAL SCORE RANGE</div>
+        <div style="font-size:12px;opacity:0.65;margin-bottom:4px">${ex.range}% and below / above midpoint</div>
+        <div class="sb-track"><div class="sb-fill" style="width:${ex.range}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+  expBuilt=true;
 }
 
-function renderList(){
-  const sorted=[...allData].sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
-  document.getElementById('list-count').textContent=sorted.length+' response'+(sorted.length!==1?'s':'');
-  document.getElementById('resp-list').innerHTML=sorted.length
-    ?sorted.map(r=>'<div class="resp-item"><span class="resp-name">'+(r.name||'?')+'</span><span class="resp-meta">'+(QNAMES[r.quad]||r.quad||'')+'&nbsp;·&nbsp;'+(r.score||'?')+'%</span></div>').join('')
-    :'<div class="resp-item" style="color:var(--muted);justify-content:center">No responses yet</div>';
+function refreshExp(){
+  if(!expBuilt){buildExp();return;}
+  const counts={TL:0,TR:0,BL:0,BR:0};
+  allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
+  ['TL','TR','BL','BR'].forEach(q=>{const el=document.getElementById('ecn-'+q);if(el)el.textContent=counts[q];});
 }
 
-// ── Quadrant draw ──
+function updDrawCounts(){
+  const c={TL:0,TR:0,BL:0,BR:0};
+  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;});
+  ['TL','TR','BL','BR'].forEach(q=>{const el=document.getElementById('dc-'+q);if(el)el.textContent=c[q];});
+  if(selQ){const n=allData.filter(r=>r.quad===selQ).length;document.getElementById('q-hint').textContent=n+' participant'+(n!==1?'s':'')+' in this quadrant';document.getElementById('btn-q').disabled=n===0;}
+}
+
 function pickQ(q){
-  selDrawQ=q;
+  selQ=q;
   ['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));
   document.getElementById('dq-'+q).classList.add('picked');
-  const pool=allData.filter(r=>r.quad===q);
-  document.getElementById('draw-q-hint').textContent=pool.length+' participant'+(pool.length!==1?'s':'')+' — ready to draw!';
-  document.getElementById('btn-spin-q').disabled=pool.length===0;
-  document.getElementById('win-q-name').textContent='—';
-  document.getElementById('win-q-meta').textContent='';
+  const n=allData.filter(r=>r.quad===q).length;
+  document.getElementById('q-hint').textContent=n+' participant'+(n!==1?'s':'')+' — ready to draw!';
+  document.getElementById('btn-q').disabled=n===0;
+  document.getElementById('q-win').textContent='—';
+  document.getElementById('q-meta').textContent='';
 }
 
-function spinQuad(){
-  if(!selDrawQ)return;
-  const pool=allData.filter(r=>r.quad===selDrawQ);
-  if(!pool.length)return;
-  runSpin(pool,'win-q-name','win-q-meta','btn-spin-q','draw-q-hint',QNAMES[selDrawQ]);
-}
+function spinQuad(){if(!selQ)return;const p=allData.filter(r=>r.quad===selQ);if(!p.length)return;spin(p,'q-win','q-meta','btn-q','q-hint',QNAMES[selQ]);}
+function clearQ(){selQ=null;['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));document.getElementById('q-win').textContent='—';document.getElementById('q-meta').textContent='';document.getElementById('q-hint').textContent='Tap the quadrant you want to draw from';document.getElementById('btn-q').disabled=true;}
+function spinAll(){if(!allData.length)return;spin(allData,'all-win','all-meta','btn-all','all-hint','All Participants');}
+function clearAll(){document.getElementById('all-win').textContent='—';document.getElementById('all-meta').textContent='';document.getElementById('all-hint').textContent='Everyone who submitted is in this draw';}
 
-function clearQuadDraw(){
-  selDrawQ=null;
-  ['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));
-  document.getElementById('win-q-name').textContent='—';
-  document.getElementById('win-q-meta').textContent='';
-  document.getElementById('draw-q-hint').textContent='Tap a quadrant below to select';
-  document.getElementById('btn-spin-q').disabled=true;
-}
-
-// ── All participants draw ──
-function spinAll(){
-  if(!allData.length)return;
-  runSpin(allData,'win-all-name','win-all-meta','btn-spin-all','draw-all-hint','All Participants');
-}
-
-function clearAllDraw(){
-  document.getElementById('win-all-name').textContent='—';
-  document.getElementById('win-all-meta').textContent='';
-  document.getElementById('draw-all-hint').textContent='Click spin to draw from the full pool';
-}
-
-function runSpin(pool,nameId,metaId,btnId,hintId,source){
-  const nameEl=document.getElementById(nameId);
-  const metaEl=document.getElementById(metaId);
-  const btn=document.getElementById(btnId);
-  const hint=document.getElementById(hintId);
-  btn.disabled=true;
-  hint.textContent='Spinning…';
-  let i=0,rounds=26+Math.floor(Math.random()*16),delay=45;
+function spin(pool,nId,mId,bId,hId,src){
+  const ne=document.getElementById(nId),me=document.getElementById(mId),be=document.getElementById(bId),he=document.getElementById(hId);
+  be.disabled=true;he.textContent='Spinning…';
+  let i=0,r=28+Math.floor(Math.random()*16),d=42;
   const step=()=>{
-    nameEl.textContent=pool[i%pool.length].name||'—';i++;
-    if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.09,360);}
-    else{
-      const w=pool[Math.floor(Math.random()*pool.length)];
-      nameEl.textContent=w.name||'—';
-      metaEl.textContent=source+' · Score: '+(w.score||'?')+'%';
-      hint.textContent='Winner drawn from '+source+'! 🎉';
-      btn.disabled=false;
-    }
-  };
-  step();
+    ne.textContent=pool[i%pool.length].name||'—';i++;
+    if(r-->0){setTimeout(step,d);d=Math.min(d*1.09,380);}
+    else{const w=pool[Math.floor(Math.random()*pool.length)];ne.textContent=w.name||'—';me.textContent=src+' · Score: '+(w.score||'?')+'%';he.textContent='Winner from '+src+'! 🎉';be.disabled=false;}
+  };step();
+}
+
+function genGroups(){
+  const n=parseInt(document.getElementById('g-n').value);
+  if(!n||n<1){alert('Please enter a valid number of groups.');return;}
+  if(!allData.length){alert('No responses yet.');return;}
+  if(n>allData.length){alert('Cannot create more groups than participants ('+allData.length+').');return;}
+  const shuffled=[...allData].sort(()=>Math.random()-0.5);
+  const groups=Array.from({length:n},()=>[]);
+  shuffled.forEach((p,i)=>groups[i%n].push(p));
+  const colors=['#E1F5EE','#E6F1FB','#FAEEDA','#FAECE7','#EEEDFE','#EAF3DE','#FEF3C7','#FCE7F3'];
+  document.getElementById('g-out').innerHTML=`<div class="g-out">${groups.map((g,i)=>`
+    <div class="gc" style="border-top:3px solid ${colors[i%colors.length]}">
+      <div class="gc-hdr"><div class="gc-title">Group ${i+1}</div><div class="gc-cnt">${g.length} member${g.length!==1?'s':''}</div></div>
+      <div class="gc-members">${g.map(p=>`<div class="gc-mem">${p.name||'Anonymous'}<span class="gc-mem-q">${QNAMES[p.quad]||''}</span></div>`).join('')}</div>
+    </div>`).join('')}</div>`;
+  document.getElementById('btn-reshuffle').style.display='inline-block';
 }
 
 async function doReset(){
-  if(!confirm('Permanently delete ALL responses from Google Sheets?\n\nThis cannot be undone.'))return;
+  if(!confirm('Permanently delete ALL responses?\n\nThis cannot be undone.')) return;
   try{
     await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'reset'})});
-    allData=[];updateMatrix();updateDrawCounts();renderList();buildQuadInsights();
+    allData=[];updMatrix();updDrawCounts();refreshExp();
+    document.getElementById('g-out').innerHTML='';
+    document.getElementById('btn-reshuffle').style.display='none';
     setStatus(true,'All data reset successfully');
     alert('Done — all responses cleared.');
   }catch(e){alert('Reset sent — refresh to confirm.');}
