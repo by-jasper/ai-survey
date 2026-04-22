@@ -11,10 +11,10 @@
   --bg:#F8FAFC;--white:#FFFFFF;--red:#993C1D;--red-l:#FAECE7;
   --blue-bg:#E6F1FB;--blue-txt:#042C53;--amber-bg:#FAEEDA;--amber-txt:#412402;
   --coral-bg:#FAECE7;--coral-txt:#4A1B0C;
-  --q-tl-bg:#E1F5EE;--q-tl-txt:#085041;--q-tl-dot:#1D9E75;
-  --q-tr-bg:#E6F1FB;--q-tr-txt:#042C53;--q-tr-dot:#378ADD;
-  --q-bl-bg:#FAEEDA;--q-bl-txt:#412402;--q-bl-dot:#BA7517;
-  --q-br-bg:#FAECE7;--q-br-txt:#4A1B0C;--q-br-dot:#D85A30;
+  --tl-bg:#E1F5EE;--tl-txt:#085041;--tl-dot:#1D9E75;
+  --tr-bg:#E6F1FB;--tr-txt:#042C53;--tr-dot:#378ADD;
+  --bl-bg:#FAEEDA;--bl-txt:#412402;--bl-dot:#BA7517;
+  --br-bg:#FAECE7;--br-txt:#4A1B0C;--br-dot:#D85A30;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
@@ -30,95 +30,106 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .icon-btn:hover{background:rgba(255,255,255,0.16)}
 
 /* ── Tab nav ── */
-.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;display:flex;overflow-x:auto}
+.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;overflow-x:auto;gap:0}
 .tab-nav::-webkit-scrollbar{display:none}
-.tn{padding:13px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s}
+.tn{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;flex-shrink:0}
 .tn:hover{color:var(--text)}
 .tn.active{color:var(--navy);border-bottom-color:var(--green-l)}
+.tn-spacer{flex:1}
+.tn-reset{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--red);border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.tn-reset:hover{background:var(--red-l)}
+.tn-reset.active{border-bottom-color:var(--red);background:var(--red-l)}
 
 /* ── Pages ── */
-.page{display:none;max-width:1100px;margin:0 auto;padding:24px 24px}
+.page{display:none;max-width:1100px;margin:0 auto;padding:22px 22px}
 .page.active{display:block}
-
-/* ── Status ── */
-.status-bar{padding:7px 13px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:18px}
+.status-bar{padding:7px 13px;border-radius:8px;font-size:12px;font-weight:500;margin-bottom:16px}
 .s-ok{background:var(--green-xl);color:var(--green-dark)}
 .s-err{background:var(--red-l);color:var(--red)}
 
 /* ── Dashboard layout ── */
-.dash-layout{display:grid;grid-template-columns:72% 28%;gap:16px;align-items:start}
-@media(max-width:820px){.dash-layout{grid-template-columns:1fr}}
+.dash-layout{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+@media(max-width:860px){.dash-layout{grid-template-columns:1fr}}
 
-/* ── Stats sidebar ── */
-.stat-sidebar{display:flex;flex-direction:column;gap:14px}
-.sc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px}
-.sc-lbl{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:0.4px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.sc-val{font-size:26px;font-weight:700;color:var(--text);line-height:1}
-.sc-sub{font-size:11px;color:var(--muted);margin-top:4px}
-.info-i{width:15px;height:15px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
-.info-i .tip{display:none;position:absolute;top:18px;right:0;background:var(--navy);color:#fff;font-size:11px;line-height:1.55;padding:9px 12px;border-radius:8px;width:240px;z-index:50;font-weight:400;pointer-events:none}
-.info-i:hover .tip{display:block}
-
-/* ── Thermometer meter ── */
-.thermo-wrap{margin-top:8px}
-.thermo-track{width:100%;height:12px;border-radius:99px;background:linear-gradient(to right,#3B82F6,#10B981,#F59E0B,#EF4444);position:relative;overflow:visible}
-.thermo-needle{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--navy);transform:translateX(-50%);transition:left .6s cubic-bezier(.4,0,.2,1)}
-.thermo-labels{display:flex;justify-content:space-between;margin-top:4px;font-size:9px;color:var(--muted);font-weight:500}
-.thermo-score-label{font-size:11px;color:var(--muted);margin-top:6px;font-weight:500}
-
-/* ── Largest quadrant stat (coloured) ── */
-.top-quad-card{border-radius:12px;padding:16px;transition:all .4s}
-.tq-lbl{font-size:10px;font-weight:700;letter-spacing:0.4px;opacity:0.65;margin-bottom:6px}
-.tq-name{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:4px}
-.tq-count{font-size:11px;opacity:0.7}
-
-/* ── Combined scatter + matrix chart ── */
+/* ── Scatter card ── */
 .chart-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px}
-.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:7px}
-.chart-sub{font-size:11px;color:var(--muted);margin-bottom:14px}
-.scatter-wrap{position:relative;width:100%;padding-top:70%}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:7px}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:12px}
+.scatter-wrap{position:relative;width:100%;padding-top:72%}
 .scatter-canvas{position:absolute;top:0;left:0;width:100%;height:100%}
-
-/* ── Tooltip popup ── */
-.dot-tooltip{position:fixed;background:var(--navy);color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.5;pointer-events:none;z-index:100;display:none;max-width:200px;font-weight:500;white-space:pre-line}
-
-/* ── Legend ── */
-.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
 .li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500}
 .ld{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-/* ── Explanation flip cards ── */
-.exp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-@media(max-width:640px){.exp-grid{grid-template-columns:1fr}}
-.flip-card{height:200px;perspective:1000px;cursor:pointer}
-.flip-card.expanded{height:auto;perspective:none}
-.flip-inner{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+/* ── Tooltip ── */
+.dot-tooltip{position:fixed;background:var(--navy);color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.55;pointer-events:none;z-index:200;display:none;max-width:220px;font-weight:500;white-space:pre-line;box-shadow:0 4px 14px rgba(0,0,0,0.22)}
+
+/* ── Stat sidebar ── */
+.stat-sidebar{display:flex;flex-direction:column;gap:12px}
+
+/* Total responses */
+.sc-total{background:var(--navy);border-radius:14px;padding:20px;color:#fff;flex:0 0 auto}
+.sc-total .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;opacity:0.55;margin-bottom:6px}
+.sc-total .val{font-size:56px;font-weight:700;line-height:1;letter-spacing:-2px}
+.sc-total .sub{font-size:11px;opacity:0.5;margin-top:4px}
+
+/* Largest quadrant */
+.sc-quad{border-radius:14px;padding:18px;transition:all .4s;flex:0 0 auto}
+.sq-lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;opacity:0.6;margin-bottom:6px}
+.sq-name{font-size:18px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.sq-count{font-size:11px;opacity:0.65;margin-bottom:10px}
+.sq-brief{font-size:12px;line-height:1.6;opacity:0.82}
+
+/* Avg readiness — fan gauge */
+.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;flex:0 0 auto}
+.sc-avg .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.info-i{width:15px;height:15px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
+.info-i .tip{display:none;position:absolute;top:18px;right:0;background:var(--navy);color:#fff;font-size:11px;line-height:1.55;padding:9px 12px;border-radius:8px;width:230px;z-index:50;font-weight:400;pointer-events:none}
+.info-i:hover .tip{display:block}
+.fan-wrap{display:flex;flex-direction:column;align-items:center}
+.fan-svg{width:100%;max-width:240px}
+.fan-score{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-top:4px}
+.fan-label{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+
+/* ── Interpretation flip cards ── */
+.interp-grid{display:flex;flex-direction:column;gap:16px}
+.flip-card{perspective:1000px;cursor:pointer}
+.flip-card.expanded{perspective:none}
+.flip-inner{position:relative;width:100%;min-height:180px;transition:transform .5s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
 .flip-card.expanded .flip-inner{transform:none;transition:none}
-.flip-front,.flip-back{position:absolute;width:100%;min-height:200px;border-radius:14px;padding:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.flip-front{display:flex;flex-direction:column;justify-content:space-between}
-.flip-back{transform:rotateY(180deg);display:flex;flex-direction:column;gap:14px;overflow-y:auto}
-.flip-card.expanded .flip-front{display:none}
+.flip-front,.flip-back{position:absolute;top:0;left:0;width:100%;border-radius:14px;padding:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip-front{min-height:180px;display:flex;flex-direction:column;justify-content:space-between}
+.flip-back{transform:rotateY(180deg);padding:24px 26px}
+.flip-card.expanded .flip-front{display:none;visibility:hidden}
 .flip-card.expanded .flip-back{position:static;transform:none;backface-visibility:visible}
-.ff-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.ff-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
 .ff-name{font-size:20px;font-weight:700;line-height:1.2}
-.ff-tag{font-size:12px;opacity:0.6;margin-top:3px}
+.ff-tag{font-size:12px;opacity:0.58;margin-top:3px}
 .ff-n{font-size:32px;font-weight:700;flex-shrink:0}
-.ff-traits{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.ff-brief{font-size:13px;line-height:1.65;opacity:0.82;margin-bottom:10px}
+.ff-traits{display:flex;flex-wrap:wrap;gap:5px}
 .ff-trait{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(0,0,0,0.1)}
-.ff-hint{font-size:11px;opacity:0.55;margin-top:10px;text-align:right}
-.fb-lbl{font-size:10px;font-weight:700;letter-spacing:0.6px;opacity:0.5;margin-bottom:5px}
+.ff-hint{font-size:11px;opacity:0.45;margin-top:10px;text-align:right;font-style:italic}
+/* back */
+.fb-section{margin-bottom:18px}
+.fb-lbl{font-size:10px;font-weight:700;letter-spacing:0.7px;opacity:0.45;margin-bottom:6px}
 .fb-txt{font-size:13px;line-height:1.72;opacity:0.88}
-.fb-div{height:1px;background:currentColor;opacity:0.12}
-.fb-close{font-size:11px;opacity:0.5;text-align:right;cursor:pointer;margin-top:4px;font-weight:600}
+.fb-box{background:rgba(0,0,0,0.06);border-radius:10px;padding:14px 16px;margin-top:6px}
+.fb-box p{font-size:13px;line-height:1.7;opacity:0.88}
+.fb-steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.fb-step{display:flex;gap:10px;font-size:13px;line-height:1.6;opacity:0.88}
+.fb-step-num{width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.fb-div{height:1px;background:currentColor;opacity:0.1;margin:16px 0}
+.fb-close{font-size:11px;opacity:0.45;text-align:right;cursor:pointer;font-weight:600;font-style:italic;margin-top:14px}
 
 /* ── Draw ── */
 .draw-toggle{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content;gap:4px}
 .dt{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
 .dt.active{background:var(--navy);color:#fff}
 .dp{display:none}.dp.active{display:block}
-.draw-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center}
-.dw{font-size:44px;font-weight:700;color:var(--green);min-height:56px;margin:16px 0 20px;letter-spacing:-1px;line-height:1.1}
+.draw-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;position:relative;overflow:hidden}
+.dw{font-size:44px;font-weight:700;color:var(--green);min-height:56px;margin:14px 0 16px;letter-spacing:-1px;line-height:1.1;transition:all .08s}
 .dhint{font-size:13px;color:var(--muted);margin-bottom:14px;min-height:20px}
 .dmg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:10px;overflow:hidden;margin-bottom:16px}
 @media(max-width:520px){.dmg{grid-template-columns:repeat(2,1fr)}}
@@ -131,10 +142,59 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pool-n{font-size:52px;font-weight:700;color:var(--text)}
 .pool-l{font-size:13px;color:var(--muted);line-height:1.55}
 .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.q1{background:var(--q-tl-bg);color:var(--q-tl-txt)}
-.q2{background:var(--q-tr-bg);color:var(--q-tr-txt)}
-.q3{background:var(--q-bl-bg);color:var(--q-bl-txt)}
-.q4{background:var(--q-br-bg);color:var(--q-br-txt)}
+/* Confetti */
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confetti-fall 2s ease-in forwards;pointer-events:none}
+@keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(300px) rotate(720deg);opacity:0}}
+
+/* ── Grouping ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px}
+.g-toggle{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;gap:4px;flex-wrap:wrap}
+.gt{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;white-space:nowrap}
+.gt.active{background:var(--navy);color:#fff}
+.gp{display:none}.gp.active{display:block}
+.g-setup{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.g-inp{width:80px;padding:10px 14px;font-size:16px;font-weight:700;border:2px solid var(--border);border-radius:10px;text-align:center;color:var(--text);background:var(--white);outline:none}
+.g-inp:focus{border-color:var(--green-l)}
+.g-lbl{font-size:14px;color:var(--muted);font-weight:500}
+.g-out{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.gc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px}
+.gc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.gc-title{font-size:14px;font-weight:700}
+.gc-cnt{font-size:12px;color:var(--muted)}
+.gc-members{display:flex;flex-direction:column;gap:5px}
+.gc-mem{font-size:13px;font-weight:500;padding:5px 10px;border-radius:6px;display:flex;align-items:center;gap:8px}
+.gc-mem-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;flex-shrink:0}
+
+/* Six hats colours */
+.hat-white{background:#F1F5F9;color:#334155}
+.hat-red{background:#FEE2E2;color:#991B1B}
+.hat-yellow{background:#FEF9C3;color:#854D0E}
+.hat-green{background:#DCFCE7;color:#166534}
+.hat-blue{background:#DBEAFE;color:#1E40AF}
+.hat-black{background:#E5E7EB;color:#111827}
+.hat-royal{background:#EDE9FE;color:#4C1D95}
+
+/* ── Six Hats tab ── */
+.hats-intro{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px;max-width:700px}
+.hats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:28px}
+.hat-card{border-radius:14px;padding:20px}
+.hat-card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.hat-emoji{font-size:28px}
+.hat-card-title{font-size:16px;font-weight:700}
+.hat-card-sub{font-size:11px;opacity:0.65;margin-top:2px}
+.hat-card-div{height:1px;background:currentColor;opacity:0.12;margin-bottom:12px}
+.hat-card-role{font-size:13px;line-height:1.65;opacity:0.85;margin-bottom:10px}
+.hat-card-qs{font-size:12px;font-weight:600;opacity:0.55;margin-bottom:5px;letter-spacing:0.3px}
+.hat-card-q{font-size:12px;opacity:0.8;line-height:1.6}
+.discussion-guide{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px}
+.dg-title{font-size:15px;font-weight:700;margin-bottom:14px}
+.dg-steps{display:flex;flex-direction:column;gap:10px}
+.dg-step{display:flex;gap:12px;padding:12px 14px;background:var(--bg);border-radius:10px}
+.dg-step-hat{font-size:18px;flex-shrink:0;margin-top:1px}
+.dg-step-body{flex:1}
+.dg-step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.dg-step-txt{font-size:12px;color:var(--muted);line-height:1.55}
 
 /* ── Buttons ── */
 .btn{padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;display:inline-block;text-align:center}
@@ -144,20 +204,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn.primary:disabled{opacity:0.38;cursor:not-allowed}
 .btn.danger{background:var(--red);border-color:var(--red);color:#fff}
 .btn.lg{padding:14px 26px;font-size:15px;border-radius:12px}
-
-/* ── Grouping ── */
-.g-setup{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.g-inp{width:80px;padding:10px 14px;font-size:16px;font-weight:700;border:2px solid var(--border);border-radius:10px;text-align:center;color:var(--text);background:var(--white);outline:none}
-.g-inp:focus{border-color:var(--green-l)}
-.g-lbl{font-size:14px;color:var(--muted);font-weight:500}
-.g-out{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
-.gc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px}
-.gc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.gc-title{font-size:14px;font-weight:700}
-.gc-cnt{font-size:12px;color:var(--muted)}
-.gc-members{display:flex;flex-direction:column;gap:5px}
-.gc-mem{font-size:13px;font-weight:500;padding:5px 8px;background:var(--bg);border-radius:6px}
-.gc-mem-q{font-size:10px;color:var(--muted);font-weight:400;margin-left:4px}
+.q1{background:var(--tl-bg);color:var(--tl-txt)}
+.q2{background:var(--tr-bg);color:var(--tr-txt)}
+.q3{background:var(--bl-bg);color:var(--bl-txt)}
+.q4{background:var(--br-bg);color:var(--br-txt)}
 
 /* ── Reset ── */
 .reset-pg{max-width:480px;margin:0 auto;text-align:center;padding-top:10px}
@@ -169,16 +219,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .rw-h{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
 .rw-l{font-size:13px;color:var(--red);line-height:1.8}
 
-/* Card generic */
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
-
-@media(max-width:600px){
-  .page{padding:16px}
-  .tab-nav{padding:0 16px}
-  .topbar{padding:12px 16px}
-  .dw{font-size:32px}
-  .dash-layout{grid-template-columns:1fr}
-}
+@media(max-width:600px){.page{padding:14px}.tab-nav{padding:0 12px}.topbar{padding:12px 16px}.dw{font-size:30px}.sc-total .val{font-size:44px}}
 </style>
 </head>
 <body>
@@ -197,108 +238,101 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <div class="tab-nav">
-  <button class="tn active" id="tn-dashboard" onclick="go('dashboard')">Live Dashboard</button>
-  <button class="tn" id="tn-explanation" onclick="go('explanation')">Explanation</button>
-  <button class="tn" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
-  <button class="tn" id="tn-grouping" onclick="go('grouping')">Grouping</button>
-  <button class="tn" id="tn-reset" onclick="go('reset')">Reset Data</button>
+  <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
+  <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
+  <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
+  <button class="tn"        id="tn-grouping"        onclick="go('grouping')">Grouping</button>
+  <button class="tn"        id="tn-hats"            onclick="go('hats')">Six Thinking Hats</button>
+  <div class="tn-spacer"></div>
+  <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
 </div>
 
-<!-- ═══ TAB 1: LIVE DASHBOARD ═══ -->
+<!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
 <div class="page active" id="page-dashboard">
   <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
-
   <div class="dash-layout">
-    <!-- LEFT: Combined scatter + matrix chart -->
+
+    <!-- Scatter -->
     <div class="chart-card">
       <div class="chart-title"><span class="live-dot"></span>AI Readiness Scatter Matrix</div>
-      <div class="chart-sub">Each dot = one participant · Hover to see names · Background shading shows the four quadrants</div>
+      <div class="chart-sub">Each dot = one participant · Hover to see names · Quadrant counts shown in centre</div>
       <div class="scatter-wrap">
-        <canvas id="scatter-canvas" class="scatter-canvas"
-          role="img" aria-label="Scatter plot of participant awareness vs excitement scores overlaid on the 2x2 quadrant matrix"></canvas>
+        <canvas id="scatter-canvas" class="scatter-canvas" role="img" aria-label="Scatter plot overlaid on the 2x2 quadrant matrix"></canvas>
       </div>
       <div class="legend">
-        <div class="li"><div class="ld" style="background:var(--q-tl-dot)"></div>Enthusiastic Learners</div>
-        <div class="li"><div class="ld" style="background:var(--q-tr-dot)"></div>AI Champions</div>
-        <div class="li"><div class="ld" style="background:var(--q-bl-dot)"></div>Cautious Observers</div>
-        <div class="li"><div class="ld" style="background:var(--q-br-dot)"></div>Informed Sceptics</div>
+        <div class="li"><div class="ld" style="background:var(--tl-dot)"></div>Enthusiastic Learners</div>
+        <div class="li"><div class="ld" style="background:var(--tr-dot)"></div>AI Advocates</div>
+        <div class="li"><div class="ld" style="background:var(--bl-dot)"></div>Cautious Observers</div>
+        <div class="li"><div class="ld" style="background:var(--br-dot)"></div>Informed Sceptics</div>
       </div>
     </div>
 
-    <!-- RIGHT: Stat sidebar -->
+    <!-- Sidebar -->
     <div class="stat-sidebar">
 
       <!-- Total responses -->
-      <div class="sc">
-        <div class="sc-lbl">TOTAL RESPONSES</div>
-        <div class="sc-val" id="f-total">0</div>
-        <div class="sc-sub">participants submitted</div>
+      <div class="sc-total">
+        <div class="lbl">TOTAL RESPONSES</div>
+        <div class="val" id="f-total">0</div>
+        <div class="sub">participants submitted</div>
       </div>
 
-      <!-- Avg score thermometer -->
-      <div class="sc">
-        <div class="sc-lbl">AVG READINESS SCORE
-          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Cold: Early Stage (&lt;40%)<br>🟢 Cool: Emerging (40–59%)<br>🟡 Warm: Progressing (60–74%)<br>🔴 Hot: AI-Ready (75%+)</div></span>
-        </div>
-        <div class="sc-val" id="f-avg">—</div>
-        <div class="thermo-wrap">
-          <div class="thermo-track">
-            <div class="thermo-needle" id="thermo-needle" style="left:0%"></div>
-          </div>
-          <div class="thermo-labels">
-            <span>🔵 Cold</span><span>🟢 Warm</span><span>🔴 Hot</span>
-          </div>
-        </div>
-        <div class="thermo-score-label" id="f-avg-lbl">No data yet</div>
+      <!-- Largest quadrant (coloured) -->
+      <div class="sc-quad" id="sc-quad" style="background:var(--bg);border:1px solid var(--border)">
+        <div class="sq-lbl" id="sq-lbl">LARGEST QUADRANT</div>
+        <div class="sq-name" id="sq-name">—</div>
+        <div class="sq-count" id="sq-count">No data yet</div>
+        <div class="sq-brief" id="sq-brief"></div>
       </div>
 
-      <!-- Largest quadrant — coloured card -->
-      <div class="top-quad-card" id="top-quad-card" style="background:var(--bg);border:1px solid var(--border)">
-        <div class="tq-lbl" id="tq-lbl">LARGEST QUADRANT</div>
-        <div class="tq-name" id="tq-name">—</div>
-        <div class="tq-count" id="tq-count">No data yet</div>
+      <!-- Avg readiness — fan gauge -->
+      <div class="sc-avg">
+        <div class="lbl">AVG READINESS SCORE
+          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>Early Stage &lt;40% · Emerging 40–59% · Progressing 60–74% · AI-Ready 75%+</div></span>
+        </div>
+        <div class="fan-wrap">
+          <svg class="fan-svg" id="fan-svg" viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg">
+            <!-- Arc segments: Early Stage, Emerging, Progressing, AI-Ready -->
+            <path d="M10,100 A90,90 0 0,1 55,22" fill="none" stroke="#93C5FD" stroke-width="14" stroke-linecap="butt"/>
+            <path d="M55,22 A90,90 0 0,1 100,10" fill="none" stroke="#6EE7B7" stroke-width="14" stroke-linecap="butt"/>
+            <path d="M100,10 A90,90 0 0,1 145,22" fill="none" stroke="#FCD34D" stroke-width="14" stroke-linecap="butt"/>
+            <path d="M145,22 A90,90 0 0,1 190,100" fill="none" stroke="#F87171" stroke-width="14" stroke-linecap="butt"/>
+            <!-- Segment labels -->
+            <text x="22" y="78" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(-55,22,78)">Early</text>
+            <text x="62" y="28" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(-20,62,28)">Emerging</text>
+            <text x="138" y="28" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(20,138,28)">Progressing</text>
+            <text x="178" y="78" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(55,178,78)">AI-Ready</text>
+            <!-- Needle -->
+            <line id="fan-needle" x1="100" y1="100" x2="100" y2="18" stroke="#0A2240" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="100" cy="100" r="5" fill="#0A2240"/>
+          </svg>
+          <div class="fan-score" id="fan-score">—</div>
+          <div class="fan-label" id="fan-label">No data yet</div>
+        </div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- ═══ TAB 2: EXPLANATION ═══ -->
-<div class="page" id="page-explanation">
-  <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">
-    Click any card to reveal the full explanation. Click again to flip back.
-  </p>
-  <div class="exp-grid" id="exp-grid"></div>
+<!-- ═══════════════════ TAB 2: INTERPRETATION ═══════════════════ -->
+<div class="page" id="page-interpretation">
+  <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Click any card to reveal the full interpretation. Click again to collapse.</p>
+  <div class="interp-grid" id="interp-grid"></div>
 </div>
 
-<!-- ═══ TAB 3: LUCKY DRAW ═══ -->
+<!-- ═══════════════════ TAB 3: LUCKY DRAW ═══════════════════ -->
 <div class="page" id="page-draw">
   <div class="draw-toggle">
-    <button class="dt active" id="dt-quad" onclick="swDraw('quad')">Draw from Quadrant</button>
-    <button class="dt" id="dt-all" onclick="swDraw('all')">Draw from Everyone</button>
+    <button class="dt active" id="dt-all"  onclick="swDraw('all')">Draw from Everyone</button>
+    <button class="dt"        id="dt-quad" onclick="swDraw('quad')">Draw from Quadrant</button>
   </div>
-  <div class="dp active" id="dp-quad">
-    <div class="draw-box">
-      <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from a Quadrant</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Select a quadrant below, then spin</div>
-      <div class="dmg">
-        <div class="dq q1" id="dq-TL" onclick="pickQ('TL')"><div class="dq-nm">Enthusiastic Learners</div><div class="dq-ct" id="dc-TL">0</div></div>
-        <div class="dq q2" id="dq-TR" onclick="pickQ('TR')"><div class="dq-nm">AI Champions</div><div class="dq-ct" id="dc-TR">0</div></div>
-        <div class="dq q3" id="dq-BL" onclick="pickQ('BL')"><div class="dq-nm">Cautious Observers</div><div class="dq-ct" id="dc-BL">0</div></div>
-        <div class="dq q4" id="dq-BR" onclick="pickQ('BR')"><div class="dq-nm">Informed Sceptics</div><div class="dq-ct" id="dc-BR">0</div></div>
-      </div>
-      <div class="dhint" id="q-hint">Tap a quadrant above to select it</div>
-      <div class="dw" id="q-win">—</div>
-      <div class="btn-row">
-        <button class="btn primary lg" id="btn-q" onclick="spinQuad()" disabled>Spin Lucky Draw</button>
-        <button class="btn lg" onclick="clearQ()">Clear</button>
-      </div>
-    </div>
-  </div>
-  <div class="dp" id="dp-all">
-    <div class="draw-box">
+
+  <!-- Everyone — default -->
+  <div class="dp active" id="dp-all">
+    <div class="draw-box" id="draw-all-box">
       <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from Everyone</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Pick a winner from all participants</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Pick a winner from all participants who responded</div>
       <div class="pool-box">
         <div class="pool-n" id="pool-n">0</div>
         <div class="pool-l">participants<br>in the draw pool</div>
@@ -311,31 +345,144 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div>
   </div>
-</div>
 
-<!-- ═══ TAB 4: GROUPING ═══ -->
-<div class="page" id="page-grouping">
-  <div class="card">
-    <div style="font-size:14px;font-weight:700;margin-bottom:8px">Random Group Generator</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Enter how many groups you need. Participants are randomly distributed — mixing quadrants for richer discussion.</p>
-    <div class="g-setup">
-      <input type="number" id="g-n" class="g-inp" min="1" max="50" value="5">
-      <span class="g-lbl">groups from</span>
-      <span style="font-size:16px;font-weight:700" id="g-pool">0</span>
-      <span class="g-lbl">participants</span>
-      <button class="btn primary" onclick="genGroups()">Generate Groups</button>
-      <button class="btn" id="btn-reshuffle" style="display:none" onclick="genGroups()">↻ Reshuffle</button>
+  <!-- Quadrant -->
+  <div class="dp" id="dp-quad">
+    <div class="draw-box" id="draw-quad-box">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from a Quadrant</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Select a quadrant below, then spin</div>
+      <div class="dmg">
+        <div class="dq q1" id="dq-TL" onclick="pickQ('TL')"><div class="dq-nm">Enthusiastic Learners</div><div class="dq-ct" id="dc-TL">0</div></div>
+        <div class="dq q2" id="dq-TR" onclick="pickQ('TR')"><div class="dq-nm">AI Advocates</div><div class="dq-ct" id="dc-TR">0</div></div>
+        <div class="dq q3" id="dq-BL" onclick="pickQ('BL')"><div class="dq-nm">Cautious Observers</div><div class="dq-ct" id="dc-BL">0</div></div>
+        <div class="dq q4" id="dq-BR" onclick="pickQ('BR')"><div class="dq-nm">Informed Sceptics</div><div class="dq-ct" id="dc-BR">0</div></div>
+      </div>
+      <div class="dhint" id="q-hint">Tap a quadrant above to select it</div>
+      <div class="dw" id="q-win">—</div>
+      <div class="btn-row">
+        <button class="btn primary lg" id="btn-q" onclick="spinQuad()" disabled>Spin Lucky Draw</button>
+        <button class="btn lg" onclick="clearQ()">Clear</button>
+      </div>
     </div>
-    <div id="g-out"></div>
   </div>
 </div>
 
-<!-- ═══ TAB 5: RESET ═══ -->
+<!-- ═══════════════════ TAB 4: GROUPING ═══════════════════ -->
+<div class="page" id="page-grouping">
+  <div class="card">
+    <div class="card-title">Group Generator</div>
+    <div class="g-toggle">
+      <button class="gt active" id="gt-random" onclick="swGroup('random')">Random Mix</button>
+      <button class="gt"        id="gt-hats"   onclick="swGroup('hats')">Six Thinking Hats</button>
+    </div>
+
+    <!-- Random mix -->
+    <div class="gp active" id="gp-random">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Participants are randomly distributed — mixing quadrants for richer discussion.</p>
+      <div class="g-setup">
+        <input type="number" id="g-n" class="g-inp" min="1" max="50" value="5">
+        <span class="g-lbl">groups from</span>
+        <span style="font-size:16px;font-weight:700" id="g-pool">0</span>
+        <span class="g-lbl">participants</span>
+        <button class="btn primary" onclick="genRandom()">Generate</button>
+        <button class="btn" id="btn-reshuffle" style="display:none" onclick="genRandom()">↻ Reshuffle</button>
+      </div>
+      <div id="g-out-random"></div>
+    </div>
+
+    <!-- Six Hats -->
+    <div class="gp" id="gp-hats">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:6px;line-height:1.6">Each group gets <strong>1 Royal Hat</strong> (facilitator) and <strong>equal numbers of each colour hat</strong>. Groups may vary slightly in total size.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;background:var(--blue-bg);padding:10px 14px;border-radius:8px;color:var(--blue-txt)">
+        🎩 Hats: White (facts) · Red (emotion) · Yellow (benefits) · Green (ideas) · Blue (planning) · Black (judgement) · Purple/Royal (facilitator, 1 per group)
+      </p>
+      <div class="g-setup">
+        <input type="number" id="g-hats-n" class="g-inp" min="1" max="30" value="5">
+        <span class="g-lbl">groups from</span>
+        <span style="font-size:16px;font-weight:700" id="g-hats-pool">0</span>
+        <span class="g-lbl">participants</span>
+        <button class="btn primary" onclick="genHats()">Generate</button>
+        <button class="btn" id="btn-hats-reshuffle" style="display:none" onclick="genHats()">↻ Reshuffle</button>
+      </div>
+      <div id="g-out-hats"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 5: SIX THINKING HATS ═══════════════════ -->
+<div class="page" id="page-hats">
+  <p class="hats-intro">The Six Thinking Hats method (Edward de Bono) structures group discussion by having everyone think from the same perspective at the same time. The <strong>Royal/Purple Hat</strong> is an addition — the group facilitator who keeps the discussion on track and ensures all hats get equal time.</p>
+
+  <div class="hats-grid">
+    <div class="hat-card hat-royal">
+      <div class="hat-card-top"><div class="hat-emoji">👑</div><div><div class="hat-card-title">Royal / Purple Hat</div><div class="hat-card-sub">The Facilitator · 1 per group</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Keeps the discussion structured and balanced. Ensures no single hat dominates, manages time, and guides the group through each thinking mode.</div>
+      <div class="hat-card-qs">When wearing this hat, say:</div>
+      <div class="hat-card-q">"Let's hear the Yellow hat perspective now." · "We've spent enough time on Black hat — let's move to Green." · "Before we close, let's do a quick Red hat check."</div>
+    </div>
+    <div class="hat-card hat-white">
+      <div class="hat-card-top"><div class="hat-emoji">🤍</div><div><div class="hat-card-title">White Hat</div><div class="hat-card-sub">Facts & Data</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Focus purely on available data and information. What do we know? What do we need to find out? No opinions — just facts and figures.</div>
+      <div class="hat-card-qs">Questions to ask:</div>
+      <div class="hat-card-q">"What data do we have on this?" · "What are the facts?" · "What information is missing?" · "What does the survey data tell us?"</div>
+    </div>
+    <div class="hat-card hat-red">
+      <div class="hat-card-top"><div class="hat-emoji">❤️</div><div><div class="hat-card-title">Red Hat</div><div class="hat-card-sub">Emotions & Feelings</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Express feelings, intuitions, and gut reactions without needing to justify them. No logic required here — emotions are valid and important signals.</div>
+      <div class="hat-card-qs">Questions to ask:</div>
+      <div class="hat-card-q">"How does this AI change make you feel?" · "What is your gut reaction?" · "What excites or worries you most?"</div>
+    </div>
+    <div class="hat-card hat-yellow">
+      <div class="hat-card-top"><div class="hat-emoji">💛</div><div><div class="hat-card-title">Yellow Hat</div><div class="hat-card-sub">Optimism & Benefits</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Explore the positives, benefits, and best-case outcomes. Be genuinely optimistic — even if sceptical, play the role of finding value and opportunity.</div>
+      <div class="hat-card-qs">Questions to ask:</div>
+      <div class="hat-card-q">"What is the best possible outcome?" · "How could this genuinely help HR?" · "What value does AI adoption unlock for our team?"</div>
+    </div>
+    <div class="hat-card hat-green">
+      <div class="hat-card-top"><div class="hat-emoji">💚</div><div><div class="hat-card-title">Green Hat</div><div class="hat-card-sub">Creativity & New Ideas</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Generate alternatives, new possibilities, and creative solutions. No idea is too wild. Challenge assumptions and think laterally — the goal is quantity of ideas, not quality.</div>
+      <div class="hat-card-qs">Questions to ask:</div>
+      <div class="hat-card-q">"What if we tried this differently?" · "What completely new approach could work?" · "What would we do if there were no constraints?"</div>
+    </div>
+    <div class="hat-card hat-blue">
+      <div class="hat-card-top"><div class="hat-emoji">💙</div><div><div class="hat-card-title">Blue Hat</div><div class="hat-card-sub">Process & Planning</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Focus on structure, process, and next steps. What is the plan? Who does what? How will we organise our thinking and action? The Blue hat often opens and closes discussions.</div>
+      <div class="hat-card-qs">Questions to ask:</div>
+      <div class="hat-card-q">"What should our first step be?" · "How do we prioritise this?" · "What is the plan for the next 30 days?"</div>
+    </div>
+    <div class="hat-card hat-black">
+      <div class="hat-card-top"><div class="hat-emoji">🖤</div><div><div class="hat-card-title">Black Hat</div><div class="hat-card-sub">Caution & Judgement</div></div></div>
+      <div class="hat-card-div"></div>
+      <div class="hat-card-role">Identify risks, problems, and why something might not work. Critical thinking at its most rigorous. This hat is not pessimism — it is logical caution protecting the group from mistakes.</div>
+      <div class="hat-card-qs">Questions to ask:</div>
+      <div class="hat-card-q">"What could go wrong?" · "What are the risks of this AI tool?" · "What biases or errors might we introduce?" · "What are we missing?"</div>
+    </div>
+  </div>
+
+  <div class="discussion-guide">
+    <div class="dg-title">Suggested discussion sequence for your AI readiness debrief</div>
+    <div class="dg-steps">
+      <div class="dg-step"><div class="dg-step-hat">💙</div><div class="dg-step-body"><div class="dg-step-title">Blue Hat — Set the agenda (3 min)</div><div class="dg-step-txt">Royal hat facilitator opens: share the survey results, set the goal for today's discussion, and explain the hat sequence.</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">🤍</div><div class="dg-step-body"><div class="dg-step-title">White Hat — The facts (5 min)</div><div class="dg-step-txt">Review the scatter matrix together. What does the data say? Which quadrant is largest? What is the average readiness score? No opinions yet.</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">❤️</div><div class="dg-step-body"><div class="dg-step-title">Red Hat — How we feel (4 min)</div><div class="dg-step-txt">Each person shares a one-word feeling about AI in HR right now. No justification needed. Royal hat records the mood of the room.</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💛</div><div class="dg-step-body"><div class="dg-step-title">Yellow Hat — The upside (5 min)</div><div class="dg-step-txt">What excites you most about AI in HR? What would be possible if we fully embraced it? What has already improved?</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">🖤</div><div class="dg-step-body"><div class="dg-step-title">Black Hat — The risks (5 min)</div><div class="dg-step-txt">What could go wrong? What are the legitimate concerns: bias, job loss, privacy, quality? Name them directly so they can be addressed.</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💚</div><div class="dg-step-body"><div class="dg-step-title">Green Hat — New ideas (6 min)</div><div class="dg-step-txt">Given everything discussed: what should we try first? What creative solutions address the Black hat risks while capturing the Yellow hat opportunities?</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💙</div><div class="dg-step-body"><div class="dg-step-title">Blue Hat — Commit & close (5 min)</div><div class="dg-step-txt">Each person states one action they will take in the next 30 days. Royal hat records commitments and agrees on the next check-in date.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 6: RESET ═══════════════════ -->
 <div class="page" id="page-reset">
   <div class="reset-pg">
-    <div class="reset-icon">
-      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-    </div>
+    <div class="reset-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
     <div class="reset-h">Reset All Survey Data</div>
     <div class="reset-s">This permanently erases all submitted responses from Google Sheets and returns the dashboard to zero.</div>
     <div class="reset-warn">
@@ -348,530 +495,521 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
-
 const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Working Style & AI Integration','HR Function Transformation','Organisational Readiness']);
-
-const QUADRANT_META = {
-  TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1' },
-  TR:{ name:'AI Champions',          tagline:'High excitement · High awareness',   bg:'#E6F1FB', txt:'#042C53', dot:'#378ADD', css:'q2' },
-  BL:{ name:'Cautious Observers',    tagline:'Building awareness · Low excitement',bg:'#FAEEDA', txt:'#412402', dot:'#BA7517', css:'q3' },
-  BR:{ name:'Informed Sceptics',     tagline:'High awareness · Thoughtful caution',bg:'#FAECE7', txt:'#4A1B0C', dot:'#D85A30', css:'q4' }
+const QMETA = {
+  TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
+       brief:'Passionate about AI but still building practical skills. Energy and openness are their superpower.'},
+  TR:{ name:'AI Advocates',          tagline:'High excitement · High awareness',    bg:'#E6F1FB', txt:'#042C53', dot:'#378ADD', css:'q2',
+       brief:'Hands-on, confident, and ready to lead. They have the skills and the enthusiasm to bring others along.'},
+  BL:{ name:'Cautious Observers',    tagline:'Low excitement · Low awareness',      bg:'#FAEEDA', txt:'#412402', dot:'#BA7517', css:'q3',
+       brief:'Taking a measured approach and waiting for clarity. Stability and reliability are their strengths.'},
+  BR:{ name:'Informed Sceptics',     tagline:'High awareness · Thoughtful caution', bg:'#FAECE7', txt:'#4A1B0C', dot:'#D85A30', css:'q4',
+       brief:'Well-informed and rigorous. They ask the hard questions that make AI adoption better and safer.'}
 };
+const QNAMES = { TL:'Enthusiastic Learners', TR:'AI Advocates', BL:'Cautious Observers', BR:'Informed Sceptics' };
 
+// Detailed explanation content
 const EXP = {
-  TR:{
-    traits:['Hands-on with AI','Confident & vocal','Early adopter','Peer educator','Comfortable with ambiguity'],
-    whatDrives:`AI Champions have built genuine hands-on experience with AI tools and emerged enthusiastic about what they can do. Their excitement is grounded — it comes from having seen AI work in practice. They are natural early adopters who find intrinsic motivation in exploration and tend to share what they learn openly with colleagues. They are comfortable with ambiguity and change, making them uniquely suited to thrive in rapid technological transformation. Their high scores on both axes reflect not just comfort with AI but a proactive stance — they are not waiting to be led, they are ready to lead.`,
-    howToCatchUp:`For colleagues looking to move toward this quadrant, the most direct path is deliberate daily practice. Champions rarely got here through training alone — they experimented, made mistakes, and kept going. The key shift is moving from passive consumption (reading about AI) to active use (making AI do a real task today). Starting with a single low-stakes task — drafting a routine email, summarising a document, or preparing talking points — removes the pressure and builds real confidence fast. The second accelerator is peer connection: being around someone in this quadrant and asking "show me how you use it" is often more powerful than any formal course.`
-  },
-  TL:{
-    traits:['Enthusiastic','Curious','Growth mindset','Willing to experiment','Optimistic about change'],
-    whatDrives:`Enthusiastic Learners are driven by possibility. They are excited by what AI could mean for their work — they have absorbed the headlines, seen colleagues use tools, and feel genuinely motivated to be part of this change. What distinguishes them from Champions is not attitude but experience — they have not yet had the opportunity or structure to build consistent, practical AI habits. This group is often the most energising in a room: their enthusiasm is contagious and their willingness to try things creates momentum. They are not held back by fear; they are held back by not yet knowing where to start, or not having been given the time and permission to experiment properly.`,
-    howToCatchUp:`The most effective way for this group to progress is to close the gap between enthusiasm and action as quickly as possible — before the energy fades. They need a concrete starting point, not more inspiration. Assigning one specific AI tool to one specific task they already own is the fastest bridge. They also benefit enormously from a buddy system with an AI Champion: structured peer-to-peer time to observe, try, and ask questions in a safe setting. Organisations can accelerate this by carving out protected experimentation time — even 30 minutes a week of "try something with AI" with no performance expectations makes a meaningful difference.`
+  BL:{
+    traits:['Cautious','Steady','Process-oriented','Values stability','Thorough before acting'],
+    brief:'Cautious Observers approach change carefully and prefer to fully understand something before adopting it. Their steadiness is a genuine strength that keeps the team grounded.',
+    whatDrives:[
+      'They place high value on doing things correctly and reliably — AI adoption feels disruptive to that standard.',
+      'The volume of hype and jargon around AI can feel overwhelming rather than inviting.',
+      'They are waiting for a clear signal that this is safe to approach and that they will not be left behind.'
+    ],
+    howToCatchUp:[
+      { step:'Start tiny', detail:'Pick one task you do daily and try using AI just for that. Drafting a routine email is a perfect first experiment.' },
+      { step:'Stay in control', detail:'Edit the AI output rather than accepting it. This keeps your expertise central and builds trust in the tool gradually.' },
+      { step:'Ask, don\'t study', detail:'Rather than taking a course, ask a colleague in the AI Advocates group to show you how they use it in 10 minutes.' },
+      { step:'Celebrate the small wins', detail:'Every time you save 5 minutes with AI, that counts. Acknowledge it — momentum builds from small successes.' }
+    ]
   },
   BR:{
     traits:['Analytically strong','Risk-aware','Evidence-driven','Constructive critic','High standards'],
-    whatDrives:`Informed Sceptics are not resistant to AI — they are rigorous about it. They have developed a substantive understanding of what AI can and cannot do, and they apply that knowledge critically. Their caution is not born from fear but from evidence: they have considered risks around bias, data privacy, and legal grey areas. This makes them exceptionally valuable in any adoption process — they ask the questions others skip and spot edge cases others miss. Their lower excitement scores reflect a high bar for what good adoption looks like and a reasonable frustration when that bar is ignored in favour of speed.`,
-    howToCatchUp:`For this group, the path forward is not convincing them to become enthusiastic — it is channelling their knowledge into constructive influence. They tend to move when their concerns are being taken seriously: an AI ethics framework being built, a governance committee formed, a data privacy review conducted before a tool is rolled out. Giving them a formal role in shaping these processes — rather than a seat in the audience — converts critical energy into forward momentum. Peer conversations with Champions can also help: not to persuade, but to exchange. Sceptics often become strong advocates once their conditions for trust are met.`
+    brief:'Informed Sceptics bring rigour and critical thinking that the team genuinely needs. Their caution comes from knowledge, not resistance — and that distinction matters enormously.',
+    whatDrives:[
+      'They have developed a real understanding of what AI can and cannot do, and they apply that knowledge critically.',
+      'They have considered the risks: algorithmic bias in hiring, data privacy, the legal grey areas of AI-generated HR content.',
+      'They set a high bar for what good adoption looks like — and feel frustrated when that bar is skipped in favour of speed.'
+    ],
+    howToCatchUp:[
+      { step:'Channel, don\'t suppress', detail:'Your critical thinking is most valuable when it shapes the process, not just critiques it. Ask to be involved in evaluating new tools before rollout.' },
+      { step:'Get a seat at the governance table', detail:'Volunteer to help build the AI ethics framework or data privacy guidelines. This converts your knowledge into influence.' },
+      { step:'Find one area of genuine optimism', detail:'Even the most rigorous sceptic has one AI use case they see merit in. Start there — it builds credibility for your broader concerns.' },
+      { step:'Dialogue, not debate', detail:'Have a structured conversation with an AI Advocate. Not to be convinced — but to exchange. You may shift their thinking as much as they shift yours.' }
+    ]
   },
-  BL:{
-    traits:['Cautious','Steady','Process-oriented','Values stability','Thorough before acting'],
-    whatDrives:`Cautious Observers are at the beginning of their AI journey, and that is a completely valid place to be. They tend to be steady, process-oriented professionals who place high value on doing things correctly and reliably. AI adoption feels disruptive to that stability — and the volume of hype, jargon, and rapid change can make it feel overwhelming rather than inviting. Their lower scores on both axes reflect a combination of limited exposure and genuine uncertainty about what this change means for their role, skills, and future. They are not refusing to engage; they are waiting for a signal that this is safe to approach and that they will not be left behind or judged.`,
-    howToCatchUp:`The most important thing for this group is psychological safety before skill-building. They need to see that exploring AI is encouraged, not evaluated. The best entry point is always something familiar: a task they do every day, made slightly easier with an AI tool. A great first experiment is having AI draft a message they would normally write from scratch — then editing it. This keeps them in control, which matters enormously to this group. Celebrating any progress loudly and publicly, and making clear that no one is expected to become an expert overnight, creates the conditions for them to take their first step and build from there.`
+  TL:{
+    traits:['Enthusiastic','Curious','Growth mindset','Willing to experiment','Optimistic about change'],
+    brief:'Enthusiastic Learners bring the energy and open mindset that AI transformation needs. The gap between their enthusiasm and their experience is smaller than they think — and it closes fast with the right nudge.',
+    whatDrives:[
+      'They are genuinely excited by what AI could mean for their work and feel motivated to be part of the change.',
+      'They are not held back by fear — they are held back by not yet knowing where to start or not having been given structured time to experiment.',
+      'Their enthusiasm is contagious, and their willingness to try things creates momentum in the team around them.'
+    ],
+    howToCatchUp:[
+      { step:'Close the gap immediately', detail:'Pick one AI tool today and use it for one real task. The gap between enthusiasm and action is the only thing holding you back.' },
+      { step:'Buddy up', detail:'Ask an AI Advocate to spend 30 minutes showing you their workflow. Observation accelerates learning faster than any tutorial.' },
+      { step:'Protect experiment time', detail:'Request or create 30 minutes per week of protected "AI exploration time" — no deliverables, just trying things.' },
+      { step:'Share what you find', detail:'Even early experiments are worth sharing. Talking about what worked and what didn\'t makes you part of the learning culture.' }
+    ]
+  },
+  TR:{
+    traits:['Hands-on with AI','Confident & vocal','Early adopter','Peer educator','Comfortable with ambiguity'],
+    brief:'AI Advocates are not just AI-ready — they are ready to lead. Their combination of real experience and genuine enthusiasm makes them the most powerful change agents in the room.',
+    whatDrives:[
+      'Their excitement is grounded in practice — they have seen AI work and know how to make it work for HR tasks.',
+      'They find intrinsic motivation in exploration and tend to share what they learn openly with colleagues.',
+      'They are comfortable with ambiguity and change, which makes them uniquely suited to thrive in rapid transformation.'
+    ],
+    howToCatchUp:[
+      { step:'Bring others with you', detail:'Your biggest contribution right now is not using AI more yourself — it is helping others use it at all. Pick one person to mentor this month.' },
+      { step:'Build the playbook', detail:'Document how you use AI for your top 5 HR tasks. A one-page guide is more useful to your team than any external training.' },
+      { step:'Shape governance', detail:'Use your credibility to help build the ethical guardrails. Your advocacy carries weight — use it to ensure AI adoption is done responsibly.' },
+      { step:'Stay current', detail:'AI is moving fast. Dedicate 20 minutes a week to staying ahead so you remain the team\'s trusted guide as the landscape evolves.' }
+    ]
   }
 };
 
-const QNAMES = { TL:'Enthusiastic Learners', TR:'AI Champions', BL:'Cautious Observers', BR:'Informed Sceptics' };
+const INTERP_ORDER = ['BL','BR','TL','TR'];
+const HAT_INFO = [
+  { key:'royal',  label:'👑 Royal',   bg:'#EDE9FE', txt:'#4C1D95', desc:'Facilitator' },
+  { key:'white',  label:'🤍 White',   bg:'#F1F5F9', txt:'#334155', desc:'Facts'       },
+  { key:'red',    label:'❤️ Red',     bg:'#FEE2E2', txt:'#991B1B', desc:'Emotion'     },
+  { key:'yellow', label:'💛 Yellow',  bg:'#FEF9C3', txt:'#854D0E', desc:'Benefits'    },
+  { key:'green',  label:'💚 Green',   bg:'#DCFCE7', txt:'#166534', desc:'Ideas'       },
+  { key:'blue',   label:'💙 Blue',    bg:'#DBEAFE', txt:'#1E40AF', desc:'Planning'    },
+  { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
+];
 
-let allData = [], selQ = null, expBuilt = false;
+let allData=[], selQ=null, interpBuilt=false;
 
 /* ── Navigation ── */
-function go(t) {
-  ['dashboard','explanation','draw','grouping','reset'].forEach(x => {
-    document.getElementById('tn-' + x).className = 'tn' + (x === t ? ' active' : '');
-    document.getElementById('page-' + x).className = 'page' + (x === t ? ' active' : '');
+const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
+function go(t){
+  PAGES.forEach(x=>{
+    const tn = document.getElementById('tn-'+x);
+    if(tn) tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
+    const pg = document.getElementById('page-'+x);
+    if(pg) pg.className = 'page'+(x===t?' active':'');
   });
-  if (t === 'dashboard')   drawScatter();
-  if (t === 'explanation') buildExp();
-  if (t === 'draw')        updDrawCounts();
-  if (t === 'grouping')    document.getElementById('g-pool').textContent = allData.length;
+  if(t==='dashboard')      drawScatter();
+  if(t==='interpretation') buildInterp();
+  if(t==='draw')           updDrawCounts();
+  if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
 
-function swDraw(d) {
-  ['quad','all'].forEach(x => {
-    document.getElementById('dt-' + x).className = 'dt' + (x === d ? ' active' : '');
-    document.getElementById('dp-' + x).className = 'dp'  + (x === d ? ' active' : '');
+function swDraw(d){
+  ['all','quad'].forEach(x=>{
+    document.getElementById('dt-'+x).className='dt'+(x===d?' active':'');
+    document.getElementById('dp-'+x).className='dp'+(x===d?' active':'');
+  });
+}
+
+function swGroup(g){
+  ['random','hats'].forEach(x=>{
+    document.getElementById('gt-'+x).className='gt'+(x===g?' active':'');
+    document.getElementById('gp-'+x).className='gp'+(x===g?' active':'');
   });
 }
 
 /* ── Data loading ── */
-async function loadData(fb) {
-  try {
-    const r = await fetch(GAS + '?action=getAll', { cache:'no-store' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const j = await r.json();
-    allData = Array.isArray(j.data) ? j.data : Array.isArray(j) ? j : [];
-    updStats();
-    updDrawCounts();
-    if (document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
-    if (expBuilt) refreshExpCounts();
-    const n = new Date();
-    document.getElementById('ts').textContent =
-      n.getHours().toString().padStart(2,'0') + ':' +
-      n.getMinutes().toString().padStart(2,'0') + ':' +
-      n.getSeconds().toString().padStart(2,'0');
-    if (fb) setStatus(true, 'Connected · ' + allData.length + ' response' + (allData.length !== 1 ? 's' : '') + ' loaded');
-  } catch(e) {
-    if (fb) setStatus(false, 'Cannot reach Google Sheets — check deployment settings');
+async function loadData(fb){
+  try{
+    const r=await fetch(GAS+'?action=getAll',{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
+    updStats(); updDrawCounts();
+    if(document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
+    if(interpBuilt) refreshInterpCounts();
+    const n=new Date();
+    document.getElementById('ts').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');
+    if(fb) setStatus(true,'Connected · '+allData.length+' response'+(allData.length!==1?'s':'')+' loaded');
+  }catch(e){ if(fb) setStatus(false,'Cannot reach Google Sheets — check deployment settings'); }
+}
+
+function setStatus(ok,msg){const el=document.getElementById('status');el.textContent=msg;el.className='status-bar '+(ok?'s-ok':'s-err');}
+function rlabel(s){return s>=75?'AI-Ready':s>=60?'Progressing':s>=40?'Emerging':'Early Stage';}
+
+/* ── Stats ── */
+function updStats(){
+  const c={TL:0,TR:0,BL:0,BR:0},sc=[];
+  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score)sc.push(Number(r.score));});
+  const tot=allData.length;
+  document.getElementById('f-total').textContent=tot;
+  document.getElementById('g-pool').textContent=tot;
+  document.getElementById('g-hats-pool').textContent=tot;
+  document.getElementById('pool-n').textContent=tot;
+  document.getElementById('btn-all').disabled=tot===0;
+
+  // Fan gauge
+  const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
+  document.getElementById('fan-score').textContent=avg!==null?avg+'%':'—';
+  document.getElementById('fan-label').textContent=avg!==null?rlabel(avg):'No data yet';
+  if(avg!==null){
+    // Map 0–100% to -90° to +90° (left to right arc)
+    const angle=-90+(avg/100)*180;
+    const rad=angle*Math.PI/180;
+    const r=75;
+    const x2=100+r*Math.cos(rad);
+    const y2=100+r*Math.sin(rad);
+    document.getElementById('fan-needle').setAttribute('x2',x2.toFixed(1));
+    document.getElementById('fan-needle').setAttribute('y2',y2.toFixed(1));
   }
-}
 
-function setStatus(ok, msg) {
-  const el = document.getElementById('status');
-  el.textContent = msg; el.className = 'status-bar ' + (ok ? 's-ok' : 's-err');
-}
-
-function rlabel(s) {
-  if (s >= 75) return 'AI-Ready 🔴';
-  if (s >= 60) return 'Progressing 🟡';
-  if (s >= 40) return 'Emerging 🟢';
-  return 'Early Stage 🔵';
-}
-
-/* ── Stats update ── */
-function updStats() {
-  const c = {TL:0,TR:0,BL:0,BR:0}, sc = [];
-  allData.forEach(r => {
-    if (r.quad && c[r.quad] !== undefined) c[r.quad]++;
-    if (r.score) sc.push(Number(r.score));
-  });
-  const tot = allData.length;
-  document.getElementById('f-total').textContent = tot;
-  document.getElementById('g-pool').textContent = tot;
-  document.getElementById('pool-n').textContent = tot;
-  document.getElementById('btn-all').disabled = tot === 0;
-
-  // Avg score + thermometer
-  const avg = sc.length ? Math.round(sc.reduce((a,b) => a + b) / sc.length) : null;
-  document.getElementById('f-avg').textContent = avg !== null ? avg + '%' : '—';
-  document.getElementById('f-avg-lbl').textContent = avg !== null ? rlabel(avg) : 'No data yet';
-  const needle = document.getElementById('thermo-needle');
-  needle.style.left = avg !== null ? Math.min(avg, 100) + '%' : '0%';
-
-  // Largest quadrant — coloured card
-  let maxQ = '', maxN = 0;
-  ['TL','TR','BL','BR'].forEach(q => { if (c[q] > maxN) { maxN = c[q]; maxQ = q; } });
-  const tqCard = document.getElementById('top-quad-card');
-  if (maxN > 0) {
-    const m = QUADRANT_META[maxQ];
-    tqCard.style.background = m.bg;
-    tqCard.style.borderColor = m.dot;
-    tqCard.style.color = m.txt;
-    document.getElementById('tq-lbl').textContent = 'LARGEST QUADRANT';
-    document.getElementById('tq-name').textContent = m.name;
-    document.getElementById('tq-count').textContent = maxN + ' participants (' + Math.round(maxN / tot * 100) + '%)';
+  // Largest quadrant
+  let maxQ='',maxN=0;
+  ['TL','TR','BL','BR'].forEach(q=>{if(c[q]>maxN){maxN=c[q];maxQ=q;}});
+  const card=document.getElementById('sc-quad');
+  if(maxN>0){
+    const m=QMETA[maxQ];
+    card.style.background=m.bg; card.style.border='1px solid '+m.dot; card.style.color=m.txt;
+    document.getElementById('sq-lbl').textContent='LARGEST QUADRANT';
+    document.getElementById('sq-name').textContent=m.name;
+    document.getElementById('sq-count').textContent=maxN+' participants ('+Math.round(maxN/tot*100)+'%)';
+    document.getElementById('sq-brief').textContent=m.brief;
   } else {
-    tqCard.style.background = 'var(--bg)';
-    tqCard.style.borderColor = 'var(--border)';
-    tqCard.style.color = 'var(--text)';
-    document.getElementById('tq-lbl').textContent = 'LARGEST QUADRANT';
-    document.getElementById('tq-name').textContent = '—';
-    document.getElementById('tq-count').textContent = 'No data yet';
+    card.style.background='var(--bg)'; card.style.border='1px solid var(--border)'; card.style.color='var(--text)';
+    document.getElementById('sq-name').textContent='—';
+    document.getElementById('sq-count').textContent='No data yet';
+    document.getElementById('sq-brief').textContent='';
   }
 }
 
-/* ── Scatter plot ── */
-function getScatterPoints() {
-  return allData.map(r => {
-    let aRaw = 0.5, eRaw = 0.5;
-    if (r.answers && Array.isArray(r.answers) && r.answers.length > 0) {
+/* ── Scatter ── */
+const CLUSTER_R=12;
+function getScatterPoints(){
+  return allData.map(r=>{
+    let aRaw=0.5,eRaw=0.5;
+    if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
       let aSum=0,aCnt=0,eSum=0,eCnt=0;
-      r.answers.forEach(a => {
-        const isA = AWARENESS_SECS.has(a.section);
-        const s = Number(a.score || 0);
-        if (isA) { aSum += s; aCnt++; } else { eSum += s; eCnt++; }
-      });
-      if (aCnt > 0) aRaw = aSum / (aCnt * 3);
-      if (eCnt > 0) eRaw = eSum / (eCnt * 3);
+      r.answers.forEach(a=>{const isA=AWARENESS_SECS.has(a.section);const s=Number(a.score||0);if(isA){aSum+=s;aCnt++;}else{eSum+=s;eCnt++;}});
+      if(aCnt>0)aRaw=aSum/(aCnt*3);if(eCnt>0)eRaw=eSum/(eCnt*3);
     } else {
-      const seed = (r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-      const jitter = k => (((seed*k)%23)/23)*0.26 - 0.13;
-      const base = {TL:{a:0.25,e:0.75},TR:{a:0.75,e:0.75},BL:{a:0.25,e:0.25},BR:{a:0.75,e:0.25}};
-      const b = base[r.quad] || {a:0.5,e:0.5};
-      aRaw = Math.min(0.96, Math.max(0.04, b.a + jitter(3)));
-      eRaw = Math.min(0.96, Math.max(0.04, b.e + jitter(7)));
+      const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+      const jitter=k=>(((seed*k)%23)/23)*0.26-0.13;
+      const base={TL:{a:0.25,e:0.75},TR:{a:0.75,e:0.75},BL:{a:0.25,e:0.25},BR:{a:0.75,e:0.25}};
+      const b=base[r.quad]||{a:0.5,e:0.5};
+      aRaw=Math.min(0.96,Math.max(0.04,b.a+jitter(3)));
+      eRaw=Math.min(0.96,Math.max(0.04,b.e+jitter(7)));
     }
-    return { name: r.name||'?', aRaw, eRaw, quad: r.quad };
+    return{name:r.name||'?',aRaw,eRaw,quad:r.quad};
   });
 }
 
-// Group dots that are within CLUSTER_R pixels of each other
-const CLUSTER_R = 12;
-
-function clusterPoints(dots) {
-  const used = new Array(dots.length).fill(false);
-  const clusters = [];
-  dots.forEach((d, i) => {
-    if (used[i]) return;
-    const cluster = [d];
-    used[i] = true;
-    dots.forEach((d2, j) => {
-      if (!used[j] && Math.hypot(d.cx - d2.cx, d.cy - d2.cy) < CLUSTER_R) {
-        cluster.push(d2);
-        used[j] = true;
-      }
-    });
-    // Representative position = centroid
-    const cx = cluster.reduce((s,p)=>s+p.cx,0)/cluster.length;
-    const cy = cluster.reduce((s,p)=>s+p.cy,0)/cluster.length;
-    clusters.push({ cx, cy, points: cluster, quad: cluster[0].quad });
+function clusterPoints(dots){
+  const used=new Array(dots.length).fill(false);
+  const clusters=[];
+  dots.forEach((d,i)=>{
+    if(used[i])return;
+    const cl=[d];used[i]=true;
+    dots.forEach((d2,j)=>{if(!used[j]&&Math.hypot(d.cx-d2.cx,d.cy-d2.cy)<CLUSTER_R){cl.push(d2);used[j]=true;}});
+    const cx=cl.reduce((s,p)=>s+p.cx,0)/cl.length;
+    const cy=cl.reduce((s,p)=>s+p.cy,0)/cl.length;
+    clusters.push({cx,cy,points:cl,quad:cl[0].quad});
   });
   return clusters;
 }
 
-function drawScatter() {
-  const canvas = document.getElementById('scatter-canvas');
-  if (!canvas) return;
-  const rect = canvas.parentElement.getBoundingClientRect();
-  const W2 = Math.max(rect.width, 200);
-  const H2 = Math.round(W2 * 0.7); // match padding-top:70%
-  canvas.width = W2; canvas.height = H2;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, W2, H2);
-
-  const padL = 52, padR = 20, padT = 20, padB = 40;
-  const CW = W2 - padL - padR;
-  const CH = H2 - padT - padB;
-
-  // Quadrant background fills + embedded count labels
-  const counts = {TL:0,TR:0,BL:0,BR:0};
-  allData.forEach(r => { if (r.quad && counts[r.quad]!==undefined) counts[r.quad]++; });
-  const qFills = [
-    { q:'TL', x:padL,        y:padT,        w:CW/2, h:CH/2, bg:'rgba(225,245,238,0.6)', txt:'#085041' },
-    { q:'TR', x:padL+CW/2,   y:padT,        w:CW/2, h:CH/2, bg:'rgba(230,241,251,0.6)', txt:'#042C53' },
-    { q:'BL', x:padL,        y:padT+CH/2,   w:CW/2, h:CH/2, bg:'rgba(250,238,218,0.6)', txt:'#412402' },
-    { q:'BR', x:padL+CW/2,   y:padT+CH/2,   w:CW/2, h:CH/2, bg:'rgba(250,236,231,0.6)', txt:'#4A1B0C' },
+function drawScatter(){
+  const canvas=document.getElementById('scatter-canvas');
+  if(!canvas)return;
+  const rect=canvas.parentElement.getBoundingClientRect();
+  const W2=Math.max(rect.width,200);
+  const H2=Math.round(W2*0.72);
+  canvas.width=W2;canvas.height=H2;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,W2,H2);
+  const pL=50,pR=18,pT=18,pB=38;
+  const CW=W2-pL-pR,CH=H2-pT-pB;
+  const counts={TL:0,TR:0,BL:0,BR:0};
+  allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
+  const qFills=[
+    {q:'TL',x:pL,     y:pT,     w:CW/2,h:CH/2,bg:'rgba(225,245,238,0.6)',txt:'#085041'},
+    {q:'TR',x:pL+CW/2,y:pT,     w:CW/2,h:CH/2,bg:'rgba(230,241,251,0.6)',txt:'#042C53'},
+    {q:'BL',x:pL,     y:pT+CH/2,w:CW/2,h:CH/2,bg:'rgba(250,238,218,0.6)',txt:'#412402'},
+    {q:'BR',x:pL+CW/2,y:pT+CH/2,w:CW/2,h:CH/2,bg:'rgba(250,236,231,0.6)',txt:'#4A1B0C'},
   ];
-  qFills.forEach(f => {
-    ctx.fillStyle = f.bg;
-    ctx.fillRect(f.x, f.y, f.w, f.h);
-
-    // Quadrant name label (top corner)
-    ctx.fillStyle = f.txt;
-    ctx.globalAlpha = 0.45;
-    ctx.font = '600 9px -apple-system,sans-serif';
-    const isRight = f.q==='TR'||f.q==='BR';
-    const isBottom = f.q==='BL'||f.q==='BR';
-    ctx.textAlign = isRight ? 'right' : 'left';
-    const lx = isRight ? f.x+f.w-6 : f.x+6;
-    const ly = isBottom ? f.y+f.h-6 : f.y+14;
-    ctx.fillText(QNAMES[f.q], lx, ly);
-    ctx.globalAlpha = 1;
-
-    // Big count number in centre of quadrant
-    ctx.fillStyle = f.txt;
-    ctx.globalAlpha = 0.18;
-    ctx.font = '700 ' + Math.round(CH/5) + 'px -apple-system,sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(counts[f.q], f.x + f.w/2, f.y + f.h/2 + Math.round(CH/14));
-    ctx.globalAlpha = 1;
+  qFills.forEach(f=>{
+    ctx.fillStyle=f.bg;ctx.fillRect(f.x,f.y,f.w,f.h);
+    ctx.fillStyle=f.txt;ctx.globalAlpha=0.4;
+    ctx.font='600 9px -apple-system,sans-serif';
+    const isR=f.q==='TR'||f.q==='BR',isB=f.q==='BL'||f.q==='BR';
+    ctx.textAlign=isR?'right':'left';
+    ctx.fillText(QNAMES[f.q],isR?f.x+f.w-6:f.x+6,isB?f.y+f.h-7:f.y+14);
+    ctx.globalAlpha=0.15;
+    ctx.font='700 '+(Math.round(CH/5))+'px -apple-system,sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText(counts[f.q],f.x+f.w/2,f.y+f.h/2+Math.round(CH/14));
+    ctx.globalAlpha=1;
   });
-
-  // Divider lines
-  ctx.strokeStyle = 'rgba(100,116,139,0.25)';
-  ctx.lineWidth = 1; ctx.setLineDash([5,5]);
-  ctx.beginPath();
-  ctx.moveTo(padL+CW/2, padT); ctx.lineTo(padL+CW/2, padT+CH);
-  ctx.moveTo(padL, padT+CH/2); ctx.lineTo(padL+CW, padT+CH/2);
-  ctx.stroke(); ctx.setLineDash([]);
-
-  // Border
-  ctx.strokeStyle = 'rgba(100,116,139,0.2)'; ctx.lineWidth = 1;
-  ctx.strokeRect(padL, padT, CW, CH);
-
-  // Axis labels
-  ctx.fillStyle = '#94A3B8'; ctx.font = '500 10px -apple-system,sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('← Low Awareness', padL+CW/4, H2-8);
-  ctx.fillText('High Awareness →', padL+3*CW/4, H2-8);
-  ctx.save();
-  ctx.translate(13, padT+CH/4); ctx.rotate(-Math.PI/2); ctx.fillText('High Excitement →',0,0); ctx.restore();
-  ctx.save();
-  ctx.translate(13, padT+3*CH/4); ctx.rotate(-Math.PI/2); ctx.fillText('← Low Excitement',0,0); ctx.restore();
-
-  // No data
-  if (!allData.length) {
-    ctx.fillStyle = '#94A3B8'; ctx.font = '13px -apple-system,sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Waiting for responses…', padL+CW/2, padT+CH/2);
-    canvas._clusters = [];
-    return;
+  ctx.strokeStyle='rgba(100,116,139,0.22)';ctx.lineWidth=1;ctx.setLineDash([5,5]);
+  ctx.beginPath();ctx.moveTo(pL+CW/2,pT);ctx.lineTo(pL+CW/2,pT+CH);ctx.moveTo(pL,pT+CH/2);ctx.lineTo(pL+CW,pT+CH/2);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(100,116,139,0.18)';ctx.lineWidth=1;ctx.strokeRect(pL,pT,CW,CH);
+  ctx.fillStyle='#94A3B8';ctx.font='500 10px -apple-system,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('Low Awareness',pL+CW/4,H2-8);ctx.fillText('High Awareness',pL+3*CW/4,H2-8);
+  ctx.save();ctx.translate(12,pT+CH/4);ctx.rotate(-Math.PI/2);ctx.fillText('High Excitement',0,0);ctx.restore();
+  ctx.save();ctx.translate(12,pT+3*CH/4);ctx.rotate(-Math.PI/2);ctx.fillText('Low Excitement',0,0);ctx.restore();
+  if(!allData.length){
+    ctx.fillStyle='#94A3B8';ctx.font='13px -apple-system,sans-serif';ctx.textAlign='center';
+    ctx.fillText('Waiting for responses…',pL+CW/2,pT+CH/2);
+    canvas._clusters=[];return;
   }
-
-  // Compute dot positions
-  const points = getScatterPoints().map(p => ({
-    ...p,
-    cx: padL + p.aRaw * CW,
-    cy: padT + (1 - p.eRaw) * CH
-  }));
-
-  // Cluster overlapping dots
-  const clusters = clusterPoints(points);
-  canvas._clusters = clusters;
-
-  const R = 7;
-  clusters.forEach(cl => {
-    const dot = QUADRANT_META[cl.quad]?.dot || '#64748B';
-    const count = cl.points.length;
-
-    ctx.beginPath();
-    ctx.arc(cl.cx, cl.cy, count > 1 ? R + 3 : R, 0, Math.PI*2);
-    ctx.fillStyle = dot;
-    ctx.globalAlpha = 0.9;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    // Show count badge if cluster has multiple
-    if (count > 1) {
-      ctx.fillStyle = '#fff';
-      ctx.font = '700 10px -apple-system,sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(count, cl.cx, cl.cy + 4);
-    }
+  const pts=getScatterPoints().map(p=>({...p,cx:pL+p.aRaw*CW,cy:pT+(1-p.eRaw)*CH}));
+  const clusters=clusterPoints(pts);
+  canvas._clusters=clusters;
+  const R=7;
+  clusters.forEach(cl=>{
+    const dot=QMETA[cl.quad]?.dot||'#64748B',count=cl.points.length;
+    ctx.beginPath();ctx.arc(cl.cx,cl.cy,count>1?R+3:R,0,Math.PI*2);
+    ctx.fillStyle=dot;ctx.globalAlpha=0.9;ctx.fill();ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(255,255,255,0.85)';ctx.lineWidth=1.5;ctx.stroke();
+    if(count>1){ctx.fillStyle='#fff';ctx.font='700 10px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(count,cl.cx,cl.cy+4);}
   });
-
-  // Tooltip — show all names in cluster
-  const tooltip = document.getElementById('dot-tooltip');
-  canvas.onmousemove = function(e) {
-    const r2 = canvas.getBoundingClientRect();
-    const sx = canvas.width / r2.width;
-    const sy = canvas.height / r2.height;
-    const mx = (e.clientX - r2.left) * sx;
-    const my = (e.clientY - r2.top) * sy;
-    let hit = null;
-    for (const cl of (canvas._clusters || [])) {
-      const hR = cl.points.length > 1 ? R + 3 : R;
-      if (Math.hypot(cl.cx - mx, cl.cy - my) < hR + 6) { hit = cl; break; }
-    }
-    if (hit) {
-      const names = hit.points.map(p => p.name).join('\n');
-      tooltip.textContent = names;
-      tooltip.style.display = 'block';
-      tooltip.style.left = (e.clientX + 14) + 'px';
-      tooltip.style.top  = (e.clientY - 10) + 'px';
-      canvas.style.cursor = 'pointer';
-    } else {
-      tooltip.style.display = 'none';
-      canvas.style.cursor = 'default';
-    }
+  const tooltip=document.getElementById('dot-tooltip');
+  canvas.onmousemove=function(e){
+    const r2=canvas.getBoundingClientRect();
+    const sx=canvas.width/r2.width,sy=canvas.height/r2.height;
+    const mx=(e.clientX-r2.left)*sx,my=(e.clientY-r2.top)*sy;
+    let hit=null;
+    for(const cl of(canvas._clusters||[])){if(Math.hypot(cl.cx-mx,cl.cy-my)<(cl.points.length>1?R+3:R)+6){hit=cl;break;}}
+    if(hit){
+      tooltip.textContent=hit.points.map(p=>p.name).join('\n');
+      tooltip.style.display='block';
+      tooltip.style.left=(e.clientX+14)+'px';tooltip.style.top=(e.clientY-10)+'px';
+      canvas.style.cursor='pointer';
+    } else { tooltip.style.display='none';canvas.style.cursor='default'; }
   };
-  canvas.onmouseleave = function() {
-    tooltip.style.display = 'none';
-    canvas.style.cursor = 'default';
-  };
+  canvas.onmouseleave=function(){tooltip.style.display='none';canvas.style.cursor='default';};
 }
 
-/* ── Explanation flip cards ── */
-function getQuadCounts() {
-  const c = {TL:0,TR:0,BL:0,BR:0};
-  allData.forEach(r => { if (r.quad && c[r.quad]!==undefined) c[r.quad]++; });
-  return c;
-}
+/* ── Interpretation ── */
+function getQuadCounts(){const c={TL:0,TR:0,BL:0,BR:0};allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;});return c;}
 
-function buildExp() {
-  const counts = getQuadCounts();
-  const order = ['TR','TL','BR','BL'];
-  document.getElementById('exp-grid').innerHTML = order.map(q => {
-    const m = QUADRANT_META[q];
-    const ex = EXP[q];
-    return `
-    <div class="flip-card" id="fc-${q}" onclick="flipCard('${q}')">
+function buildInterp(){
+  const counts=getQuadCounts();
+  document.getElementById('interp-grid').innerHTML=INTERP_ORDER.map(q=>{
+    const m=QMETA[q],ex=EXP[q];
+    return`<div class="flip-card" id="fc-${q}" onclick="flipCard('${q}')">
       <div class="flip-inner">
         <div class="flip-front" style="background:${m.bg};color:${m.txt}">
-          <div class="ff-top">
-            <div>
-              <div class="ff-name">${m.name}</div>
-              <div class="ff-tag">${m.tagline}</div>
-            </div>
-            <div class="ff-n" id="ecn-${q}">${counts[q]}</div>
-          </div>
+          <div class="ff-top"><div><div class="ff-name">${m.name}</div><div class="ff-tag">${m.tagline}</div></div><div class="ff-n" id="ecn-${q}">${counts[q]}</div></div>
+          <div class="ff-brief">${ex.brief}</div>
           <div>
             <div class="ff-traits">${ex.traits.map(t=>`<span class="ff-trait">${t}</span>`).join('')}</div>
-            <div class="ff-hint">Click to read full explanation →</div>
+            <div class="ff-hint">Click to read full details →</div>
           </div>
         </div>
         <div class="flip-back" style="background:${m.bg};color:${m.txt}">
-          <div class="ff-top">
-            <div>
-              <div class="ff-name">${m.name}</div>
-              <div class="ff-tag">${m.tagline}</div>
-            </div>
-            <div class="ff-n" id="ecn2-${q}">${counts[q]}</div>
+          <div class="ff-top"><div><div class="ff-name">${m.name}</div><div class="ff-tag">${m.tagline}</div></div><div class="ff-n" id="ecn2-${q}">${counts[q]}</div></div>
+          <div class="ff-traits" style="margin-bottom:16px">${ex.traits.map(t=>`<span class="ff-trait">${t}</span>`).join('')}</div>
+          <div class="fb-div"></div>
+          <div class="fb-section">
+            <div class="fb-lbl">WHAT PUTS PEOPLE IN THIS GROUP</div>
+            <div class="fb-box">${ex.whatDrives.map(d=>`<p>• ${d}</p>`).join('')}</div>
           </div>
-          <div style="height:1px;background:currentColor;opacity:0.12"></div>
-          <div>
-            <div class="fb-lbl">KEY TRAITS</div>
-            <div class="ff-traits">${ex.traits.map(t=>`<span class="ff-trait">${t}</span>`).join('')}</div>
+          <div class="fb-div"></div>
+          <div class="fb-section">
+            <div class="fb-lbl">HOW TO MOVE FORWARD — STEP BY STEP</div>
+            <ul class="fb-steps">${ex.howToCatchUp.map((s,i)=>`<li class="fb-step"><div class="fb-step-num">${i+1}</div><div><strong>${s.step}:</strong> ${s.detail}</div></li>`).join('')}</ul>
           </div>
-          <div>
-            <div class="fb-lbl">WHAT DRIVES THEM INTO THIS GROUP</div>
-            <div class="fb-txt">${ex.whatDrives}</div>
-          </div>
-          <div style="height:1px;background:currentColor;opacity:0.12"></div>
-          <div>
-            <div class="fb-lbl">HOW TO CATCH UP & MOVE FORWARD</div>
-            <div class="fb-txt">${ex.howToCatchUp}</div>
-          </div>
-          <div class="fb-close">↑ Click to collapse</div>
+          <div class="fb-close">↑ Click anywhere to collapse</div>
         </div>
       </div>
     </div>`;
   }).join('');
-  expBuilt = true;
+  interpBuilt=true;
 }
 
-function flipCard(q) {
-  const card = document.getElementById('fc-' + q);
-  const isFlipped = card.classList.contains('flipped');
-  if (isFlipped) {
-    // Collapse: remove expanded first, then re-add flip-card height for reverse animation
+function flipCard(q){
+  const card=document.getElementById('fc-'+q);
+  const isFlipped=card.classList.contains('flipped');
+  if(isFlipped){
     card.classList.remove('expanded');
-    card.style.height = '';
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => card.classList.remove('flipped'));
-    });
+    card.style.height='';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.remove('flipped')));
   } else {
-    // Expand: flip, then go to full height after animation
     card.classList.add('flipped');
-    setTimeout(() => card.classList.add('expanded'), 480);
+    setTimeout(()=>card.classList.add('expanded'),480);
   }
 }
 
-function refreshExpCounts() {
-  const c = getQuadCounts();
-  ['TL','TR','BL','BR'].forEach(q => {
-    ['ecn-','ecn2-'].forEach(pre => {
-      const el = document.getElementById(pre + q);
-      if (el) el.textContent = c[q];
-    });
+function refreshInterpCounts(){
+  const c=getQuadCounts();
+  INTERP_ORDER.forEach(q=>{
+    ['ecn-','ecn2-'].forEach(pre=>{const el=document.getElementById(pre+q);if(el)el.textContent=c[q];});
   });
 }
 
 /* ── Lucky draw ── */
-function updDrawCounts() {
-  const c = {TL:0,TR:0,BL:0,BR:0};
-  allData.forEach(r => { if (r.quad && c[r.quad]!==undefined) c[r.quad]++; });
-  ['TL','TR','BL','BR'].forEach(q => {
-    const el = document.getElementById('dc-' + q);
-    if (el) el.textContent = c[q];
-  });
-  if (selQ) {
-    const n = allData.filter(r => r.quad === selQ).length;
-    document.getElementById('q-hint').textContent = n + ' participant' + (n!==1?'s':'') + ' — ready!';
-    document.getElementById('btn-q').disabled = n === 0;
+function updDrawCounts(){
+  const c={TL:0,TR:0,BL:0,BR:0};
+  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;});
+  ['TL','TR','BL','BR'].forEach(q=>{const el=document.getElementById('dc-'+q);if(el)el.textContent=c[q];});
+  if(selQ){const n=allData.filter(r=>r.quad===selQ).length;document.getElementById('q-hint').textContent=n+' participant'+(n!==1?'s':'')+' — ready!';document.getElementById('btn-q').disabled=n===0;}
+}
+
+function pickQ(q){
+  selQ=q;
+  ['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));
+  document.getElementById('dq-'+q).classList.add('picked');
+  const n=allData.filter(r=>r.quad===q).length;
+  document.getElementById('q-hint').textContent=n+' participant'+(n!==1?'s':'')+' — ready!';
+  document.getElementById('btn-q').disabled=n===0;
+  document.getElementById('q-win').textContent='—';
+}
+
+function spinQuad(){if(!selQ)return;const pool=allData.filter(r=>r.quad===selQ);if(!pool.length)return;spin(pool,'q-win','btn-q','q-hint','draw-quad-box');}
+function clearQ(){selQ=null;['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));document.getElementById('q-win').textContent='—';document.getElementById('q-hint').textContent='Tap a quadrant above to select it';document.getElementById('btn-q').disabled=true;}
+function spinAll(){if(!allData.length)return;spin(allData,'all-win','btn-all','all-hint','draw-all-box');}
+function clearAll(){document.getElementById('all-win').textContent='—';document.getElementById('all-hint').textContent='Everyone who submitted is in this draw';}
+
+function spin(pool,nameId,btnId,hintId,boxId){
+  const ne=document.getElementById(nameId),be=document.getElementById(btnId),he=document.getElementById(hintId);
+  be.disabled=true;he.textContent='Spinning…';
+  let i=0,rounds=28+Math.floor(Math.random()*16),delay=42;
+  const step=()=>{
+    ne.textContent=pool[i%pool.length].name||'—';i++;
+    if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.09,380);}
+    else{
+      const w=pool[Math.floor(Math.random()*pool.length)];
+      ne.textContent=w.name||'—';
+      he.textContent='🎉 Congratulations to the winner!';
+      be.disabled=false;
+      launchConfetti(boxId);
+    }
+  };step();
+}
+
+function launchConfetti(boxId){
+  const box=document.getElementById(boxId);
+  if(!box)return;
+  const colors=['#1D9E75','#378ADD','#BA7517','#D85A30','#8B5CF6','#EC4899','#F59E0B'];
+  for(let i=0;i<30;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'%';
+    el.style.top='0px';
+    el.style.background=colors[i%colors.length];
+    el.style.animationDelay=(Math.random()*0.6)+'s';
+    el.style.animationDuration=(1.4+Math.random()*0.8)+'s';
+    el.style.transform='rotate('+Math.random()*360+'deg)';
+    el.style.width=(6+Math.random()*8)+'px';
+    el.style.height=(6+Math.random()*8)+'px';
+    el.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    box.appendChild(el);
+    setTimeout(()=>el.remove(),3000);
   }
 }
 
-function pickQ(q) {
-  selQ = q;
-  ['TL','TR','BL','BR'].forEach(x => document.getElementById('dq-' + x).classList.remove('picked'));
-  document.getElementById('dq-' + q).classList.add('picked');
-  const n = allData.filter(r => r.quad === q).length;
-  document.getElementById('q-hint').textContent = n + ' participant' + (n!==1?'s':'') + ' — ready!';
-  document.getElementById('btn-q').disabled = n === 0;
-  document.getElementById('q-win').textContent = '—';
-}
-
-function spinQuad() {
-  if (!selQ) return;
-  const pool = allData.filter(r => r.quad === selQ);
-  if (!pool.length) return;
-  spin(pool, 'q-win', 'btn-q', 'q-hint');
-}
-
-function clearQ() {
-  selQ = null;
-  ['TL','TR','BL','BR'].forEach(x => document.getElementById('dq-' + x).classList.remove('picked'));
-  document.getElementById('q-win').textContent = '—';
-  document.getElementById('q-hint').textContent = 'Tap a quadrant above to select it';
-  document.getElementById('btn-q').disabled = true;
-}
-
-function spinAll() {
-  if (!allData.length) return;
-  spin(allData, 'all-win', 'btn-all', 'all-hint');
-}
-
-function clearAll() {
-  document.getElementById('all-win').textContent = '—';
-  document.getElementById('all-hint').textContent = 'Everyone who submitted is in this draw';
-}
-
-function spin(pool, nameId, btnId, hintId) {
-  const ne = document.getElementById(nameId);
-  const be = document.getElementById(btnId);
-  const he = document.getElementById(hintId);
-  be.disabled = true; he.textContent = 'Spinning…';
-  let i = 0, rounds = 28 + Math.floor(Math.random()*16), delay = 42;
-  const step = () => {
-    ne.textContent = pool[i % pool.length].name || '—'; i++;
-    if (rounds-- > 0) { setTimeout(step, delay); delay = Math.min(delay * 1.09, 380); }
-    else {
-      const w = pool[Math.floor(Math.random() * pool.length)];
-      ne.textContent = w.name || '—';
-      he.textContent = '🎉 Congratulations to the winner!';
-      be.disabled = false;
-    }
-  };
-  step();
-}
-
-/* ── Grouping ── */
-function genGroups() {
-  const n = parseInt(document.getElementById('g-n').value);
-  if (!n || n < 1) { alert('Please enter a valid number of groups.'); return; }
-  if (!allData.length) { alert('No responses yet.'); return; }
-  if (n > allData.length) { alert('Cannot create more groups than participants (' + allData.length + ').'); return; }
-  const shuffled = [...allData].sort(() => Math.random() - 0.5);
-  const groups = Array.from({ length: n }, () => []);
-  shuffled.forEach((p, i) => groups[i % n].push(p));
-  const colors = ['#E1F5EE','#E6F1FB','#FAEEDA','#FAECE7','#EEEDFE','#EAF3DE','#FEF3C7','#FCE7F3'];
-  document.getElementById('g-out').innerHTML =
-    '<div class="g-out">' +
-    groups.map((g, i) =>
+/* ── Grouping — random ── */
+function genRandom(){
+  const n=parseInt(document.getElementById('g-n').value);
+  if(!n||n<1){alert('Please enter a valid number of groups.');return;}
+  if(!allData.length){alert('No responses yet.');return;}
+  if(n>allData.length){alert('Cannot create more groups than participants ('+allData.length+').');return;}
+  const shuffled=[...allData].sort(()=>Math.random()-0.5);
+  const groups=Array.from({length:n},()=>[]);
+  shuffled.forEach((p,i)=>groups[i%n].push(p));
+  const colors=['#E1F5EE','#E6F1FB','#FAEEDA','#FAECE7','#EEEDFE','#EAF3DE','#FEF3C7','#FCE7F3'];
+  document.getElementById('g-out-random').innerHTML=
+    '<div class="g-out">'+groups.map((g,i)=>
       `<div class="gc" style="border-top:3px solid ${colors[i%colors.length]}">
-        <div class="gc-hdr"><div class="gc-title">Group ${i+1}</div><div class="gc-cnt">${g.length} member${g.length!==1?'s':''}</div></div>
-        <div class="gc-members">${g.map(p=>`<div class="gc-mem">${p.name||'Anonymous'}<span class="gc-mem-q">${QNAMES[p.quad]||''}</span></div>`).join('')}</div>
-      </div>`
-    ).join('') +
-    '</div>';
-  document.getElementById('btn-reshuffle').style.display = 'inline-block';
+        <div class="gc-hdr"><div class="gc-title">Group ${i+1}</div><div class="gc-cnt">${g.length} members</div></div>
+        <div class="gc-members">${g.map(p=>`<div class="gc-mem">${p.name||'?'}<span style="font-size:10px;color:var(--muted);margin-left:6px">${QNAMES[p.quad]||''}</span></div>`).join('')}</div>
+      </div>`).join('')+'</div>';
+  document.getElementById('btn-reshuffle').style.display='inline-block';
+}
+
+/* ── Grouping — Six Hats ── */
+function genHats(){
+  const n=parseInt(document.getElementById('g-hats-n').value);
+  if(!n||n<1){alert('Please enter a valid number of groups.');return;}
+  if(!allData.length){alert('No responses yet.');return;}
+  if(n>allData.length){alert('Cannot create more groups than participants ('+allData.length+').');return;}
+
+  // Hat assignment rules:
+  // - 1 Royal per group (facilitator)
+  // - Equal count of each of the 6 colour hats across all groups
+  // - Groups may vary in total size
+  // Colour hats: white, red, yellow, green, blue, black (6 hats × n groups slots)
+  const COLOUR_HATS=['white','red','yellow','green','blue','black'];
+  const shuffled=[...allData].sort(()=>Math.random()-0.5);
+  const total=shuffled.length;
+
+  // Build assignment list
+  // First: assign 1 royal per group (n royals total)
+  // Remaining: fill colour hats equally across groups, round-robin each hat type
+  const assignments=[]; // {person, hat, group (0-based)}
+
+  // Royals: first n people
+  let idx=0;
+  const royalCount=Math.min(n,total);
+  for(let g=0;g<royalCount;g++){assignments.push({person:shuffled[idx++],hat:'royal',group:g});}
+
+  // Remaining people get colour hats in a balanced way
+  // Strategy: cycle through groups, within each group cycle through colour hats
+  // so each group gets equal colour hat distribution
+  const remaining=shuffled.slice(idx);
+  // how many complete rounds of all 6 colours fit per group?
+  const perGroup=Math.floor(remaining.length/n);
+  const leftover=remaining.length%n;
+  // Build colour hat sequence: for each group, assign colour hats round-robin
+  let ri=0;
+  for(let g=0;g<n;g++){
+    const slots=perGroup+(g<leftover?1:0);
+    for(let s=0;s<slots;s++){
+      const hat=COLOUR_HATS[s%COLOUR_HATS.length];
+      assignments.push({person:remaining[ri++],hat,group:g});
+    }
+  }
+
+  // Build groups array
+  const groups=Array.from({length:n},()=>[]);
+  assignments.forEach(a=>groups[a.group].push({...a.person,hat:a.hat}));
+
+  const hatInfo={
+    royal:{label:'👑 Royal',   bg:'#EDE9FE',txt:'#4C1D95'},
+    white:{label:'🤍 White',   bg:'#F1F5F9',txt:'#334155'},
+    red:  {label:'❤️ Red',     bg:'#FEE2E2',txt:'#991B1B'},
+    yellow:{label:'💛 Yellow', bg:'#FEF9C3',txt:'#854D0E'},
+    green:{label:'💚 Green',   bg:'#DCFCE7',txt:'#166534'},
+    blue: {label:'💙 Blue',    bg:'#DBEAFE',txt:'#1E40AF'},
+    black:{label:'🖤 Black',   bg:'#E5E7EB',txt:'#111827'}
+  };
+
+  document.getElementById('g-out-hats').innerHTML=
+    '<div class="g-out">'+groups.map((g,i)=>`
+      <div class="gc" style="border-top:3px solid #6D28D9">
+        <div class="gc-hdr"><div class="gc-title">Group ${i+1}</div><div class="gc-cnt">${g.length} members</div></div>
+        <div class="gc-members">${g.map(p=>{const h=hatInfo[p.hat]||hatInfo.white;return`<div class="gc-mem" style="background:${h.bg}"><span class="gc-mem-badge" style="background:rgba(0,0,0,0.1);color:${h.txt}">${h.label}</span><span style="color:${h.txt};font-weight:600">${p.name||'?'}</span></div>`;}).join('')}</div>
+      </div>`).join('')+'</div>';
+
+  document.getElementById('btn-hats-reshuffle').style.display='inline-block';
 }
 
 /* ── Reset ── */
-async function doReset() {
-  if (!confirm('Permanently delete ALL responses?\n\nThis cannot be undone.')) return;
-  try {
-    await fetch(GAS, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'reset'}) });
-    allData = [];
-    updStats(); updDrawCounts(); drawScatter();
-    if (expBuilt) refreshExpCounts();
-    document.getElementById('g-out').innerHTML = '';
-    document.getElementById('btn-reshuffle').style.display = 'none';
-    setStatus(true, 'All data reset successfully');
+async function doReset(){
+  if(!confirm('Permanently delete ALL responses?\n\nThis cannot be undone.'))return;
+  try{
+    await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'reset'})});
+    allData=[];updStats();updDrawCounts();drawScatter();
+    if(interpBuilt)refreshInterpCounts();
+    document.getElementById('g-out-random').innerHTML='';
+    document.getElementById('g-out-hats').innerHTML='';
+    document.getElementById('btn-reshuffle').style.display='none';
+    document.getElementById('btn-hats-reshuffle').style.display='none';
+    setStatus(true,'All data reset successfully');
     alert('Done — all responses cleared.');
-  } catch(e) { alert('Reset sent — refresh to confirm.'); }
+  }catch(e){alert('Reset sent — refresh to confirm.');}
 }
 
-/* ── Init ── */
 loadData(true);
-setInterval(() => loadData(false), 2000);
-window.addEventListener('resize', () => {
-  if (document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
-});
+setInterval(()=>loadData(false),2000);
+window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});
 </script>
 </body>
 </html>

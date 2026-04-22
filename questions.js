@@ -248,7 +248,7 @@ const QUESTIONS = [
 // Matrix quadrant definitions
 const QUADRANTS = {
   TR: {
-    name: "AI Champions",
+    name: "AI Advocates",
     tagline: "High awareness · High enthusiasm",
     color: "#E6F1FB",
     textColor: "#042C53",
@@ -261,7 +261,7 @@ const QUADRANTS = {
     color: "#E1F5EE",
     textColor: "#085041",
     praise: "Your energy and openness toward AI is exactly what the team needs. You bring the right mindset — the knowledge will follow.",
-    suggestion: "Channel your enthusiasm into structured learning. Sign up for an AI literacy course and pair up with an AI Champion to accelerate your growth."
+    suggestion: "Channel your enthusiasm into structured learning. Sign up for an AI literacy course and pair up with an AI Advocate to accelerate your growth."
   },
   BR: {
     name: "Informed Sceptics",
