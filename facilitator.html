@@ -27,7 +27,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tn{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s}
 .tn:hover{color:var(--text)}
 .tn.active{color:var(--navy);border-bottom-color:var(--green-l)}
-.page{display:none;max-width:1000px;margin:0 auto;padding:28px 24px}
+.page{display:none;max-width:1060px;margin:0 auto;padding:28px 24px}
 .page.active{display:block}
 .status-bar{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;margin-bottom:22px}
 .s-ok{background:var(--green-xl);color:var(--green-dark)}
@@ -42,53 +42,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .info-i{width:16px;height:16px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
 .info-i .tip{display:none;position:absolute;top:22px;left:0;background:var(--navy);color:#fff;font-size:12px;line-height:1.6;padding:10px 14px;border-radius:8px;width:280px;z-index:30;font-weight:400;pointer-events:none}
 .info-i:hover .tip{display:block}
+.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:720px){.dash-bottom{grid-template-columns:1fr}}
 .axis-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:0 4px;margin-bottom:5px;font-weight:600}
 .ml{display:flex;gap:8px}
 .ax-y{font-size:11px;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;align-self:center;margin-right:4px;font-weight:600}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;flex:1;border-radius:10px;overflow:hidden}
-.quad{padding:16px 14px;min-height:120px;transition:box-shadow .2s}
+.quad{padding:14px 12px;min-height:110px;transition:box-shadow .2s}
 .quad.winner{box-shadow:inset 0 0 0 3px var(--green)}
-.qn{font-size:12px;font-weight:700;margin-bottom:3px}
-.qs{font-size:10px;opacity:0.6;line-height:1.3;margin-bottom:8px}
-.qc{font-size:36px;font-weight:700;line-height:1}
-.qp{font-size:12px;opacity:0.65;margin-top:4px}
+.qn{font-size:11px;font-weight:700;margin-bottom:3px}
+.qs{font-size:10px;opacity:0.6;line-height:1.3;margin-bottom:6px}
+.qc{font-size:32px;font-weight:700;line-height:1}
+.qp{font-size:11px;opacity:0.65;margin-top:3px}
 .q1{background:var(--green-xl);color:var(--green-dark)}
 .q2{background:var(--blue-bg);color:var(--blue-txt)}
 .q3{background:var(--amber-bg);color:var(--amber-txt)}
 .q4{background:var(--coral-bg);color:var(--coral-txt)}
 .ax-x{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;font-weight:600}
-
-/* ── Explanation ── */
-.exp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px}
+.scatter-wrap{position:relative;width:100%;padding-top:100%}
+.scatter-canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px}
+.scatter-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.sl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500}
+.sl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.exp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 @media(max-width:640px){.exp-grid{grid-template-columns:1fr}}
-.ec{border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.ec{border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px}
 .ec-top{display:flex;align-items:flex-start;justify-content:space-between}
 .ec-name{font-size:18px;font-weight:700;line-height:1.2}
-.ec-tag{font-size:12px;opacity:0.65;font-weight:500;margin-top:3px}
+.ec-tag{font-size:12px;opacity:0.6;font-weight:500;margin-top:3px}
 .ec-n{font-size:28px;font-weight:700;flex-shrink:0}
 .ec-div{height:1px;background:currentColor;opacity:0.15}
-.ec-lbl{font-size:10px;font-weight:700;letter-spacing:0.6px;opacity:0.55;margin-bottom:4px}
-.ec-txt{font-size:13px;line-height:1.65;opacity:0.85}
+.ec-lbl{font-size:10px;font-weight:700;letter-spacing:0.7px;opacity:0.5;margin-bottom:5px}
+.ec-txt{font-size:13px;line-height:1.72;opacity:0.88}
 .ec-traits{display:flex;flex-wrap:wrap;gap:5px}
 .ec-trait{font-size:11px;font-weight:600;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,0.1)}
-.sb-track{height:5px;background:rgba(0,0,0,0.12);border-radius:99px;overflow:hidden;margin-top:5px}
-.sb-fill{height:5px;border-radius:99px;background:currentColor;opacity:0.65}
-.fac-guide{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px}
-.fg-title{font-size:15px;font-weight:700;margin-bottom:14px}
-.fg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
-.fg-item{background:var(--bg);border-radius:10px;padding:14px}
-.fg-lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.5px;margin-bottom:5px}
-.fg-txt{font-size:13px;color:var(--text);line-height:1.55}
-
-/* ── Draw ── */
 .draw-toggle{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content;gap:4px}
 .dt{padding:9px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
 .dt.active{background:var(--navy);color:#fff}
 .dp{display:none}.dp.active{display:block}
-.draw-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:30px;text-align:center}
-.dw{font-size:38px;font-weight:700;color:var(--green);min-height:50px;margin:14px 0 6px;letter-spacing:-0.5px;transition:all .08s}
-.dm{font-size:13px;color:var(--muted);min-height:20px;margin-bottom:20px}
-.dhint{font-size:13px;color:var(--muted);margin-bottom:14px}
+.draw-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center}
+.dw{font-size:44px;font-weight:700;color:var(--green);min-height:56px;margin:16px 0 20px;letter-spacing:-1px;line-height:1.1}
+.dhint{font-size:13px;color:var(--muted);margin-bottom:14px;min-height:20px}
 .dmg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:10px;overflow:hidden;margin-bottom:16px}
 @media(max-width:520px){.dmg{grid-template-columns:repeat(2,1fr)}}
 .dq{padding:14px 10px;cursor:pointer;transition:box-shadow .15s;text-align:left}
@@ -100,8 +94,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pool-n{font-size:52px;font-weight:700;color:var(--text)}
 .pool-l{font-size:13px;color:var(--muted);line-height:1.55}
 .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-
-/* ── Buttons ── */
 .btn{padding:12px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;display:inline-block;text-align:center}
 .btn:hover{background:var(--bg)}
 .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
@@ -109,8 +101,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn.primary:disabled{opacity:0.38;cursor:not-allowed}
 .btn.danger{background:var(--red);border-color:var(--red);color:#fff}
 .btn.lg{padding:15px 28px;font-size:15px;border-radius:12px}
-
-/* ── Grouping ── */
 .g-setup{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
 .g-inp{width:80px;padding:10px 14px;font-size:16px;font-weight:700;border:2px solid var(--border);border-radius:10px;text-align:center;color:var(--text);background:var(--white);outline:none}
 .g-inp:focus{border-color:var(--green-l)}
@@ -118,13 +108,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .g-out{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
 .gc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px}
 .gc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.gc-title{font-size:14px;font-weight:700;color:var(--text)}
+.gc-title{font-size:14px;font-weight:700}
 .gc-cnt{font-size:12px;color:var(--muted)}
 .gc-members{display:flex;flex-direction:column;gap:5px}
-.gc-mem{font-size:13px;font-weight:500;color:var(--text);padding:5px 8px;background:var(--bg);border-radius:6px}
+.gc-mem{font-size:13px;font-weight:500;padding:5px 8px;background:var(--bg);border-radius:6px}
 .gc-mem-q{font-size:10px;color:var(--muted);font-weight:400;margin-left:4px}
-
-/* ── Reset ── */
 .reset-pg{max-width:480px;margin:0 auto;text-align:center;padding-top:10px}
 .reset-icon{width:72px;height:72px;border-radius:50%;background:var(--red-l);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
 .reset-icon svg{width:32px;height:32px;stroke:var(--red);fill:none;stroke-width:2}
@@ -133,7 +121,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .reset-warn{background:var(--red-l);border-radius:12px;padding:16px 20px;margin-bottom:22px;text-align:left}
 .rw-h{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
 .rw-l{font-size:13px;color:var(--red);line-height:1.8}
-@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}.sc-val{font-size:22px}.page{padding:18px 16px}.tab-nav{padding:0 16px}.topbar{padding:14px 16px}.dw{font-size:28px}}
+@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}.sc-val{font-size:22px}.page{padding:18px 16px}.tab-nav{padding:0 16px}.topbar{padding:14px 16px}.dw{font-size:32px}}
 </style>
 </head>
 <body>
@@ -157,7 +145,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tn" id="tn-reset" onclick="go('reset')">Reset Data</button>
 </div>
 
-<!-- ═══════════════════════════════ TAB 1: DASHBOARD ═══════════════════════════════ -->
+<!-- TAB 1: LIVE DASHBOARD -->
 <div class="page active" id="page-dashboard">
   <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
   <div class="stats-row">
@@ -167,7 +155,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="sc-sub">participants submitted</div>
     </div>
     <div class="sc">
-      <div class="sc-lbl">Avg Readiness Score <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0, B=1, C=2, D=3). The Avg Score is all participants' totals as a % of the maximum possible score.<br><br>Below 40% = Early Stage<br>40–59% = Emerging<br>60–74% = Progressing<br>75%+ = AI-Ready</div></span></div>
+      <div class="sc-lbl">Avg Readiness Score
+        <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). The Avg Score is all participants' totals expressed as a % of the max possible.<br><br>Below 40% = Early Stage · 40–59% = Emerging · 60–74% = Progressing · 75%+ = AI-Ready</div></span>
+      </div>
       <div class="sc-val" id="f-avg">—</div>
       <div class="sc-sub" id="f-avg-lbl">No data yet</div>
     </div>
@@ -177,47 +167,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="sc-sub" id="f-top-n">—</div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title"><span class="live-dot"></span>Live 2×2 AI Readiness Matrix</div>
-    <div class="axis-row"><span>← Low awareness</span><span>High awareness →</span></div>
-    <div class="ml">
-      <div class="ax-y">High excitement ↑ Low excitement</div>
-      <div style="flex:1">
-        <div class="mgrid">
-          <div class="quad q1" id="mq-TL"><div class="qn">Enthusiastic Learners</div><div class="qs">High excitement · Low awareness</div><div class="qc" id="mc-TL">0</div><div class="qp" id="mp-TL">0%</div></div>
-          <div class="quad q2" id="mq-TR"><div class="qn">AI Champions</div><div class="qs">High excitement · High awareness</div><div class="qc" id="mc-TR">0</div><div class="qp" id="mp-TR">0%</div></div>
-          <div class="quad q3" id="mq-BL"><div class="qn">Cautious Observers</div><div class="qs">Low excitement · Low awareness</div><div class="qc" id="mc-BL">0</div><div class="qp" id="mp-BL">0%</div></div>
-          <div class="quad q4" id="mq-BR"><div class="qn">Informed Sceptics</div><div class="qs">Low excitement · High awareness</div><div class="qc" id="mc-BR">0</div><div class="qp" id="mp-BR">0%</div></div>
+  <div class="dash-bottom">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="live-dot"></span>2×2 Quadrant Matrix</div>
+      <div class="axis-row"><span>← Low awareness</span><span>High awareness →</span></div>
+      <div class="ml">
+        <div class="ax-y">High excitement ↑ Low excitement</div>
+        <div style="flex:1">
+          <div class="mgrid">
+            <div class="quad q1" id="mq-TL"><div class="qn">Enthusiastic Learners</div><div class="qs">High excitement · Low awareness</div><div class="qc" id="mc-TL">0</div><div class="qp" id="mp-TL">0%</div></div>
+            <div class="quad q2" id="mq-TR"><div class="qn">AI Champions</div><div class="qs">High excitement · High awareness</div><div class="qc" id="mc-TR">0</div><div class="qp" id="mp-TR">0%</div></div>
+            <div class="quad q3" id="mq-BL"><div class="qn">Cautious Observers</div><div class="qs">Low excitement · Low awareness</div><div class="qc" id="mc-BL">0</div><div class="qp" id="mp-BL">0%</div></div>
+            <div class="quad q4" id="mq-BR"><div class="qn">Informed Sceptics</div><div class="qs">Low excitement · High awareness</div><div class="qc" id="mc-BR">0</div><div class="qp" id="mp-BR">0%</div></div>
+          </div>
+          <div class="ax-x">← Awareness →</div>
         </div>
-        <div class="ax-x">← Awareness →</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Individual Scatter Plot
+        <span class="info-i">?<div class="tip">Each dot = one participant. X = awareness score, Y = excitement score. Hover a dot to see the name. Colours match the quadrant matrix.</div></span>
+      </div>
+      <div class="scatter-wrap">
+        <canvas id="scatter-canvas" class="scatter-canvas" role="img" aria-label="Scatter plot of participant awareness vs excitement scores"></canvas>
+      </div>
+      <div class="scatter-legend">
+        <div class="sl-item"><div class="sl-dot" style="background:#1D9E75"></div>Enthusiastic Learners</div>
+        <div class="sl-item"><div class="sl-dot" style="background:#378ADD"></div>AI Champions</div>
+        <div class="sl-item"><div class="sl-dot" style="background:#BA7517"></div>Cautious Observers</div>
+        <div class="sl-item"><div class="sl-dot" style="background:#D85A30"></div>Informed Sceptics</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════ TAB 2: EXPLANATION ═══════════════════════════════ -->
+<!-- TAB 2: EXPLANATION -->
 <div class="page" id="page-explanation">
   <div class="exp-grid" id="exp-grid"></div>
-  <div class="fac-guide">
-    <div class="fg-title">Facilitator guide — how to use these results</div>
-    <div class="fg-grid">
-      <div class="fg-item"><div class="fg-lbl">OPEN THE DEBRIEF</div><div class="fg-txt">Show the live matrix. Let the team see where the majority land — this opens honest conversation without singling anyone out.</div></div>
-      <div class="fg-item"><div class="fg-lbl">CELEBRATE ALL FOUR</div><div class="fg-txt">Every quadrant has value. Champions drive momentum, Learners bring energy, Sceptics add rigour, Observers provide balance.</div></div>
-      <div class="fg-item"><div class="fg-lbl">FOCUS YOUR TIME</div><div class="fg-txt">Spend the most debrief time on the two largest quadrants. Address the top concern from Sceptics and Observers explicitly.</div></div>
-      <div class="fg-item"><div class="fg-lbl">CLOSE WITH A COMMITMENT</div><div class="fg-txt">Ask each group: "What is one thing you will do in 30 days?" Write it on a shared board. Ownership starts with a public declaration.</div></div>
-      <div class="fg-item"><div class="fg-lbl">MIX THE GROUPS</div><div class="fg-txt">Use the Grouping tab to form mixed-quadrant teams. Diversity of AI attitude within a group drives richer peer learning.</div></div>
-      <div class="fg-item"><div class="fg-lbl">FOLLOW UP</div><div class="fg-txt">Share the anonymised matrix with all participants after the session. Transparency builds trust and sustains the conversation.</div></div>
-    </div>
-  </div>
 </div>
 
-<!-- ═══════════════════════════════ TAB 3: LUCKY DRAW ═══════════════════════════════ -->
+<!-- TAB 3: LUCKY DRAW -->
 <div class="page" id="page-draw">
   <div class="draw-toggle">
     <button class="dt active" id="dt-quad" onclick="swDraw('quad')">Draw from Quadrant</button>
     <button class="dt" id="dt-all" onclick="swDraw('all')">Draw from Everyone</button>
   </div>
-
   <div class="dp active" id="dp-quad">
     <div class="draw-box">
       <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from a Quadrant</div>
@@ -228,16 +222,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="dq q3" id="dq-BL" onclick="pickQ('BL')"><div class="dq-nm">Cautious Observers</div><div class="dq-ct" id="dc-BL">0</div></div>
         <div class="dq q4" id="dq-BR" onclick="pickQ('BR')"><div class="dq-nm">Informed Sceptics</div><div class="dq-ct" id="dc-BR">0</div></div>
       </div>
-      <div class="dhint" id="q-hint">Tap the quadrant you want to draw from</div>
+      <div class="dhint" id="q-hint">Tap a quadrant above to select it</div>
       <div class="dw" id="q-win">—</div>
-      <div class="dm" id="q-meta"></div>
       <div class="btn-row">
         <button class="btn primary lg" id="btn-q" onclick="spinQuad()" disabled>Spin Lucky Draw</button>
         <button class="btn lg" onclick="clearQ()">Clear</button>
       </div>
     </div>
   </div>
-
   <div class="dp" id="dp-all">
     <div class="draw-box">
       <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from Everyone</div>
@@ -248,7 +240,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <div class="dhint" id="all-hint">Everyone who submitted is in this draw</div>
       <div class="dw" id="all-win">—</div>
-      <div class="dm" id="all-meta"></div>
       <div class="btn-row">
         <button class="btn primary lg" id="btn-all" onclick="spinAll()" disabled>Spin Lucky Draw</button>
         <button class="btn lg" onclick="clearAll()">Clear</button>
@@ -257,11 +248,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<!-- ═══════════════════════════════ TAB 4: GROUPING ═══════════════════════════════ -->
+<!-- TAB 4: GROUPING -->
 <div class="page" id="page-grouping">
   <div class="card">
     <div class="card-title">Random Group Generator</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Participants are randomly distributed across groups — mixing quadrants for richer discussion. Each card shows the member name and their quadrant.</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Enter how many groups you need. Participants are randomly distributed — mixing quadrants for richer discussion.</p>
     <div class="g-setup">
       <input type="number" id="g-n" class="g-inp" min="1" max="50" value="5">
       <span class="g-lbl">groups from</span>
@@ -274,7 +265,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<!-- ═══════════════════════════════ TAB 5: RESET ═══════════════════════════════ -->
+<!-- TAB 5: RESET -->
 <div class="page" id="page-reset">
   <div class="reset-pg">
     <div class="reset-icon">
@@ -290,179 +281,498 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<script src="questions.js"></script>
 <script>
-const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
-const QCSS={TL:'q1',TR:'q2',BL:'q3',BR:'q4'};
-const QNAMES={TL:'Enthusiastic Learners',TR:'AI Champions',BL:'Cautious Observers',BR:'Informed Sceptics'};
-const EXP={
-  TR:{traits:['Hands-on with AI','Confident & vocal','Early adopter','Peer educator'],challenge:'May move ahead of colleagues — needs to bring others along rather than leaving them behind.',strategy:'Assign as AI Ambassadors. Involve them in piloting tools and co-designing training. Their peer credibility is high.',range:70},
-  TL:{traits:['Enthusiastic','Curious','Growth mindset','Willing to experiment'],challenge:'May over-commit before fully understanding the tools, leading to frustration if results fall short.',strategy:'Pair with an AI Champion for structured mentoring. Channel enthusiasm into a real task using one AI tool within two weeks.',range:55},
-  BR:{traits:['Analytically strong','Risk-aware','Evidence-driven','Constructive critic'],challenge:'May slow adoption if concerns are not actively acknowledged and addressed by leadership.',strategy:'Involve them early in governance and policy design. Their critical lens is an asset — give them a seat at the table.',range:62},
-  BL:{traits:['Cautious','Steady','Process-oriented','Values stability'],challenge:'Risk of being left behind if not actively supported, leading to disengagement as adoption accelerates.',strategy:'Start with low-risk, high-reward tasks (e.g. using AI to draft a routine email). Celebrate small wins loudly.',range:35},
+/* ─────────────────────────────────────────────
+   ALL DATA DEFINED INLINE — no external dependency
+   ───────────────────────────────────────────── */
+
+const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
+
+// Axis definition for scatter plot (matches questions.js axis values)
+const AWARENESS_SECS = new Set([
+  'AI Awareness & Current Use',
+  'Working Style & AI Integration',
+  'HR Function Transformation',
+  'Organisational Readiness'
+]);
+
+// Quadrant definitions (mirrors questions.js QUADRANTS — kept inline to avoid load-order issues)
+const QUADRANTS = {
+  TR: {
+    name: 'AI Champions',
+    tagline: 'High excitement · High awareness',
+    color: '#E6F1FB',
+    textColor: '#042C53'
+  },
+  TL: {
+    name: 'Enthusiastic Learners',
+    tagline: 'High excitement · Growing awareness',
+    color: '#E1F5EE',
+    textColor: '#085041'
+  },
+  BR: {
+    name: 'Informed Sceptics',
+    tagline: 'High awareness · Thoughtful caution',
+    color: '#FAECE7',
+    textColor: '#4A1B0C'
+  },
+  BL: {
+    name: 'Cautious Observers',
+    tagline: 'Building awareness · Exploring confidence',
+    color: '#FAEEDA',
+    textColor: '#412402'
+  }
 };
 
-let allData=[], selQ=null, expBuilt=false;
+const QNAMES = {
+  TL: 'Enthusiastic Learners',
+  TR: 'AI Champions',
+  BL: 'Cautious Observers',
+  BR: 'Informed Sceptics'
+};
 
-function go(t){
-  ['dashboard','explanation','draw','grouping','reset'].forEach(x=>{
-    document.getElementById('tn-'+x).className='tn'+(x===t?' active':'');
-    document.getElementById('page-'+x).className='page'+(x===t?' active':'');
+const QCSS = { TL:'q1', TR:'q2', BL:'q3', BR:'q4' };
+
+const QDOT = {
+  TL: '#1D9E75',
+  TR: '#378ADD',
+  BL: '#BA7517',
+  BR: '#D85A30'
+};
+
+// Full explanation content
+const EXP = {
+  TR: {
+    traits: ['Hands-on with AI', 'Confident & vocal', 'Early adopter', 'Peer educator', 'Comfortable with ambiguity'],
+    whatDrives: `AI Champions are those who have built genuine hands-on experience with AI tools and emerged genuinely enthusiastic about what they can do. Their excitement is grounded — it comes from having seen AI work in practice, not just hearing about it. They are natural early adopters who find intrinsic motivation in exploration, and they tend to share what they learn openly with colleagues. They often self-identify as comfortable with ambiguity and change, which makes them uniquely suited to thrive in a period of rapid technological transformation. Their high scores on both axes reflect not just comfort with AI, but a proactive stance — they are not waiting to be led, they are ready to lead.`,
+    howToCatchUp: `For colleagues looking to move toward this quadrant, the most direct path is deliberate daily practice. Champions rarely got here through training alone — they experimented, made mistakes, and kept going. The key shift is moving from passive consumption (reading about AI) to active use (making AI do a real task today). Starting with a single, low-stakes task — drafting a routine email, summarising a document, or preparing talking points — removes the pressure and builds real confidence fast. The second accelerator is peer connection: being around someone in this quadrant and asking "show me how you use it" is often more powerful than any formal course.`
+  },
+  TL: {
+    traits: ['Enthusiastic', 'Curious', 'Growth mindset', 'Willing to experiment', 'Optimistic about change'],
+    whatDrives: `Enthusiastic Learners are driven by possibility. They are excited by what AI could mean for their work — they have absorbed the headlines, seen colleagues use tools, and feel genuinely motivated to be part of this change. What distinguishes them from Champions is not attitude but experience — they have not yet had the opportunity or structure to build consistent, practical AI habits. This group is often the most energising in a room: their enthusiasm is contagious and their willingness to try things creates momentum. They are not held back by fear; they are held back by not yet knowing where to start, or not having been given the time and permission to experiment properly.`,
+    howToCatchUp: `The most effective way for this group to progress is to close the gap between enthusiasm and action as quickly as possible — before the energy fades. They need a concrete starting point, not more inspiration. Assigning one specific AI tool to one specific task they already own is the fastest bridge. They also benefit enormously from a buddy system with an AI Champion: structured, peer-to-peer time to observe, try, and ask questions in a safe setting. Organisations can accelerate this by carving out protected experimentation time — even 30 minutes a week of "try something with AI" with no performance expectations makes a meaningful difference.`
+  },
+  BR: {
+    traits: ['Analytically strong', 'Risk-aware', 'Evidence-driven', 'Constructive critic', 'High standards for adoption'],
+    whatDrives: `Informed Sceptics are not resistant to AI — they are rigorous about it. They have developed a substantive understanding of what AI can and cannot do, and they apply that knowledge critically. Their caution is not born from fear but from evidence: they have considered the risks around bias, data privacy, and the legal grey areas of AI-generated content. This awareness makes them exceptionally valuable in any adoption process — they ask the questions that others skip and spot the edge cases others miss. Their lower excitement scores reflect not a rejection of AI but a high bar for what good adoption looks like, and a reasonable frustration when that bar is ignored in favour of speed.`,
+    howToCatchUp: `For this group, the path forward is not convincing them to become enthusiastic — it is channelling their existing knowledge into constructive influence. They tend to move when they see their concerns being taken seriously: an AI ethics framework being built, a governance committee being formed, a data privacy review being conducted before a tool is rolled out. Giving them a formal role in shaping these processes — rather than a seat in the audience — converts their critical energy into forward momentum. Peer conversations with Champions can also help, not to persuade, but to exchange. Sceptics often become strong advocates once their conditions for trust are met.`
+  },
+  BL: {
+    traits: ['Cautious', 'Steady', 'Process-oriented', 'Values stability', 'Thorough before acting'],
+    whatDrives: `Cautious Observers are at the beginning of their AI journey, and that is a completely valid place to be. They tend to be steady, process-oriented professionals who place high value on doing things correctly and reliably. AI adoption feels disruptive to that stability — and the volume of hype, jargon, and rapid change in this space can make it feel overwhelming rather than inviting. Their lower scores on both axes reflect a combination of limited exposure and genuine uncertainty about what this change means for their role, their skills, and their future. They are not refusing to engage; they are waiting for a signal that this is safe to approach, and that they will not be left behind or judged for not knowing.`,
+    howToCatchUp: `The most important thing for this group is psychological safety before skill-building. They need to see that exploring AI is encouraged, not evaluated. The best entry point is always something familiar: a task they do every day, made slightly easier with an AI tool. A great first experiment is having AI draft a message they would normally write from scratch — then editing it. This keeps them in control, which matters enormously to this group. Celebrating any progress loudly and publicly, and making clear that no one is expected to become an expert overnight, creates the conditions for this group to take their first step and build from there.`
+  }
+};
+
+/* ─────────────────────────────────────────────
+   STATE
+   ───────────────────────────────────────────── */
+let allData = [], selQ = null, expBuilt = false;
+
+/* ─────────────────────────────────────────────
+   NAVIGATION
+   ───────────────────────────────────────────── */
+function go(t) {
+  ['dashboard','explanation','draw','grouping','reset'].forEach(x => {
+    document.getElementById('tn-' + x).className = 'tn' + (x === t ? ' active' : '');
+    document.getElementById('page-' + x).className = 'page' + (x === t ? ' active' : '');
   });
-  if(t==='explanation'&&!expBuilt){buildExp();expBuilt=false;}
-  if(t==='explanation') refreshExp();
-  if(t==='draw') updDrawCounts();
-  if(t==='grouping') document.getElementById('g-pool').textContent=allData.length;
+  if (t === 'dashboard')   drawScatter();
+  if (t === 'explanation') buildExp();
+  if (t === 'draw')        updDrawCounts();
+  if (t === 'grouping')    document.getElementById('g-pool').textContent = allData.length;
 }
 
-function swDraw(d){
-  ['quad','all'].forEach(x=>{
-    document.getElementById('dt-'+x).className='dt'+(x===d?' active':'');
-    document.getElementById('dp-'+x).className='dp'+(x===d?' active':'');
+function swDraw(d) {
+  ['quad','all'].forEach(x => {
+    document.getElementById('dt-' + x).className = 'dt' + (x === d ? ' active' : '');
+    document.getElementById('dp-' + x).className = 'dp' + (x === d ? ' active' : '');
   });
 }
 
-async function loadData(fb){
-  try{
-    const r=await fetch(GAS+'?action=getAll',{cache:'no-store'});
-    if(!r.ok) throw new Error();
-    const j=await r.json();
-    allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
-    updMatrix(); updDrawCounts();
-    const n=new Date();
-    document.getElementById('ts').textContent=
-      n.getHours().toString().padStart(2,'0')+':'+
-      n.getMinutes().toString().padStart(2,'0')+':'+
+/* ─────────────────────────────────────────────
+   DATA LOADING
+   ───────────────────────────────────────────── */
+async function loadData(fb) {
+  try {
+    const r = await fetch(GAS + '?action=getAll', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    allData = Array.isArray(j.data) ? j.data : Array.isArray(j) ? j : [];
+    updMatrix();
+    updDrawCounts();
+    if (document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
+    if (expBuilt) refreshExpCounts();
+    const n = new Date();
+    document.getElementById('ts').textContent =
+      n.getHours().toString().padStart(2,'0') + ':' +
+      n.getMinutes().toString().padStart(2,'0') + ':' +
       n.getSeconds().toString().padStart(2,'0');
-    if(fb) setStatus(true,'Connected · '+allData.length+' response'+(allData.length!==1?'s':'')+' loaded');
-  }catch(e){if(fb) setStatus(false,'Cannot reach Google Sheets — check deployment settings');}
+    if (fb) setStatus(true, 'Connected · ' + allData.length + ' response' + (allData.length !== 1 ? 's' : '') + ' loaded');
+  } catch(e) {
+    if (fb) setStatus(false, 'Cannot reach Google Sheets — check deployment settings');
+  }
 }
 
-function setStatus(ok,msg){const el=document.getElementById('status');el.textContent=msg;el.className='status-bar '+(ok?'s-ok':'s-err');}
+function setStatus(ok, msg) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status-bar ' + (ok ? 's-ok' : 's-err');
+}
 
-function rlabel(s){return s>=75?'AI-Ready':s>=60?'Progressing':s>=40?'Emerging':'Early Stage';}
+function rlabel(s) {
+  return s >= 75 ? 'AI-Ready' : s >= 60 ? 'Progressing' : s >= 40 ? 'Emerging' : 'Early Stage';
+}
 
-function updMatrix(){
-  const c={TL:0,TR:0,BL:0,BR:0},sc=[];
-  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score)sc.push(Number(r.score));});
-  const tot=allData.length;
-  document.getElementById('f-total').textContent=tot;
-  const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
-  document.getElementById('f-avg').textContent=avg!==null?avg+'%':'—';
-  document.getElementById('f-avg-lbl').textContent=avg!==null?rlabel(avg):'No data yet';
-  document.getElementById('g-pool').textContent=tot;
-  document.getElementById('pool-n').textContent=tot;
-  document.getElementById('btn-all').disabled=tot===0;
-  let maxQ='',maxN=0;
-  ['TL','TR','BL','BR'].forEach(q=>{
-    const n=c[q],pct=tot?Math.round(n/tot*100):0;
-    document.getElementById('mc-'+q).textContent=n;
-    document.getElementById('mp-'+q).textContent=pct+'%';
-    document.getElementById('mq-'+q).className='quad '+QCSS[q];
-    if(n>maxN){maxN=n;maxQ=q;}
+/* ─────────────────────────────────────────────
+   MATRIX UPDATE
+   ───────────────────────────────────────────── */
+function updMatrix() {
+  const c = { TL:0, TR:0, BL:0, BR:0 }, sc = [];
+  allData.forEach(r => {
+    if (r.quad && c[r.quad] !== undefined) c[r.quad]++;
+    if (r.score) sc.push(Number(r.score));
   });
-  if(maxN>0){
-    document.getElementById('mq-'+maxQ).classList.add('winner');
-    document.getElementById('f-top').textContent=QNAMES[maxQ];
-    document.getElementById('f-top-n').textContent=maxN+' ('+Math.round(maxN/allData.length*100)+'%)';
-  } else {document.getElementById('f-top').textContent='—';document.getElementById('f-top-n').textContent='—';}
+  const tot = allData.length;
+  document.getElementById('f-total').textContent = tot;
+  const avg = sc.length ? Math.round(sc.reduce((a,b) => a + b) / sc.length) : null;
+  document.getElementById('f-avg').textContent = avg !== null ? avg + '%' : '—';
+  document.getElementById('f-avg-lbl').textContent = avg !== null ? rlabel(avg) : 'No data yet';
+  document.getElementById('g-pool').textContent = tot;
+  document.getElementById('pool-n').textContent = tot;
+  document.getElementById('btn-all').disabled = tot === 0;
+  let maxQ = '', maxN = 0;
+  ['TL','TR','BL','BR'].forEach(q => {
+    const n = c[q], pct = tot ? Math.round(n / tot * 100) : 0;
+    document.getElementById('mc-' + q).textContent = n;
+    document.getElementById('mp-' + q).textContent = pct + '%';
+    document.getElementById('mq-' + q).className = 'quad ' + QCSS[q];
+    if (n > maxN) { maxN = n; maxQ = q; }
+  });
+  if (maxN > 0) {
+    document.getElementById('mq-' + maxQ).classList.add('winner');
+    document.getElementById('f-top').textContent = QNAMES[maxQ];
+    document.getElementById('f-top-n').textContent = maxN + ' (' + Math.round(maxN / allData.length * 100) + '%)';
+  } else {
+    document.getElementById('f-top').textContent = '—';
+    document.getElementById('f-top-n').textContent = '—';
+  }
 }
 
-function buildExp(){
-  const counts={TL:0,TR:0,BL:0,BR:0};
-  allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
-  const order=['TR','TL','BR','BL'];
-  document.getElementById('exp-grid').innerHTML=order.map(q=>{
-    const d=QUADRANTS[q],ex=EXP[q],n=counts[q];
-    return`<div class="ec" style="background:${d.color};color:${d.textColor}">
-      <div class="ec-top"><div><div class="ec-name">${d.name}</div><div class="ec-tag">${d.tagline}</div></div><div class="ec-n" id="ecn-${q}">${n}</div></div>
+/* ─────────────────────────────────────────────
+   SCATTER PLOT
+   ───────────────────────────────────────────── */
+function getScatterPoints() {
+  return allData.map(r => {
+    let aRaw = 0.5, eRaw = 0.5;
+    if (r.answers && Array.isArray(r.answers) && r.answers.length > 0) {
+      let aSum = 0, aCnt = 0, eSum = 0, eCnt = 0;
+      r.answers.forEach(a => {
+        const isAwareness = AWARENESS_SECS.has(a.section);
+        const score = Number(a.score || 0);
+        if (isAwareness) { aSum += score; aCnt++; }
+        else             { eSum += score; eCnt++; }
+      });
+      if (aCnt > 0) aRaw = aSum / (aCnt * 3);
+      if (eCnt > 0) eRaw = eSum / (eCnt * 3);
+    } else {
+      // Approximate from quad with name-seeded jitter for visual spread
+      const seed = (r.name || 'x').split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+      const jitter = k => (((seed * k) % 23) / 23) * 0.28 - 0.14;
+      const base = { TL:{a:0.25,e:0.75}, TR:{a:0.75,e:0.75}, BL:{a:0.25,e:0.25}, BR:{a:0.75,e:0.25} };
+      const b = base[r.quad] || { a:0.5, e:0.5 };
+      aRaw = Math.min(0.96, Math.max(0.04, b.a + jitter(3)));
+      eRaw = Math.min(0.96, Math.max(0.04, b.e + jitter(7)));
+    }
+    return { name: r.name || '?', aRaw, eRaw, quad: r.quad };
+  });
+}
+
+function drawScatter() {
+  const canvas = document.getElementById('scatter-canvas');
+  if (!canvas) return;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const size = Math.max(rect.width, 200);
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+
+  const pad = 46;
+  const W = size - pad * 2;
+  const H = size - pad * 2;
+
+  // Quadrant background fills
+  // TL = top-left (high excitement, low awareness), TR = top-right, BL = bottom-left, BR = bottom-right
+  const bgFills = [
+    { x: pad,       y: pad,       w: W/2, h: H/2, color: 'rgba(225,245,238,0.55)' }, // TL
+    { x: pad + W/2, y: pad,       w: W/2, h: H/2, color: 'rgba(230,241,251,0.55)' }, // TR
+    { x: pad,       y: pad + H/2, w: W/2, h: H/2, color: 'rgba(250,238,218,0.55)' }, // BL
+    { x: pad + W/2, y: pad + H/2, w: W/2, h: H/2, color: 'rgba(250,236,231,0.55)' }, // BR
+  ];
+  bgFills.forEach(f => { ctx.fillStyle = f.color; ctx.fillRect(f.x, f.y, f.w, f.h); });
+
+  // Divider lines
+  ctx.strokeStyle = 'rgba(100,116,139,0.22)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.moveTo(pad + W/2, pad); ctx.lineTo(pad + W/2, pad + H);
+  ctx.moveTo(pad, pad + H/2); ctx.lineTo(pad + W, pad + H/2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Border
+  ctx.strokeStyle = 'rgba(100,116,139,0.18)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(pad, pad, W, H);
+
+  // Axis text
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '500 10px -apple-system,sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Low Awareness', pad + W / 4, size - 8);
+  ctx.fillText('High Awareness', pad + 3 * W / 4, size - 8);
+  ctx.save();
+  ctx.translate(11, pad + H / 4); ctx.rotate(-Math.PI / 2);
+  ctx.fillText('High Excitement', 0, 0); ctx.restore();
+  ctx.save();
+  ctx.translate(11, pad + 3 * H / 4); ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Low Excitement', 0, 0); ctx.restore();
+
+  // Quadrant corner labels
+  ctx.fillStyle = 'rgba(100,116,139,0.45)';
+  ctx.font = '600 9px -apple-system,sans-serif';
+  ctx.textAlign = 'left';  ctx.fillText('Enthusiastic Learners', pad + 5, pad + 13);
+  ctx.textAlign = 'right'; ctx.fillText('AI Champions', pad + W - 5, pad + 13);
+  ctx.textAlign = 'left';  ctx.fillText('Cautious Observers', pad + 5, pad + H - 5);
+  ctx.textAlign = 'right'; ctx.fillText('Informed Sceptics', pad + W - 5, pad + H - 5);
+
+  // No data state
+  if (!allData.length) {
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '13px -apple-system,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Waiting for responses…', size / 2, size / 2);
+    return;
+  }
+
+  const points = getScatterPoints();
+  const R = 6;
+
+  // Store dot positions for hover tooltip
+  canvas._dots = points.map(p => {
+    const cx = pad + p.aRaw * W;
+    const cy = pad + (1 - p.eRaw) * H; // invert Y: high excitement = top
+    return { ...p, cx, cy };
+  });
+
+  // Draw dots
+  canvas._dots.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.cx, p.cy, R, 0, Math.PI * 2);
+    ctx.fillStyle = QDOT[p.quad] || '#64748B';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  // Hover tooltip (native title)
+  canvas.onmousemove = function(e) {
+    const r2 = canvas.getBoundingClientRect();
+    const sx = canvas.width / r2.width;
+    const sy = canvas.height / r2.height;
+    const mx = (e.clientX - r2.left) * sx;
+    const my = (e.clientY - r2.top) * sy;
+    let hit = null;
+    for (const d of (canvas._dots || [])) {
+      if (Math.hypot(d.cx - mx, d.cy - my) < R + 5) { hit = d; break; }
+    }
+    canvas.title = hit ? hit.name : '';
+    canvas.style.cursor = hit ? 'pointer' : 'default';
+  };
+  canvas.onmouseleave = function() { canvas.title = ''; canvas.style.cursor = 'default'; };
+}
+
+/* ─────────────────────────────────────────────
+   EXPLANATION TAB
+   ───────────────────────────────────────────── */
+function getQuadCounts() {
+  const c = { TL:0, TR:0, BL:0, BR:0 };
+  allData.forEach(r => { if (r.quad && c[r.quad] !== undefined) c[r.quad]++; });
+  return c;
+}
+
+function buildExp() {
+  const counts = getQuadCounts();
+  const order = ['TR','TL','BR','BL'];
+  document.getElementById('exp-grid').innerHTML = order.map(q => {
+    const d = QUADRANTS[q];
+    const ex = EXP[q];
+    return `<div class="ec" style="background:${d.color};color:${d.textColor}">
+      <div class="ec-top">
+        <div><div class="ec-name">${d.name}</div><div class="ec-tag">${d.tagline}</div></div>
+        <div class="ec-n" id="ecn-${q}">${counts[q]}</div>
+      </div>
       <div class="ec-div"></div>
-      <div><div class="ec-lbl">WHAT DRIVES THEM</div><div class="ec-txt">${d.praise}</div></div>
-      <div><div class="ec-lbl">KEY TRAITS</div><div class="ec-traits">${ex.traits.map(t=>`<span class="ec-trait">${t}</span>`).join('')}</div></div>
-      <div><div class="ec-lbl">WHAT TO WATCH OUT FOR</div><div class="ec-txt">${ex.challenge}</div></div>
-      <div><div class="ec-lbl">HOW TO SUPPORT THIS GROUP</div><div class="ec-txt">${ex.strategy}</div></div>
-      <div><div class="ec-lbl">SUGGESTED NEXT STEP FOR THEM</div><div class="ec-txt">${d.suggestion}</div></div>
-      <div><div class="ec-lbl">TYPICAL SCORE RANGE</div>
-        <div style="font-size:12px;opacity:0.65;margin-bottom:4px">${ex.range}% and below / above midpoint</div>
-        <div class="sb-track"><div class="sb-fill" style="width:${ex.range}%"></div></div>
+      <div>
+        <div class="ec-lbl">KEY TRAITS</div>
+        <div class="ec-traits">${ex.traits.map(t => `<span class="ec-trait">${t}</span>`).join('')}</div>
+      </div>
+      <div class="ec-div"></div>
+      <div>
+        <div class="ec-lbl">WHAT DRIVES THEM INTO THIS GROUP</div>
+        <div class="ec-txt">${ex.whatDrives}</div>
+      </div>
+      <div class="ec-div"></div>
+      <div>
+        <div class="ec-lbl">HOW TO CATCH UP & MOVE FORWARD</div>
+        <div class="ec-txt">${ex.howToCatchUp}</div>
       </div>
     </div>`;
   }).join('');
-  expBuilt=true;
+  expBuilt = true;
 }
 
-function refreshExp(){
-  if(!expBuilt){buildExp();return;}
-  const counts={TL:0,TR:0,BL:0,BR:0};
-  allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
-  ['TL','TR','BL','BR'].forEach(q=>{const el=document.getElementById('ecn-'+q);if(el)el.textContent=counts[q];});
+function refreshExpCounts() {
+  const c = getQuadCounts();
+  ['TL','TR','BL','BR'].forEach(q => {
+    const el = document.getElementById('ecn-' + q);
+    if (el) el.textContent = c[q];
+  });
 }
 
-function updDrawCounts(){
-  const c={TL:0,TR:0,BL:0,BR:0};
-  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;});
-  ['TL','TR','BL','BR'].forEach(q=>{const el=document.getElementById('dc-'+q);if(el)el.textContent=c[q];});
-  if(selQ){const n=allData.filter(r=>r.quad===selQ).length;document.getElementById('q-hint').textContent=n+' participant'+(n!==1?'s':'')+' in this quadrant';document.getElementById('btn-q').disabled=n===0;}
+/* ─────────────────────────────────────────────
+   LUCKY DRAW
+   ───────────────────────────────────────────── */
+function updDrawCounts() {
+  const c = { TL:0, TR:0, BL:0, BR:0 };
+  allData.forEach(r => { if (r.quad && c[r.quad] !== undefined) c[r.quad]++; });
+  ['TL','TR','BL','BR'].forEach(q => {
+    const el = document.getElementById('dc-' + q);
+    if (el) el.textContent = c[q];
+  });
+  if (selQ) {
+    const n = allData.filter(r => r.quad === selQ).length;
+    document.getElementById('q-hint').textContent = n + ' participant' + (n !== 1 ? 's' : '') + ' — ready to draw!';
+    document.getElementById('btn-q').disabled = n === 0;
+  }
 }
 
-function pickQ(q){
-  selQ=q;
-  ['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));
-  document.getElementById('dq-'+q).classList.add('picked');
-  const n=allData.filter(r=>r.quad===q).length;
-  document.getElementById('q-hint').textContent=n+' participant'+(n!==1?'s':'')+' — ready to draw!';
-  document.getElementById('btn-q').disabled=n===0;
-  document.getElementById('q-win').textContent='—';
-  document.getElementById('q-meta').textContent='';
+function pickQ(q) {
+  selQ = q;
+  ['TL','TR','BL','BR'].forEach(x => document.getElementById('dq-' + x).classList.remove('picked'));
+  document.getElementById('dq-' + q).classList.add('picked');
+  const n = allData.filter(r => r.quad === q).length;
+  document.getElementById('q-hint').textContent = n + ' participant' + (n !== 1 ? 's' : '') + ' — ready to draw!';
+  document.getElementById('btn-q').disabled = n === 0;
+  document.getElementById('q-win').textContent = '—';
 }
 
-function spinQuad(){if(!selQ)return;const p=allData.filter(r=>r.quad===selQ);if(!p.length)return;spin(p,'q-win','q-meta','btn-q','q-hint',QNAMES[selQ]);}
-function clearQ(){selQ=null;['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));document.getElementById('q-win').textContent='—';document.getElementById('q-meta').textContent='';document.getElementById('q-hint').textContent='Tap the quadrant you want to draw from';document.getElementById('btn-q').disabled=true;}
-function spinAll(){if(!allData.length)return;spin(allData,'all-win','all-meta','btn-all','all-hint','All Participants');}
-function clearAll(){document.getElementById('all-win').textContent='—';document.getElementById('all-meta').textContent='';document.getElementById('all-hint').textContent='Everyone who submitted is in this draw';}
-
-function spin(pool,nId,mId,bId,hId,src){
-  const ne=document.getElementById(nId),me=document.getElementById(mId),be=document.getElementById(bId),he=document.getElementById(hId);
-  be.disabled=true;he.textContent='Spinning…';
-  let i=0,r=28+Math.floor(Math.random()*16),d=42;
-  const step=()=>{
-    ne.textContent=pool[i%pool.length].name||'—';i++;
-    if(r-->0){setTimeout(step,d);d=Math.min(d*1.09,380);}
-    else{const w=pool[Math.floor(Math.random()*pool.length)];ne.textContent=w.name||'—';me.textContent=src+' · Score: '+(w.score||'?')+'%';he.textContent='Winner from '+src+'! 🎉';be.disabled=false;}
-  };step();
+function spinQuad() {
+  if (!selQ) return;
+  const pool = allData.filter(r => r.quad === selQ);
+  if (!pool.length) return;
+  spin(pool, 'q-win', 'btn-q', 'q-hint');
 }
 
-function genGroups(){
-  const n=parseInt(document.getElementById('g-n').value);
-  if(!n||n<1){alert('Please enter a valid number of groups.');return;}
-  if(!allData.length){alert('No responses yet.');return;}
-  if(n>allData.length){alert('Cannot create more groups than participants ('+allData.length+').');return;}
-  const shuffled=[...allData].sort(()=>Math.random()-0.5);
-  const groups=Array.from({length:n},()=>[]);
-  shuffled.forEach((p,i)=>groups[i%n].push(p));
-  const colors=['#E1F5EE','#E6F1FB','#FAEEDA','#FAECE7','#EEEDFE','#EAF3DE','#FEF3C7','#FCE7F3'];
-  document.getElementById('g-out').innerHTML=`<div class="g-out">${groups.map((g,i)=>`
-    <div class="gc" style="border-top:3px solid ${colors[i%colors.length]}">
-      <div class="gc-hdr"><div class="gc-title">Group ${i+1}</div><div class="gc-cnt">${g.length} member${g.length!==1?'s':''}</div></div>
-      <div class="gc-members">${g.map(p=>`<div class="gc-mem">${p.name||'Anonymous'}<span class="gc-mem-q">${QNAMES[p.quad]||''}</span></div>`).join('')}</div>
-    </div>`).join('')}</div>`;
-  document.getElementById('btn-reshuffle').style.display='inline-block';
+function clearQ() {
+  selQ = null;
+  ['TL','TR','BL','BR'].forEach(x => document.getElementById('dq-' + x).classList.remove('picked'));
+  document.getElementById('q-win').textContent = '—';
+  document.getElementById('q-hint').textContent = 'Tap a quadrant above to select it';
+  document.getElementById('btn-q').disabled = true;
 }
 
-async function doReset(){
-  if(!confirm('Permanently delete ALL responses?\n\nThis cannot be undone.')) return;
-  try{
-    await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'reset'})});
-    allData=[];updMatrix();updDrawCounts();refreshExp();
-    document.getElementById('g-out').innerHTML='';
-    document.getElementById('btn-reshuffle').style.display='none';
-    setStatus(true,'All data reset successfully');
+function spinAll() {
+  if (!allData.length) return;
+  spin(allData, 'all-win', 'btn-all', 'all-hint');
+}
+
+function clearAll() {
+  document.getElementById('all-win').textContent = '—';
+  document.getElementById('all-hint').textContent = 'Everyone who submitted is in this draw';
+}
+
+function spin(pool, nameId, btnId, hintId) {
+  const ne = document.getElementById(nameId);
+  const be = document.getElementById(btnId);
+  const he = document.getElementById(hintId);
+  be.disabled = true;
+  he.textContent = 'Spinning…';
+  let i = 0, rounds = 28 + Math.floor(Math.random() * 16), delay = 42;
+  const step = () => {
+    ne.textContent = pool[i % pool.length].name || '—';
+    i++;
+    if (rounds-- > 0) {
+      setTimeout(step, delay);
+      delay = Math.min(delay * 1.09, 380);
+    } else {
+      const w = pool[Math.floor(Math.random() * pool.length)];
+      ne.textContent = w.name || '—';
+      he.textContent = '🎉 Congratulations to the winner!';
+      be.disabled = false;
+    }
+  };
+  step();
+}
+
+/* ─────────────────────────────────────────────
+   GROUPING
+   ───────────────────────────────────────────── */
+function genGroups() {
+  const n = parseInt(document.getElementById('g-n').value);
+  if (!n || n < 1) { alert('Please enter a valid number of groups.'); return; }
+  if (!allData.length) { alert('No responses yet.'); return; }
+  if (n > allData.length) { alert('Cannot create more groups than participants (' + allData.length + ').'); return; }
+  const shuffled = [...allData].sort(() => Math.random() - 0.5);
+  const groups = Array.from({ length: n }, () => []);
+  shuffled.forEach((p, i) => groups[i % n].push(p));
+  const colors = ['#E1F5EE','#E6F1FB','#FAEEDA','#FAECE7','#EEEDFE','#EAF3DE','#FEF3C7','#FCE7F3'];
+  document.getElementById('g-out').innerHTML =
+    '<div class="g-out">' +
+    groups.map((g, i) =>
+      `<div class="gc" style="border-top:3px solid ${colors[i % colors.length]}">
+        <div class="gc-hdr"><div class="gc-title">Group ${i + 1}</div><div class="gc-cnt">${g.length} member${g.length !== 1 ? 's' : ''}</div></div>
+        <div class="gc-members">${g.map(p => `<div class="gc-mem">${p.name || 'Anonymous'}<span class="gc-mem-q">${QNAMES[p.quad] || ''}</span></div>`).join('')}</div>
+      </div>`
+    ).join('') +
+    '</div>';
+  document.getElementById('btn-reshuffle').style.display = 'inline-block';
+}
+
+/* ─────────────────────────────────────────────
+   RESET
+   ───────────────────────────────────────────── */
+async function doReset() {
+  if (!confirm('Permanently delete ALL responses?\n\nThis cannot be undone.')) return;
+  try {
+    await fetch(GAS, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'reset' })
+    });
+    allData = [];
+    updMatrix(); updDrawCounts(); drawScatter();
+    if (expBuilt) refreshExpCounts();
+    document.getElementById('g-out').innerHTML = '';
+    document.getElementById('btn-reshuffle').style.display = 'none';
+    setStatus(true, 'All data reset successfully');
     alert('Done — all responses cleared.');
-  }catch(e){alert('Reset sent — refresh to confirm.');}
+  } catch(e) {
+    alert('Reset sent — refresh to confirm.');
+  }
 }
 
+/* ─────────────────────────────────────────────
+   INIT
+   ───────────────────────────────────────────── */
 loadData(true);
-setInterval(()=>loadData(false),2000);
+setInterval(() => loadData(false), 2000);
+window.addEventListener('resize', () => {
+  if (document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
+});
 </script>
 </body>
 </html>
