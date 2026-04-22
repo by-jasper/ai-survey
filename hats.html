@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Six Thinking Hats — Your Role</title>
+<style>
+:root{
+  --navy:#0A2240;--text:#1E293B;--muted:#64748B;--border:#E2E8F0;
+  --bg:#F8FAFC;--white:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100vh;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text)}
+
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* ── Home ── */
+.home-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px 24px;text-align:center}
+.home-icon{font-size:52px;margin-bottom:20px}
+.home-title{font-size:24px;font-weight:700;color:var(--navy);margin-bottom:8px;letter-spacing:-0.4px}
+.home-sub{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:36px;max-width:320px}
+.hat-picker{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:380px;margin-bottom:24px}
+.hat-btn{padding:16px 12px;border-radius:14px;border:2px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .15s,box-shadow .15s;-webkit-user-select:none;user-select:none}
+.hat-btn:active{transform:scale(0.96)}
+.hat-btn.selected{border-color:var(--navy);box-shadow:0 0 0 3px rgba(10,34,64,0.15)}
+.hat-emoji-big{font-size:32px}
+.hat-name{font-size:13px;font-weight:700;line-height:1.2}
+.hat-sub{font-size:10px;opacity:0.65}
+.rules-btn{font-size:14px;color:var(--muted);text-decoration:underline;background:none;border:none;cursor:pointer;padding:4px;margin-bottom:16px}
+.go-btn{width:100%;max-width:380px;padding:17px;background:var(--navy);color:#fff;font-size:17px;font-weight:700;border:none;border-radius:14px;cursor:pointer}
+.go-btn:disabled{opacity:0.35;cursor:not-allowed}
+.go-btn:active:not(:disabled){background:#1a3a5c}
+
+/* ── Hat role page ── */
+.role-page{display:flex;flex-direction:column;min-height:100vh}
+.role-header{padding:16px 20px 0}
+.back-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.back-circle{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--white)}
+.back-circle svg{width:18px;height:18px;stroke:var(--text);fill:none;stroke-width:2.5}
+.role-body{flex:1;padding:0 20px 28px}
+.role-hat-big{font-size:56px;text-align:center;margin-bottom:10px}
+.role-name{font-size:26px;font-weight:700;text-align:center;line-height:1.2;margin-bottom:4px}
+.role-tagline{font-size:14px;text-align:center;opacity:0.65;margin-bottom:24px}
+.role-section{margin-bottom:22px}
+.rs-label{font-size:10px;font-weight:700;letter-spacing:0.6px;opacity:0.5;margin-bottom:8px}
+.rs-body{font-size:15px;line-height:1.7;opacity:0.88}
+.rs-pts{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.rs-pts li{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.55;opacity:0.88}
+.rs-pts li::before{content:"•";font-size:16px;flex-shrink:0;margin-top:1px}
+.rs-say{font-size:13px;font-style:italic;opacity:0.75;background:rgba(0,0,0,0.06);border-radius:8px;padding:10px 14px;margin-top:4px;line-height:1.6}
+.role-reminder{border-radius:12px;padding:16px;margin-top:8px;font-size:13px;line-height:1.6;opacity:0.88;background:rgba(0,0,0,0.06)}
+.role-reminder strong{font-weight:700;display:block;margin-bottom:4px;font-size:12px;letter-spacing:0.3px;opacity:0.55}
+
+/* ── Rules page ── */
+.rules-page{display:flex;flex-direction:column;min-height:100vh}
+.rules-header{padding:16px 20px 0}
+.rules-body{flex:1;padding:0 20px 28px}
+.rules-title{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.rules-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+.rule-item{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.ri-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ri-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ri-title{font-size:14px;font-weight:700;color:var(--text)}
+.ri-body{font-size:13px;color:var(--muted);line-height:1.6;padding-left:38px}
+.sequence-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.seq-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px}
+.seq-steps{display:flex;flex-direction:column;gap:6px}
+.seq-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text)}
+.seq-hat{font-size:18px;width:26px;flex-shrink:0;text-align:center}
+.seq-info{flex:1}
+.seq-name{font-weight:600}
+.seq-time{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- ── Screen: Home (hat picker) ── -->
+<div id="s-home" class="screen active">
+  <div class="home-wrap">
+    <div class="home-icon">🎩</div>
+    <div class="home-title">Six Thinking Hats</div>
+    <div class="home-sub">Select the hat you have been assigned to read your role and discussion guide.</div>
+
+    <div class="hat-picker" id="hat-picker">
+      <div class="hat-btn" id="hbtn-royal" style="background:#EDE9FE;color:#4C1D95" onclick="selectHat('royal')">
+        <div class="hat-emoji-big">👑</div>
+        <div class="hat-name">Royal Hat</div>
+        <div class="hat-sub">Facilitator</div>
+      </div>
+      <div class="hat-btn" id="hbtn-white" style="background:#F1F5F9;color:#334155" onclick="selectHat('white')">
+        <div class="hat-emoji-big">🤍</div>
+        <div class="hat-name">White Hat</div>
+        <div class="hat-sub">Facts &amp; Data</div>
+      </div>
+      <div class="hat-btn" id="hbtn-red" style="background:#FEE2E2;color:#991B1B" onclick="selectHat('red')">
+        <div class="hat-emoji-big">❤️</div>
+        <div class="hat-name">Red Hat</div>
+        <div class="hat-sub">Emotions</div>
+      </div>
+      <div class="hat-btn" id="hbtn-yellow" style="background:#FEF9C3;color:#854D0E" onclick="selectHat('yellow')">
+        <div class="hat-emoji-big">💛</div>
+        <div class="hat-name">Yellow Hat</div>
+        <div class="hat-sub">Benefits</div>
+      </div>
+      <div class="hat-btn" id="hbtn-green" style="background:#DCFCE7;color:#166534" onclick="selectHat('green')">
+        <div class="hat-emoji-big">💚</div>
+        <div class="hat-name">Green Hat</div>
+        <div class="hat-sub">Ideas</div>
+      </div>
+      <div class="hat-btn" id="hbtn-blue" style="background:#DBEAFE;color:#1E40AF" onclick="selectHat('blue')">
+        <div class="hat-emoji-big">💙</div>
+        <div class="hat-name">Blue Hat</div>
+        <div class="hat-sub">Planning</div>
+      </div>
+      <div class="hat-btn" id="hbtn-black" style="background:#E5E7EB;color:#111827" onclick="selectHat('black')">
+        <div class="hat-emoji-big">🖤</div>
+        <div class="hat-name">Black Hat</div>
+        <div class="hat-sub">Judgement</div>
+      </div>
+      <div class="hat-btn" style="background:#F1F5F9;color:#64748B;border:2px dashed #CBD5E1;cursor:pointer" onclick="showRules()">
+        <div class="hat-emoji-big" style="font-size:26px">📋</div>
+        <div class="hat-name">Game Rules</div>
+        <div class="hat-sub">How it works</div>
+      </div>
+    </div>
+
+    <button class="go-btn" id="go-btn" onclick="goToRole()" disabled>See My Role →</button>
+  </div>
+</div>
+
+<!-- ── Screen: Role detail ── -->
+<div id="s-role" class="screen">
+  <div class="role-page" id="role-page-inner">
+    <div class="role-header">
+      <div class="back-row">
+        <div class="back-circle" onclick="show('s-home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <span style="font-size:14px;color:var(--muted);font-weight:500">Back to hat selection</span>
+      </div>
+    </div>
+    <div class="role-body" id="role-body"></div>
+  </div>
+</div>
+
+<!-- ── Screen: Game Rules ── -->
+<div id="s-rules" class="screen">
+  <div class="rules-page">
+    <div class="rules-header">
+      <div class="back-row">
+        <div class="back-circle" onclick="show('s-home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <span style="font-size:14px;color:var(--muted);font-weight:500">Back to hat selection</span>
+      </div>
+    </div>
+    <div class="rules-body">
+      <div class="rules-title">Game Rules</div>
+      <div class="rules-sub">Six Thinking Hats + Royal Hat · AI Readiness Debrief Session</div>
+
+      <div class="rule-item">
+        <div class="ri-top"><div class="ri-num">1</div><div class="ri-title">One hat at a time</div></div>
+        <div class="ri-body">The whole group thinks with the same hat at the same time. When the Royal hat calls a hat, everyone switches — no one stays in their own hat while others move on.</div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-top"><div class="ri-num">2</div><div class="ri-title">Play the role fully</div></div>
+        <div class="ri-body">Even if your hat is not your natural style, commit to it. If you are wearing the Yellow hat, find the positives — even if you are sceptical by nature. The constraint unlocks new thinking.</div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-top"><div class="ri-num">3</div><div class="ri-title">No cross-hat debating</div></div>
+        <div class="ri-body">When you are in White hat mode, no Red hat reactions. When in Green hat, no Black hat criticism. Save it for when that hat is called. The Royal hat enforces this.</div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-top"><div class="ri-num">4</div><div class="ri-title">Royal hat is the referee</div></div>
+        <div class="ri-body">The Royal hat person does not have their own opinion during the discussion — they manage the process. If the Royal hat says "we are moving to Green hat now," the group moves.</div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-top"><div class="ri-num">5</div><div class="ri-title">Every hat gets equal time</div></div>
+        <div class="ri-body">The Royal hat keeps time. No single hat dominates the session. If Black hat is getting too much airtime, the Royal hat moves the group on.</div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-top"><div class="ri-num">6</div><div class="ri-title">Close with a commitment</div></div>
+        <div class="ri-body">Every person leaves with one concrete action they will take in the next 30 days. The Royal hat records this and shares it back with the group within 48 hours.</div>
+      </div>
+
+      <div class="sequence-card" style="margin-top:20px">
+        <div class="seq-title">Discussion sequence (approx 30 min)</div>
+        <div class="seq-steps">
+          <div class="seq-step"><div class="seq-hat">👑</div><div class="seq-info"><span class="seq-name">Royal opens</span><span class="seq-time"> · 2 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">💙</div><div class="seq-info"><span class="seq-name">Blue — agenda</span><span class="seq-time"> · 2 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">🤍</div><div class="seq-info"><span class="seq-name">White — facts</span><span class="seq-time"> · 5 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">❤️</div><div class="seq-info"><span class="seq-name">Red — feelings</span><span class="seq-time"> · 3 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">💛</div><div class="seq-info"><span class="seq-name">Yellow — upsides</span><span class="seq-time"> · 4 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">🖤</div><div class="seq-info"><span class="seq-name">Black — risks</span><span class="seq-time"> · 4 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">💚</div><div class="seq-info"><span class="seq-name">Green — ideas</span><span class="seq-time"> · 5 min</span></div></div>
+          <div class="seq-step"><div class="seq-hat">💙</div><div class="seq-info"><span class="seq-name">Blue — commit &amp; close</span><span class="seq-time"> · 5 min</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const HATS = {
+  royal:{
+    emoji:'👑', name:'Royal Hat', tagline:'The Facilitator · 1 per group',
+    bg:'#EDE9FE', txt:'#4C1D95',
+    whatYouDo:'Your job is to run the discussion — not to have opinions in it. You are the time-keeper, the traffic controller, and the recorder. When the group drifts or one voice dominates, you bring them back on track. This is the most responsible role in the group.',
+    yourRules:[
+      'Open the session by sharing the survey results and explaining the hat sequence',
+      'Announce each hat change clearly — "We are now moving to Yellow hat"',
+      'Enforce the one-hat-at-a-time rule if someone cross-hats',
+      'Keep each hat segment to its time limit',
+      'Record every commitment made at the end of the session',
+      'Do not share your personal opinion during the discussion'
+    ],
+    say:['"Let\'s hear the Yellow hat perspective now."','"We\'ve spent enough time on Black hat — moving to Green."','"Everyone in Red hat mode — one word, no explanation needed."','"Time\'s up on this hat. Let\'s move on."']
+  },
+  white:{
+    emoji:'🤍', name:'White Hat', tagline:'Facts & Data',
+    bg:'#F1F5F9', txt:'#334155',
+    whatYouDo:'Your job is to focus the group on what is factually known and what is not yet known. No opinions, no feelings, no interpretations — just data. When wearing this hat, you help the group build a shared factual foundation before any judgement is made.',
+    yourRules:[
+      'Only state what is measurable, observable, or documented',
+      'If you catch yourself giving an opinion, pause and reframe as a fact',
+      'Ask "How do we know this?" to verify claims',
+      'Identify information gaps: what data do we still need?',
+      'Reference the survey results as your primary data source today'
+    ],
+    say:['"The data shows that most of our team is in the Cautious Observers quadrant."','"Our average readiness score is X% — that is a fact, not a judgement."','"What information are we missing before we can decide?"','"Let\'s stick to what we know for certain."']
+  },
+  red:{
+    emoji:'❤️', name:'Red Hat', tagline:'Emotions & Feelings',
+    bg:'#FEE2E2', txt:'#991B1B',
+    whatYouDo:'Your job is to give the group permission to acknowledge how they feel — without needing to justify it. Emotions are data too, and suppressing them leads to poor decisions. When wearing this hat, you create space for honest emotional expression.',
+    yourRules:[
+      'Share feelings directly — "I feel anxious about this" is perfect Red hat',
+      'You do not need to explain or justify any emotion',
+      'Accept others\' feelings without debate or logic',
+      'One word or one sentence is enough — do not over-explain',
+      'Your gut instinct counts as Red hat thinking'
+    ],
+    say:['"Honestly, this change makes me feel uneasy — and I don\'t need a reason for that."','"My gut says this is moving too fast."','"I feel genuinely excited by what I\'ve seen AI do so far."','"I\'m worried. That\'s my Red hat contribution."']
+  },
+  yellow:{
+    emoji:'💛', name:'Yellow Hat', tagline:'Benefits & Optimism',
+    bg:'#FEF9C3', txt:'#854D0E',
+    whatYouDo:'Your job is to find the value and possibility in the idea being discussed — even if you are personally sceptical. The Yellow hat is not about being naively positive; it is about rigorously seeking out the benefits and making the case for them.',
+    yourRules:[
+      'Find at least one genuine benefit even for ideas you disagree with',
+      'Ask: "Under what conditions could this work well?"',
+      'Avoid saying "but" during Yellow hat time — save concerns for Black hat',
+      'Think about best-case outcomes and how to make them more likely',
+      'Look for what has already worked as evidence of potential'
+    ],
+    say:['"If this works as intended, it could save every HR person 2 hours a week."','"The best-case outcome is that our team becomes genuinely more strategic."','"There are already examples in other teams where this has improved turnaround time."','"What would need to be true for this to succeed?"']
+  },
+  green:{
+    emoji:'💚', name:'Green Hat', tagline:'Ideas & Creativity',
+    bg:'#DCFCE7', txt:'#166534',
+    whatYouDo:'Your job is to generate new ideas and alternatives — especially when the group feels stuck. The Green hat is the most playful hat. There are no bad ideas here. Volume and variety matter more than quality at this stage.',
+    yourRules:[
+      'Say yes to every idea — even the wild ones — during Green hat time',
+      'Build on others\' ideas: "Yes, and what if we also..."',
+      'Challenge assumptions: "What if we didn\'t need to...?"',
+      'Go for quantity — aim for at least 5 ideas before evaluating any',
+      'Black hat criticism is banned during Green hat time'
+    ],
+    say:['"What if we started with just one AI tool for one task and nothing else?"','"What if HR ran its own AI experiment month?"','"What would we do if time and budget were not constraints?"','"Building on that — what if we also involved employees in testing the tools?"']
+  },
+  blue:{
+    emoji:'💙', name:'Blue Hat', tagline:'Process & Planning',
+    bg:'#DBEAFE', txt:'#1E40AF',
+    whatYouDo:'Your job is to keep the thinking organised and to move the group toward action. The Blue hat is about structure — what are we doing, in what order, and what needs to happen next. The Blue hat often opens and closes a session, and can intervene when the discussion gets chaotic.',
+    yourRules:[
+      'Define the goal of each discussion segment before it starts',
+      'Summarise what has been agreed before moving to the next hat',
+      'Name the next step concretely: who, what, by when',
+      'If the group gets stuck, redirect: "Let\'s go to Green hat for solutions"',
+      'Close the session with a clear action list'
+    ],
+    say:['"Before we continue — what is the one thing we are trying to decide today?"','"Let me summarise what we have agreed so far."','"Our next step is X, owned by Y, by date Z."','"We are running short on time — let\'s prioritise the top two ideas."']
+  },
+  black:{
+    emoji:'🖤', name:'Black Hat', tagline:'Caution & Judgement',
+    bg:'#E5E7EB', txt:'#111827',
+    whatYouDo:'Your job is to protect the group from mistakes by identifying risks, weaknesses, and problems. The Black hat is not pessimism — it is logical caution. Used well, it makes every decision stronger. Without it, groups rush into bad outcomes.',
+    yourRules:[
+      'Name risks specifically — "This could cause bias in hiring" is better than "this is risky"',
+      'Ask: "What could go wrong?" and "What are we assuming that might not be true?"',
+      'Focus on logic, not emotion — that is Red hat territory',
+      'Your concerns are valid and important — but save them for Black hat time',
+      'After identifying a problem, hand it to Green hat for solutions'
+    ],
+    say:['"The risk here is that we adopt a tool without checking it for bias."','"We are assuming employees are comfortable with AI chatbots — we haven\'t verified that."','"What happens if the data used to train this tool doesn\'t reflect our workforce?"','"This plan has no fallback if the tool fails — that\'s a gap we need to address."']
+  }
+};
+
+let selHat = null;
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function selectHat(h){
+  selHat=h;
+  document.querySelectorAll('.hat-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('hbtn-'+h)?.classList.add('selected');
+  document.getElementById('go-btn').disabled=false;
+}
+
+function goToRole(){
+  if(!selHat)return;
+  const hat=HATS[selHat];
+  const body=document.getElementById('role-body');
+  const page=document.getElementById('role-page-inner');
+  page.style.background=hat.bg;
+  page.style.color=hat.txt;
+
+  body.innerHTML=`
+    <div class="role-hat-big">${hat.emoji}</div>
+    <div class="role-name">${hat.name}</div>
+    <div class="role-tagline">${hat.tagline}</div>
+
+    <div class="role-section">
+      <div class="rs-label">YOUR JOB TODAY</div>
+      <div class="rs-body">${hat.whatYouDo}</div>
+    </div>
+
+    <div class="role-section">
+      <div class="rs-label">YOUR RULES</div>
+      <ul class="rs-pts">${hat.yourRules.map(r=>`<li>${r}</li>`).join('')}</ul>
+    </div>
+
+    <div class="role-section">
+      <div class="rs-label">THINGS YOU MIGHT SAY</div>
+      ${hat.say.map(s=>`<div class="rs-say">"${s.replace(/^"|"$/g,'')}"</div>`).join('')}
+    </div>
+
+    <div class="role-reminder" style="background:rgba(0,0,0,0.07)">
+      <strong>REMEMBER</strong>
+      When the Royal hat announces a different hat, you switch too. The power of this method comes from <em>everyone</em> thinking with the same hat at the same time.
+    </div>
+  `;
+  show('s-role');
+}
+
+function showRules(){show('s-rules');}
+</script>
+</body>
+</html>

@@ -80,16 +80,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sq-count{font-size:11px;opacity:0.65;margin-bottom:10px}
 .sq-brief{font-size:12px;line-height:1.6;opacity:0.82}
 
-/* Avg readiness — fan gauge */
-.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;flex:0 0 auto}
-.sc-avg .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+/* Avg readiness — vertical thermometer */
+.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;flex:1 1 0;min-height:0}
+.sc-avg .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:5px}
 .info-i{width:15px;height:15px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
 .info-i .tip{display:none;position:absolute;top:18px;right:0;background:var(--navy);color:#fff;font-size:11px;line-height:1.55;padding:9px 12px;border-radius:8px;width:230px;z-index:50;font-weight:400;pointer-events:none}
 .info-i:hover .tip{display:block}
-.fan-wrap{display:flex;flex-direction:column;align-items:center}
-.fan-svg{width:100%;max-width:240px}
-.fan-score{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-top:4px}
-.fan-label{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+.thermo-body{display:flex;gap:14px;align-items:flex-end;height:180px}
+.thermo-col{display:flex;flex-direction:column;align-items:center;gap:0;height:100%}
+.thermo-tube{width:22px;flex:1;border-radius:11px 11px 0 0;background:var(--border);overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1)}
+.thermo-fill{position:absolute;bottom:0;left:0;width:100%;border-radius:0;transition:height .7s cubic-bezier(.4,0,.2,1);background:linear-gradient(to top,#3B82F6 0%,#10B981 33%,#F59E0B 66%,#EF4444 100%)}
+.thermo-bulb{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#EF4444,#DC2626);border:3px solid var(--white);box-shadow:0 0 0 2px var(--border);flex-shrink:0}
+.thermo-labels{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding-bottom:14px}
+.thermo-tick{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap}
+.thermo-tick-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.thermo-score-big{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-top:10px;text-align:center}
+.thermo-score-lbl{font-size:12px;color:var(--muted);font-weight:600;text-align:center;margin-top:3px}
 
 /* ── Interpretation flip cards ── */
 .interp-grid{display:flex;flex-direction:column;gap:16px}
@@ -176,25 +182,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .hat-royal{background:#EDE9FE;color:#4C1D95}
 
 /* ── Six Hats tab ── */
-.hats-intro{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px;max-width:700px}
-.hats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:28px}
-.hat-card{border-radius:14px;padding:20px}
-.hat-card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.hat-emoji{font-size:28px}
-.hat-card-title{font-size:16px;font-weight:700}
-.hat-card-sub{font-size:11px;opacity:0.65;margin-top:2px}
-.hat-card-div{height:1px;background:currentColor;opacity:0.12;margin-bottom:12px}
-.hat-card-role{font-size:13px;line-height:1.65;opacity:0.85;margin-bottom:10px}
-.hat-card-qs{font-size:12px;font-weight:600;opacity:0.55;margin-bottom:5px;letter-spacing:0.3px}
-.hat-card-q{font-size:12px;opacity:0.8;line-height:1.6}
+.hats-intro{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:20px;max-width:800px}
+.hats-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:24px}
+@media(max-width:900px){.hats-row{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.hats-row{grid-template-columns:repeat(2,1fr)}}
+.hat-card{border-radius:12px;padding:14px 12px;display:flex;flex-direction:column;gap:8px}
+.hat-card-top{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:4px}
+.hat-emoji{font-size:26px}
+.hat-card-title{font-size:13px;font-weight:700;line-height:1.2;text-align:center}
+.hat-card-sub{font-size:10px;opacity:0.6;text-align:center}
+.hat-card-div{height:1px;background:currentColor;opacity:0.12}
+.hat-card-pts{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:3px}
+.hat-card-pts li{font-size:11px;line-height:1.45;opacity:0.82;padding-left:10px;position:relative}
+.hat-card-pts li::before{content:"•";position:absolute;left:0;opacity:0.5}
+.hat-card-qs{font-size:10px;font-weight:700;opacity:0.5;letter-spacing:0.3px;margin-top:4px}
+.hat-card-q-pts{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px}
+.hat-card-q-pts li{font-size:10px;opacity:0.75;padding-left:10px;position:relative;line-height:1.4}
+.hat-card-q-pts li::before{content:"›";position:absolute;left:0;opacity:0.5}
 .discussion-guide{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px}
 .dg-title{font-size:15px;font-weight:700;margin-bottom:14px}
-.dg-steps{display:flex;flex-direction:column;gap:10px}
-.dg-step{display:flex;gap:12px;padding:12px 14px;background:var(--bg);border-radius:10px}
+.dg-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.dg-step{display:flex;gap:10px;padding:12px 14px;background:var(--bg);border-radius:10px}
 .dg-step-hat{font-size:18px;flex-shrink:0;margin-top:1px}
 .dg-step-body{flex:1}
-.dg-step-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
-.dg-step-txt{font-size:12px;color:var(--muted);line-height:1.55}
+.dg-step-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.dg-step-pts{list-style:none;padding:0;margin:0}
+.dg-step-pts li{font-size:11px;color:var(--muted);line-height:1.5;padding-left:10px;position:relative}
+.dg-step-pts li::before{content:"•";position:absolute;left:0}
 
 /* ── Buttons ── */
 .btn{padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;display:inline-block;text-align:center}
@@ -285,30 +299,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="sq-brief" id="sq-brief"></div>
       </div>
 
-      <!-- Avg readiness — fan gauge -->
+      <!-- Avg readiness — vertical thermometer -->
       <div class="sc-avg">
         <div class="lbl">AVG READINESS SCORE
-          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>Early Stage &lt;40% · Emerging 40–59% · Progressing 60–74% · AI-Ready 75%+</div></span>
+          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Early Stage &lt;40%<br>🟢 Emerging 40–59%<br>🟡 Progressing 60–74%<br>🔴 AI-Ready 75%+</div></span>
         </div>
-        <div class="fan-wrap">
-          <svg class="fan-svg" id="fan-svg" viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg">
-            <!-- Arc segments: Early Stage, Emerging, Progressing, AI-Ready -->
-            <path d="M10,100 A90,90 0 0,1 55,22" fill="none" stroke="#93C5FD" stroke-width="14" stroke-linecap="butt"/>
-            <path d="M55,22 A90,90 0 0,1 100,10" fill="none" stroke="#6EE7B7" stroke-width="14" stroke-linecap="butt"/>
-            <path d="M100,10 A90,90 0 0,1 145,22" fill="none" stroke="#FCD34D" stroke-width="14" stroke-linecap="butt"/>
-            <path d="M145,22 A90,90 0 0,1 190,100" fill="none" stroke="#F87171" stroke-width="14" stroke-linecap="butt"/>
-            <!-- Segment labels -->
-            <text x="22" y="78" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(-55,22,78)">Early</text>
-            <text x="62" y="28" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(-20,62,28)">Emerging</text>
-            <text x="138" y="28" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(20,138,28)">Progressing</text>
-            <text x="178" y="78" font-size="8" fill="#475569" font-weight="600" text-anchor="middle" transform="rotate(55,178,78)">AI-Ready</text>
-            <!-- Needle -->
-            <line id="fan-needle" x1="100" y1="100" x2="100" y2="18" stroke="#0A2240" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="100" cy="100" r="5" fill="#0A2240"/>
-          </svg>
-          <div class="fan-score" id="fan-score">—</div>
-          <div class="fan-label" id="fan-label">No data yet</div>
+        <div class="thermo-body">
+          <div class="thermo-col">
+            <div class="thermo-tube"><div class="thermo-fill" id="thermo-fill" style="height:0%"></div></div>
+            <div class="thermo-bulb"></div>
+          </div>
+          <div class="thermo-labels">
+            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#EF4444"></div>AI-Ready (75%+)</div>
+            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#F59E0B"></div>Progressing (60–74%)</div>
+            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#10B981"></div>Emerging (40–59%)</div>
+            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#3B82F6"></div>Early Stage (&lt;40%)</div>
+          </div>
         </div>
+        <div class="thermo-score-big" id="thermo-score">—</div>
+        <div class="thermo-score-lbl" id="thermo-label">No data yet</div>
       </div>
 
     </div>
@@ -411,70 +420,71 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <!-- ═══════════════════ TAB 5: SIX THINKING HATS ═══════════════════ -->
 <div class="page" id="page-hats">
-  <p class="hats-intro">The Six Thinking Hats method (Edward de Bono) structures group discussion by having everyone think from the same perspective at the same time. The <strong>Royal/Purple Hat</strong> is an addition — the group facilitator who keeps the discussion on track and ensures all hats get equal time.</p>
+  <p class="hats-intro">The <strong>Six Thinking Hats</strong> method (Edward de Bono) structures group discussion so everyone thinks from the same perspective at the same time. The <strong>👑 Royal Hat</strong> is our addition — the group facilitator. Share this page link with participants so they can read their own hat before the session: <strong>hats.html</strong></p>
 
-  <div class="hats-grid">
+  <div class="hats-row">
     <div class="hat-card hat-royal">
-      <div class="hat-card-top"><div class="hat-emoji">👑</div><div><div class="hat-card-title">Royal / Purple Hat</div><div class="hat-card-sub">The Facilitator · 1 per group</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">👑</div><div class="hat-card-title">Royal Hat</div><div class="hat-card-sub">Facilitator · 1 per group</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Keeps the discussion structured and balanced. Ensures no single hat dominates, manages time, and guides the group through each thinking mode.</div>
-      <div class="hat-card-qs">When wearing this hat, say:</div>
-      <div class="hat-card-q">"Let's hear the Yellow hat perspective now." · "We've spent enough time on Black hat — let's move to Green." · "Before we close, let's do a quick Red hat check."</div>
+      <ul class="hat-card-pts"><li>Guides the group through each hat</li><li>Manages time per hat</li><li>Ensures no voice dominates</li><li>Records commitments at close</li></ul>
+      <div class="hat-card-qs">SAY:</div>
+      <ul class="hat-card-q-pts"><li>"Let's hear Yellow hat now"</li><li>"Time to move to Green"</li><li>"Quick Red hat check before we close"</li></ul>
     </div>
     <div class="hat-card hat-white">
-      <div class="hat-card-top"><div class="hat-emoji">🤍</div><div><div class="hat-card-title">White Hat</div><div class="hat-card-sub">Facts & Data</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">🤍</div><div class="hat-card-title">White Hat</div><div class="hat-card-sub">Facts &amp; Data</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Focus purely on available data and information. What do we know? What do we need to find out? No opinions — just facts and figures.</div>
-      <div class="hat-card-qs">Questions to ask:</div>
-      <div class="hat-card-q">"What data do we have on this?" · "What are the facts?" · "What information is missing?" · "What does the survey data tell us?"</div>
+      <ul class="hat-card-pts"><li>Focus on data only</li><li>No opinions or feelings</li><li>State what is known</li><li>Identify information gaps</li></ul>
+      <div class="hat-card-qs">ASK:</div>
+      <ul class="hat-card-q-pts"><li>"What does the data say?"</li><li>"What facts do we have?"</li><li>"What information is missing?"</li></ul>
     </div>
     <div class="hat-card hat-red">
-      <div class="hat-card-top"><div class="hat-emoji">❤️</div><div><div class="hat-card-title">Red Hat</div><div class="hat-card-sub">Emotions & Feelings</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">❤️</div><div class="hat-card-title">Red Hat</div><div class="hat-card-sub">Emotions &amp; Feelings</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Express feelings, intuitions, and gut reactions without needing to justify them. No logic required here — emotions are valid and important signals.</div>
-      <div class="hat-card-qs">Questions to ask:</div>
-      <div class="hat-card-q">"How does this AI change make you feel?" · "What is your gut reaction?" · "What excites or worries you most?"</div>
+      <ul class="hat-card-pts"><li>Share gut reactions freely</li><li>No justification needed</li><li>Intuition is valid here</li><li>Feelings are information</li></ul>
+      <div class="hat-card-qs">ASK:</div>
+      <ul class="hat-card-q-pts"><li>"How does this make you feel?"</li><li>"What's your instinct?"</li><li>"What excites or worries you?"</li></ul>
     </div>
     <div class="hat-card hat-yellow">
-      <div class="hat-card-top"><div class="hat-emoji">💛</div><div><div class="hat-card-title">Yellow Hat</div><div class="hat-card-sub">Optimism & Benefits</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">💛</div><div class="hat-card-title">Yellow Hat</div><div class="hat-card-sub">Benefits &amp; Optimism</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Explore the positives, benefits, and best-case outcomes. Be genuinely optimistic — even if sceptical, play the role of finding value and opportunity.</div>
-      <div class="hat-card-qs">Questions to ask:</div>
-      <div class="hat-card-q">"What is the best possible outcome?" · "How could this genuinely help HR?" · "What value does AI adoption unlock for our team?"</div>
+      <ul class="hat-card-pts"><li>Find the positives</li><li>Explore best-case outcomes</li><li>Play the optimist role</li><li>Look for opportunity</li></ul>
+      <div class="hat-card-qs">ASK:</div>
+      <ul class="hat-card-q-pts"><li>"What's the best outcome?"</li><li>"What value does this unlock?"</li><li>"What has already improved?"</li></ul>
     </div>
     <div class="hat-card hat-green">
-      <div class="hat-card-top"><div class="hat-emoji">💚</div><div><div class="hat-card-title">Green Hat</div><div class="hat-card-sub">Creativity & New Ideas</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">💚</div><div class="hat-card-title">Green Hat</div><div class="hat-card-sub">Ideas &amp; Creativity</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Generate alternatives, new possibilities, and creative solutions. No idea is too wild. Challenge assumptions and think laterally — the goal is quantity of ideas, not quality.</div>
-      <div class="hat-card-qs">Questions to ask:</div>
-      <div class="hat-card-q">"What if we tried this differently?" · "What completely new approach could work?" · "What would we do if there were no constraints?"</div>
+      <ul class="hat-card-pts"><li>Generate new ideas freely</li><li>No idea is too wild</li><li>Challenge assumptions</li><li>Quantity over quality</li></ul>
+      <div class="hat-card-qs">ASK:</div>
+      <ul class="hat-card-q-pts"><li>"What if we tried this?"</li><li>"What if there were no limits?"</li><li>"What completely new approach works?"</li></ul>
     </div>
     <div class="hat-card hat-blue">
-      <div class="hat-card-top"><div class="hat-emoji">💙</div><div><div class="hat-card-title">Blue Hat</div><div class="hat-card-sub">Process & Planning</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">💙</div><div class="hat-card-title">Blue Hat</div><div class="hat-card-sub">Process &amp; Planning</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Focus on structure, process, and next steps. What is the plan? Who does what? How will we organise our thinking and action? The Blue hat often opens and closes discussions.</div>
-      <div class="hat-card-qs">Questions to ask:</div>
-      <div class="hat-card-q">"What should our first step be?" · "How do we prioritise this?" · "What is the plan for the next 30 days?"</div>
+      <ul class="hat-card-pts"><li>Focus on structure</li><li>Define next steps</li><li>Organise the thinking</li><li>Opens and closes discussions</li></ul>
+      <div class="hat-card-qs">ASK:</div>
+      <ul class="hat-card-q-pts"><li>"What is our first step?"</li><li>"How do we prioritise?"</li><li>"What is the 30-day plan?"</li></ul>
     </div>
     <div class="hat-card hat-black">
-      <div class="hat-card-top"><div class="hat-emoji">🖤</div><div><div class="hat-card-title">Black Hat</div><div class="hat-card-sub">Caution & Judgement</div></div></div>
+      <div class="hat-card-top"><div class="hat-emoji">🖤</div><div class="hat-card-title">Black Hat</div><div class="hat-card-sub">Caution &amp; Judgement</div></div>
       <div class="hat-card-div"></div>
-      <div class="hat-card-role">Identify risks, problems, and why something might not work. Critical thinking at its most rigorous. This hat is not pessimism — it is logical caution protecting the group from mistakes.</div>
-      <div class="hat-card-qs">Questions to ask:</div>
-      <div class="hat-card-q">"What could go wrong?" · "What are the risks of this AI tool?" · "What biases or errors might we introduce?" · "What are we missing?"</div>
+      <ul class="hat-card-pts"><li>Identify risks and problems</li><li>Logical caution — not pessimism</li><li>Protect against mistakes</li><li>Ask the hard questions</li></ul>
+      <div class="hat-card-qs">ASK:</div>
+      <ul class="hat-card-q-pts"><li>"What could go wrong?"</li><li>"What biases might appear?"</li><li>"What are we missing?"</li></ul>
     </div>
   </div>
 
   <div class="discussion-guide">
-    <div class="dg-title">Suggested discussion sequence for your AI readiness debrief</div>
+    <div class="dg-title">Suggested AI readiness debrief sequence (approx 30 min)</div>
     <div class="dg-steps">
-      <div class="dg-step"><div class="dg-step-hat">💙</div><div class="dg-step-body"><div class="dg-step-title">Blue Hat — Set the agenda (3 min)</div><div class="dg-step-txt">Royal hat facilitator opens: share the survey results, set the goal for today's discussion, and explain the hat sequence.</div></div></div>
-      <div class="dg-step"><div class="dg-step-hat">🤍</div><div class="dg-step-body"><div class="dg-step-title">White Hat — The facts (5 min)</div><div class="dg-step-txt">Review the scatter matrix together. What does the data say? Which quadrant is largest? What is the average readiness score? No opinions yet.</div></div></div>
-      <div class="dg-step"><div class="dg-step-hat">❤️</div><div class="dg-step-body"><div class="dg-step-title">Red Hat — How we feel (4 min)</div><div class="dg-step-txt">Each person shares a one-word feeling about AI in HR right now. No justification needed. Royal hat records the mood of the room.</div></div></div>
-      <div class="dg-step"><div class="dg-step-hat">💛</div><div class="dg-step-body"><div class="dg-step-title">Yellow Hat — The upside (5 min)</div><div class="dg-step-txt">What excites you most about AI in HR? What would be possible if we fully embraced it? What has already improved?</div></div></div>
-      <div class="dg-step"><div class="dg-step-hat">🖤</div><div class="dg-step-body"><div class="dg-step-title">Black Hat — The risks (5 min)</div><div class="dg-step-txt">What could go wrong? What are the legitimate concerns: bias, job loss, privacy, quality? Name them directly so they can be addressed.</div></div></div>
-      <div class="dg-step"><div class="dg-step-hat">💚</div><div class="dg-step-body"><div class="dg-step-title">Green Hat — New ideas (6 min)</div><div class="dg-step-txt">Given everything discussed: what should we try first? What creative solutions address the Black hat risks while capturing the Yellow hat opportunities?</div></div></div>
-      <div class="dg-step"><div class="dg-step-hat">💙</div><div class="dg-step-body"><div class="dg-step-title">Blue Hat — Commit & close (5 min)</div><div class="dg-step-txt">Each person states one action they will take in the next 30 days. Royal hat records commitments and agrees on the next check-in date.</div></div></div>
+      <div class="dg-step"><div class="dg-step-hat">👑</div><div class="dg-step-body"><div class="dg-step-title">Royal — Open (2 min)</div><ul class="dg-step-pts"><li>Share survey results</li><li>Explain hat sequence</li><li>Set discussion goal</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💙</div><div class="dg-step-body"><div class="dg-step-title">Blue — Agenda (2 min)</div><ul class="dg-step-pts"><li>Agree on today's focus</li><li>Set time per hat</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">🤍</div><div class="dg-step-body"><div class="dg-step-title">White — Facts (5 min)</div><ul class="dg-step-pts"><li>Review scatter matrix</li><li>Note quadrant counts</li><li>State avg score</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">❤️</div><div class="dg-step-body"><div class="dg-step-title">Red — Feelings (3 min)</div><ul class="dg-step-pts"><li>One word per person</li><li>No justification</li><li>Record the mood</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💛</div><div class="dg-step-body"><div class="dg-step-title">Yellow — Upsides (4 min)</div><ul class="dg-step-pts"><li>What excites us about AI?</li><li>What's already working?</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">🖤</div><div class="dg-step-body"><div class="dg-step-title">Black — Risks (4 min)</div><ul class="dg-step-pts"><li>Name the real concerns</li><li>Bias, privacy, job fears</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💚</div><div class="dg-step-body"><div class="dg-step-title">Green — Ideas (5 min)</div><ul class="dg-step-pts"><li>What should we try first?</li><li>Solutions to Black hat risks</li></ul></div></div>
+      <div class="dg-step"><div class="dg-step-hat">💙</div><div class="dg-step-body"><div class="dg-step-title">Blue — Commit (5 min)</div><ul class="dg-step-pts"><li>One action per person</li><li>Set next check-in date</li></ul></div></div>
     </div>
   </div>
 </div>
@@ -646,18 +656,11 @@ function updStats(){
 
   // Fan gauge
   const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
-  document.getElementById('fan-score').textContent=avg!==null?avg+'%':'—';
-  document.getElementById('fan-label').textContent=avg!==null?rlabel(avg):'No data yet';
-  if(avg!==null){
-    // Map 0–100% to -90° to +90° (left to right arc)
-    const angle=-90+(avg/100)*180;
-    const rad=angle*Math.PI/180;
-    const r=75;
-    const x2=100+r*Math.cos(rad);
-    const y2=100+r*Math.sin(rad);
-    document.getElementById('fan-needle').setAttribute('x2',x2.toFixed(1));
-    document.getElementById('fan-needle').setAttribute('y2',y2.toFixed(1));
-  }
+  // Thermometer fill
+  document.getElementById('thermo-score').textContent = avg !== null ? avg + '%' : '—';
+  document.getElementById('thermo-label').textContent = avg !== null ? rlabel(avg) : 'No data yet';
+  const fill = document.getElementById('thermo-fill');
+  if (fill) fill.style.height = avg !== null ? Math.min(avg, 100) + '%' : '0%';
 
   // Largest quadrant
   let maxQ='',maxN=0;
@@ -982,11 +985,27 @@ function genHats(){
   };
 
   document.getElementById('g-out-hats').innerHTML=
-    '<div class="g-out">'+groups.map((g,i)=>`
-      <div class="gc" style="border-top:3px solid #6D28D9">
+    '<div class="g-out">'+groups.map((g,i)=>{
+      // Sort members by hat order for easy reading
+      const hatOrder=['royal','white','red','yellow','green','blue','black'];
+      const sorted=[...g].sort((a,b)=>hatOrder.indexOf(a.hat)-hatOrder.indexOf(b.hat));
+      // Group rows by hat within the card
+      const byHat={};
+      sorted.forEach(p=>{if(!byHat[p.hat])byHat[p.hat]=[];byHat[p.hat].push(p);});
+      let membersHtml='';
+      hatOrder.forEach(h=>{
+        if(!byHat[h])return;
+        const hi=hatInfo[h]||hatInfo.white;
+        membersHtml+=`<div style="margin-bottom:6px">
+          <div style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:${hi.bg};color:${hi.txt};display:inline-block;margin-bottom:4px">${hi.label} · ${hi.desc}</div>
+          ${byHat[h].map(p=>`<div class="gc-mem" style="background:${hi.bg};margin-bottom:3px"><span style="color:${hi.txt};font-weight:600;font-size:13px">${p.name||'?'}</span></div>`).join('')}
+        </div>`;
+      });
+      return`<div class="gc" style="border-top:3px solid #6D28D9">
         <div class="gc-hdr"><div class="gc-title">Group ${i+1}</div><div class="gc-cnt">${g.length} members</div></div>
-        <div class="gc-members">${g.map(p=>{const h=hatInfo[p.hat]||hatInfo.white;return`<div class="gc-mem" style="background:${h.bg}"><span class="gc-mem-badge" style="background:rgba(0,0,0,0.1);color:${h.txt}">${h.label}</span><span style="color:${h.txt};font-weight:600">${p.name||'?'}</span></div>`;}).join('')}</div>
-      </div>`).join('')+'</div>';
+        ${membersHtml}
+      </div>`;
+    }).join('')+'</div>';
 
   document.getElementById('btn-hats-reshuffle').style.display='inline-block';
 }
