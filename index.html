@@ -213,7 +213,9 @@ function calcQuad(){
   const eQs=QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
   const aScore=aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(aQs.length*3);
   const eScore=eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(eQs.length*3);
-  return eScore>=0.5?(aScore>=0.5?'TR':'TL'):(aScore>=0.5?'BR':'BL');
+  // Thresholds: awareness >= 0.5 (avg option C), excitement >= 0.55 (between B and C)
+  // This prevents "normal professional" answers from inflating excitement scores
+  return eScore>=0.55?(aScore>=0.5?'TR':'TL'):(aScore>=0.5?'BR':'BL');
 }
 
 async function submitQuiz(){

@@ -112,8 +112,8 @@ const QUESTIONS = [
     q: "How do you feel about employees interacting with AI chatbots for HR queries instead of a human?",
     o: [
       "Very uncomfortable — HR should always be human",
-      "Uncomfortable for most situations",
-      "Fine for routine queries, humans for complex issues",
+      "Uncomfortable — I prefer human interaction for most things",
+      "Cautiously open — fine for simple queries only",
       "Fully supportive — it frees HR for more strategic work"
     ]
   },
@@ -193,9 +193,9 @@ const QUESTIONS = [
     q: "How confident are you that you will thrive in an AI-enabled HR environment over the next 3 years?",
     o: [
       "Not confident — I'm worried about falling behind",
-      "Somewhat unsure — I'll adapt but it will be difficult",
-      "Fairly confident — I'm developing the right skills",
-      "Very confident — I'm ready and actively preparing"
+      "Uncertain — I'll manage but it will be a stretch",
+      "Fairly confident — I'm actively building the right skills",
+      "Very confident — I'm already ahead of where I need to be"
     ]
   },
   {
@@ -203,10 +203,10 @@ const QUESTIONS = [
     axis: "excitement",
     q: "How motivated are you to upskill in AI-related competencies in the next 12 months?",
     o: [
-      "Not motivated — I don't see the value",
-      "Slightly motivated — I'd do it if required",
-      "Motivated — I plan to pursue this proactively",
-      "Very motivated — I've already started upskilling"
+      "Not motivated — I don't see the value for my role",
+      "Slightly motivated — I'd do it only if it was required",
+      "Motivated — I have a specific plan to upskill this year",
+      "Very motivated — I've already started and am making progress"
     ]
   },
   {
@@ -214,21 +214,21 @@ const QUESTIONS = [
     axis: "excitement",
     q: "Which statement best reflects your view on AI's impact on HR over the next 5 years?",
     o: [
-      "AI will disrupt HR in ways that concern me greatly",
-      "AI will change HR but most of it makes me uneasy",
-      "AI will transform HR mostly for the better",
+      "AI will disrupt HR in ways that worry me greatly",
+      "AI will bring changes I find mostly unsettling",
+      "AI will improve HR, though I have some reservations",
       "AI will elevate HR into a far more strategic function"
     ]
   },
   {
     section: "Future Outlook & Confidence",
     axis: "excitement",
-    q: "How likely are you to recommend an AI tool to a colleague if you found it useful?",
+    q: "How likely are you to proactively recommend or introduce an AI tool to your team?",
     o: [
-      "Unlikely — I prefer people find their own way",
-      "Possibly — if they specifically asked me",
-      "Likely — I'd mention it naturally in conversation",
-      "Very likely — I'd actively share and demonstrate it"
+      "Very unlikely — I'd leave that to others",
+      "Unlikely — only if someone directly asked me",
+      "Likely — I'd suggest it if I found something genuinely useful",
+      "Very likely — I actively look for tools to share with the team"
     ]
   },
   {
@@ -237,8 +237,8 @@ const QUESTIONS = [
     q: "Complete this sentence: 'My role in SMRT's AI journey is…'",
     o: [
       "…not something I've thought about",
-      "…to support whatever is decided for me",
-      "…to adapt, learn, and contribute as changes happen",
+      "…to follow along and support what is decided",
+      "…to stay informed and contribute when I can",
       "…to help lead, shape, and accelerate our AI adoption"
     ]
   }
