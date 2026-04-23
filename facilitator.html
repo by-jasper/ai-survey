@@ -80,22 +80,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sq-count{font-size:11px;opacity:0.65;margin-bottom:10px}
 .sq-brief{font-size:12px;line-height:1.6;opacity:0.82}
 
-/* Avg readiness — vertical thermometer */
-.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;flex:1 1 0;min-height:0}
-.sc-avg .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:5px}
+/* Avg readiness — horizontal linear bar */
+.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;flex:0 0 auto}
+.sc-avg .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:5px}
 .info-i{width:15px;height:15px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
 .info-i .tip{display:none;position:absolute;top:18px;right:0;background:var(--navy);color:#fff;font-size:11px;line-height:1.55;padding:9px 12px;border-radius:8px;width:230px;z-index:50;font-weight:400;pointer-events:none}
 .info-i:hover .tip{display:block}
-.thermo-body{display:flex;gap:14px;align-items:flex-end;height:180px}
-.thermo-col{display:flex;flex-direction:column;align-items:center;gap:0;height:100%}
-.thermo-tube{width:22px;flex:1;border-radius:11px 11px 0 0;background:var(--border);overflow:hidden;position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1)}
-.thermo-fill{position:absolute;bottom:0;left:0;width:100%;border-radius:0;transition:height .7s cubic-bezier(.4,0,.2,1);background:linear-gradient(to top,#3B82F6 0%,#10B981 33%,#F59E0B 66%,#EF4444 100%)}
-.thermo-bulb{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#EF4444,#DC2626);border:3px solid var(--white);box-shadow:0 0 0 2px var(--border);flex-shrink:0}
-.thermo-labels{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding-bottom:14px}
-.thermo-tick{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap}
-.thermo-tick-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.thermo-score-big{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-top:10px;text-align:center}
-.thermo-score-lbl{font-size:12px;color:var(--muted);font-weight:600;text-align:center;margin-top:3px}
+.meter-wrap{position:relative;margin-bottom:8px}
+.meter-track{width:100%;height:14px;border-radius:99px;background:linear-gradient(to right,#3B82F6 0%,#10B981 40%,#F59E0B 65%,#EF4444 100%);position:relative}
+.meter-pointer{position:absolute;top:-5px;width:4px;height:24px;background:var(--navy);border-radius:2px;transform:translateX(-50%);transition:left .6s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,0.25)}
+.meter-labels{display:flex;justify-content:space-between;margin-top:5px}
+.meter-lbl{font-size:9px;color:var(--muted);font-weight:600;text-align:center;flex:1}
+.meter-score{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-top:12px;text-align:center}
+.meter-stage{font-size:12px;color:var(--muted);font-weight:600;text-align:center;margin-top:3px;margin-bottom:10px}
+.meter-desc{font-size:12px;color:var(--muted);line-height:1.6;background:var(--bg);border-radius:8px;padding:10px 12px}
 
 /* ── Interpretation flip cards ── */
 .interp-grid{display:flex;flex-direction:column;gap:16px}
@@ -299,25 +297,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="sq-brief" id="sq-brief"></div>
       </div>
 
-      <!-- Avg readiness — vertical thermometer -->
+      <!-- Avg readiness — horizontal linear meter -->
       <div class="sc-avg">
         <div class="lbl">AVG READINESS SCORE
-          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Early Stage &lt;40%<br>🟢 Emerging 40–59%<br>🟡 Progressing 60–74%<br>🔴 AI-Ready 75%+</div></span>
+          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Early Stage &lt;40% · 🟢 Emerging 40–59% · 🟡 Progressing 60–74% · 🔴 AI-Ready 75%+</div></span>
         </div>
-        <div class="thermo-body">
-          <div class="thermo-col">
-            <div class="thermo-tube"><div class="thermo-fill" id="thermo-fill" style="height:0%"></div></div>
-            <div class="thermo-bulb"></div>
+        <div class="meter-wrap">
+          <div class="meter-track">
+            <div class="meter-pointer" id="meter-pointer" style="left:0%"></div>
           </div>
-          <div class="thermo-labels">
-            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#EF4444"></div>AI-Ready (75%+)</div>
-            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#F59E0B"></div>Progressing (60–74%)</div>
-            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#10B981"></div>Emerging (40–59%)</div>
-            <div class="thermo-tick"><div class="thermo-tick-dot" style="background:#3B82F6"></div>Early Stage (&lt;40%)</div>
+          <div class="meter-labels">
+            <span class="meter-lbl">Early Stage</span>
+            <span class="meter-lbl">Emerging</span>
+            <span class="meter-lbl">Progressing</span>
+            <span class="meter-lbl">AI-Ready</span>
           </div>
         </div>
-        <div class="thermo-score-big" id="thermo-score">—</div>
-        <div class="thermo-score-lbl" id="thermo-label">No data yet</div>
+        <div class="meter-score" id="meter-score">—</div>
+        <div class="meter-stage" id="meter-stage">No data yet</div>
+        <div class="meter-desc" id="meter-desc"></div>
       </div>
 
     </div>
@@ -656,11 +654,19 @@ function updStats(){
 
   // Fan gauge
   const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
-  // Thermometer fill
-  document.getElementById('thermo-score').textContent = avg !== null ? avg + '%' : '—';
-  document.getElementById('thermo-label').textContent = avg !== null ? rlabel(avg) : 'No data yet';
-  const fill = document.getElementById('thermo-fill');
-  if (fill) fill.style.height = avg !== null ? Math.min(avg, 100) + '%' : '0%';
+  // Linear meter
+  const meterDescs = {
+    'Early Stage':'The team is at the start of the AI journey. Focus on building awareness and psychological safety before tool adoption.',
+    'Emerging':'Growing awareness with pockets of enthusiasm. Structured upskilling and pilot programmes will accelerate progress.',
+    'Progressing':'Good momentum. Consolidate pilots, address sceptics\' concerns, and build governance frameworks now.',
+    'AI-Ready':'The team has strong AI literacy and confidence. Focus shifts to leading others and scaling responsible adoption.'
+  };
+  document.getElementById('meter-score').textContent = avg !== null ? avg + '%' : '—';
+  const stage = avg !== null ? rlabel(avg) : '';
+  document.getElementById('meter-stage').textContent = avg !== null ? stage : 'No data yet';
+  document.getElementById('meter-desc').textContent = stage ? (meterDescs[stage] || '') : '';
+  const ptr = document.getElementById('meter-pointer');
+  if (ptr) ptr.style.left = avg !== null ? Math.min(Math.max(avg, 2), 98) + '%' : '0%';
 
   // Largest quadrant
   let maxQ='',maxN=0;
@@ -934,71 +940,65 @@ function genHats(){
   if(!allData.length){alert('No responses yet.');return;}
   if(n>allData.length){alert('Cannot create more groups than participants ('+allData.length+').');return;}
 
-  // Hat assignment rules:
-  // - 1 Royal per group (facilitator)
-  // - Equal count of each of the 6 colour hats across all groups
-  // - Groups may vary in total size
-  // Colour hats: white, red, yellow, green, blue, black (6 hats × n groups slots)
-  const COLOUR_HATS=['white','red','yellow','green','blue','black'];
+  const HAT_ORDER=['royal','white','red','yellow','green','blue','black'];
+  const HAT_INFO={
+    royal: {label:'👑 Royal',  desc:'Facilitator', bg:'#EDE9FE', txt:'#4C1D95'},
+    white: {label:'🤍 White',  desc:'Facts',        bg:'#F1F5F9', txt:'#334155'},
+    red:   {label:'❤️ Red',    desc:'Emotion',      bg:'#FEE2E2', txt:'#991B1B'},
+    yellow:{label:'💛 Yellow', desc:'Benefits',     bg:'#FEF9C3', txt:'#854D0E'},
+    green: {label:'💚 Green',  desc:'Ideas',        bg:'#DCFCE7', txt:'#166534'},
+    blue:  {label:'💙 Blue',   desc:'Planning',     bg:'#DBEAFE', txt:'#1E40AF'},
+    black: {label:'🖤 Black',  desc:'Judgement',    bg:'#E5E7EB', txt:'#111827'},
+    observer:{label:'👀 Observer',desc:'Listen & note',bg:'#F1F5F9',txt:'#64748B'}
+  };
+
   const shuffled=[...allData].sort(()=>Math.random()-0.5);
-  const total=shuffled.length;
+  const groups=Array.from({length:n},()=>[]);
 
-  // Build assignment list
-  // First: assign 1 royal per group (n royals total)
-  // Remaining: fill colour hats equally across groups, round-robin each hat type
-  const assignments=[]; // {person, hat, group (0-based)}
-
-  // Royals: first n people
+  // Assign 1 person per hat per group (7 hats × n groups = 7n slots)
+  // Any remaining participants become observers, distributed round-robin across groups
   let idx=0;
-  const royalCount=Math.min(n,total);
-  for(let g=0;g<royalCount;g++){assignments.push({person:shuffled[idx++],hat:'royal',group:g});}
-
-  // Remaining people get colour hats in a balanced way
-  // Strategy: cycle through groups, within each group cycle through colour hats
-  // so each group gets equal colour hat distribution
-  const remaining=shuffled.slice(idx);
-  // how many complete rounds of all 6 colours fit per group?
-  const perGroup=Math.floor(remaining.length/n);
-  const leftover=remaining.length%n;
-  // Build colour hat sequence: for each group, assign colour hats round-robin
-  let ri=0;
+  // First fill one of each hat per group
   for(let g=0;g<n;g++){
-    const slots=perGroup+(g<leftover?1:0);
-    for(let s=0;s<slots;s++){
-      const hat=COLOUR_HATS[s%COLOUR_HATS.length];
-      assignments.push({person:remaining[ri++],hat,group:g});
+    for(let h=0;h<HAT_ORDER.length;h++){
+      if(idx<shuffled.length){
+        groups[g].push({...shuffled[idx++], hat:HAT_ORDER[h]});
+      }
     }
   }
-
-  // Build groups array
-  const groups=Array.from({length:n},()=>[]);
-  assignments.forEach(a=>groups[a.group].push({...a.person,hat:a.hat}));
-
-  const hatInfo={
-    royal:{label:'👑 Royal',   bg:'#EDE9FE',txt:'#4C1D95'},
-    white:{label:'🤍 White',   bg:'#F1F5F9',txt:'#334155'},
-    red:  {label:'❤️ Red',     bg:'#FEE2E2',txt:'#991B1B'},
-    yellow:{label:'💛 Yellow', bg:'#FEF9C3',txt:'#854D0E'},
-    green:{label:'💚 Green',   bg:'#DCFCE7',txt:'#166534'},
-    blue: {label:'💙 Blue',    bg:'#DBEAFE',txt:'#1E40AF'},
-    black:{label:'🖤 Black',   bg:'#E5E7EB',txt:'#111827'}
-  };
+  // Remaining people → observers
+  while(idx<shuffled.length){
+    const g=idx%n;
+    groups[g].push({...shuffled[idx++], hat:'observer'});
+    idx++;
+  }
+  // Fix: idx was double-incremented above, redo observer assignment cleanly
+  // Re-do from scratch cleanly:
+  idx=0;
+  groups.forEach(g=>g.length=0);
+  for(let g=0;g<n;g++){
+    HAT_ORDER.forEach(h=>{
+      if(idx<shuffled.length) groups[g].push({...shuffled[idx++], hat:h});
+    });
+  }
+  let obs=0;
+  while(idx<shuffled.length){
+    groups[obs%n].push({...shuffled[idx++], hat:'observer'});
+    obs++;
+  }
 
   document.getElementById('g-out-hats').innerHTML=
     '<div class="g-out">'+groups.map((g,i)=>{
-      // Sort members by hat order for easy reading
-      const hatOrder=['royal','white','red','yellow','green','blue','black'];
-      const sorted=[...g].sort((a,b)=>hatOrder.indexOf(a.hat)-hatOrder.indexOf(b.hat));
-      // Group rows by hat within the card
+      const sorted=[...g].sort((a,b)=>['royal','white','red','yellow','green','blue','black','observer'].indexOf(a.hat)-['royal','white','red','yellow','green','blue','black','observer'].indexOf(b.hat));
       const byHat={};
       sorted.forEach(p=>{if(!byHat[p.hat])byHat[p.hat]=[];byHat[p.hat].push(p);});
       let membersHtml='';
-      hatOrder.forEach(h=>{
+      [...HAT_ORDER,'observer'].forEach(h=>{
         if(!byHat[h])return;
-        const hi=hatInfo[h]||hatInfo.white;
-        membersHtml+=`<div style="margin-bottom:6px">
-          <div style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:${hi.bg};color:${hi.txt};display:inline-block;margin-bottom:4px">${hi.label} · ${hi.desc}</div>
-          ${byHat[h].map(p=>`<div class="gc-mem" style="background:${hi.bg};margin-bottom:3px"><span style="color:${hi.txt};font-weight:600;font-size:13px">${p.name||'?'}</span></div>`).join('')}
+        const hi=HAT_INFO[h];
+        membersHtml+=`<div style="margin-bottom:8px">
+          <div style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px;background:${hi.bg};color:${hi.txt};display:inline-block;margin-bottom:4px">${hi.label} · ${hi.desc}</div>
+          ${byHat[h].map(p=>`<div style="font-size:13px;font-weight:600;padding:5px 10px;background:${hi.bg};color:${hi.txt};border-radius:6px;margin-bottom:3px">${p.name||'?'}</div>`).join('')}
         </div>`;
       });
       return`<div class="gc" style="border-top:3px solid #6D28D9">
@@ -1009,6 +1009,7 @@ function genHats(){
 
   document.getElementById('btn-hats-reshuffle').style.display='inline-block';
 }
+
 
 /* ── Reset ── */
 async function doReset(){

@@ -84,37 +84,37 @@ html,body{min-height:100vh;background:var(--bg);font-family:-apple-system,BlinkM
     <div class="home-sub">Select the hat you have been assigned to read your role and discussion guide.</div>
 
     <div class="hat-picker" id="hat-picker">
-      <div class="hat-btn" id="hbtn-royal" style="background:#EDE9FE;color:#4C1D95" onclick="selectHat('royal')">
+      <div class="hat-btn" id="hbtn-royal" style="background:#EDE9FE;color:#4C1D95" onclick="goToRole('royal')">
         <div class="hat-emoji-big">👑</div>
         <div class="hat-name">Royal Hat</div>
         <div class="hat-sub">Facilitator</div>
       </div>
-      <div class="hat-btn" id="hbtn-white" style="background:#F1F5F9;color:#334155" onclick="selectHat('white')">
+      <div class="hat-btn" id="hbtn-white" style="background:#F1F5F9;color:#334155" onclick="goToRole('white')">
         <div class="hat-emoji-big">🤍</div>
         <div class="hat-name">White Hat</div>
         <div class="hat-sub">Facts &amp; Data</div>
       </div>
-      <div class="hat-btn" id="hbtn-red" style="background:#FEE2E2;color:#991B1B" onclick="selectHat('red')">
+      <div class="hat-btn" id="hbtn-red" style="background:#FEE2E2;color:#991B1B" onclick="goToRole('red')">
         <div class="hat-emoji-big">❤️</div>
         <div class="hat-name">Red Hat</div>
         <div class="hat-sub">Emotions</div>
       </div>
-      <div class="hat-btn" id="hbtn-yellow" style="background:#FEF9C3;color:#854D0E" onclick="selectHat('yellow')">
+      <div class="hat-btn" id="hbtn-yellow" style="background:#FEF9C3;color:#854D0E" onclick="goToRole('yellow')">
         <div class="hat-emoji-big">💛</div>
         <div class="hat-name">Yellow Hat</div>
         <div class="hat-sub">Benefits</div>
       </div>
-      <div class="hat-btn" id="hbtn-green" style="background:#DCFCE7;color:#166534" onclick="selectHat('green')">
+      <div class="hat-btn" id="hbtn-green" style="background:#DCFCE7;color:#166534" onclick="goToRole('green')">
         <div class="hat-emoji-big">💚</div>
         <div class="hat-name">Green Hat</div>
         <div class="hat-sub">Ideas</div>
       </div>
-      <div class="hat-btn" id="hbtn-blue" style="background:#DBEAFE;color:#1E40AF" onclick="selectHat('blue')">
+      <div class="hat-btn" id="hbtn-blue" style="background:#DBEAFE;color:#1E40AF" onclick="goToRole('blue')">
         <div class="hat-emoji-big">💙</div>
         <div class="hat-name">Blue Hat</div>
         <div class="hat-sub">Planning</div>
       </div>
-      <div class="hat-btn" id="hbtn-black" style="background:#E5E7EB;color:#111827" onclick="selectHat('black')">
+      <div class="hat-btn" id="hbtn-black" style="background:#E5E7EB;color:#111827" onclick="goToRole('black')">
         <div class="hat-emoji-big">🖤</div>
         <div class="hat-name">Black Hat</div>
         <div class="hat-sub">Judgement</div>
@@ -125,8 +125,6 @@ html,body{min-height:100vh;background:var(--bg);font-family:-apple-system,BlinkM
         <div class="hat-sub">How it works</div>
       </div>
     </div>
-
-    <button class="go-btn" id="go-btn" onclick="goToRole()" disabled>See My Role →</button>
   </div>
 </div>
 
@@ -177,8 +175,8 @@ html,body{min-height:100vh;background:var(--bg);font-family:-apple-system,BlinkM
         <div class="ri-body">The Royal hat keeps time. No single hat dominates the session. If Black hat is getting too much airtime, the Royal hat moves the group on.</div>
       </div>
       <div class="rule-item">
-        <div class="ri-top"><div class="ri-num">6</div><div class="ri-title">Close with a commitment</div></div>
-        <div class="ri-body">Every person leaves with one concrete action they will take in the next 30 days. The Royal hat records this and shares it back with the group within 48 hours.</div>
+        <div class="ri-top"><div class="ri-num">6</div><div class="ri-title">Close with a cross-group share</div></div>
+        <div class="ri-body">At the end of your group discussion, each group shares their top 2–3 insights with the whole room. Listen actively to other groups — their perspective from a different mix of hats will expand your own thinking.</div>
       </div>
 
       <div class="sequence-card" style="margin-top:20px">
@@ -210,7 +208,9 @@ const HATS = {
       'Enforce the one-hat-at-a-time rule if someone cross-hats',
       'Keep each hat segment to its time limit',
       'Record every commitment made at the end of the session',
-      'Do not share your personal opinion during the discussion'
+      'Do not share your personal opinion during the discussion',
+      'Close by asking each hat role to share their top insight with the group',
+      'Coordinate with other Royal hats on the cross-group share at the end'
     ],
     say:['"Let\'s hear the Yellow hat perspective now."','"We\'ve spent enough time on Black hat — moving to Green."','"Everyone in Red hat mode — one word, no explanation needed."','"Time\'s up on this hat. Let\'s move on."']
   },
@@ -302,41 +302,29 @@ function show(id){
   window.scrollTo(0,0);
 }
 
-function selectHat(h){
-  selHat=h;
-  document.querySelectorAll('.hat-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('hbtn-'+h)?.classList.add('selected');
-  document.getElementById('go-btn').disabled=false;
-}
-
-function goToRole(){
-  if(!selHat)return;
-  const hat=HATS[selHat];
-  const body=document.getElementById('role-body');
-  const page=document.getElementById('role-page-inner');
-  page.style.background=hat.bg;
-  page.style.color=hat.txt;
-
-  body.innerHTML=`
+function goToRole(h){
+  selHat = h;
+  const hat = HATS[h];
+  const body = document.getElementById('role-body');
+  const page = document.getElementById('role-page-inner');
+  page.style.background = hat.bg;
+  page.style.color = hat.txt;
+  body.innerHTML = `
     <div class="role-hat-big">${hat.emoji}</div>
     <div class="role-name">${hat.name}</div>
     <div class="role-tagline">${hat.tagline}</div>
-
     <div class="role-section">
       <div class="rs-label">YOUR JOB TODAY</div>
       <div class="rs-body">${hat.whatYouDo}</div>
     </div>
-
     <div class="role-section">
       <div class="rs-label">YOUR RULES</div>
       <ul class="rs-pts">${hat.yourRules.map(r=>`<li>${r}</li>`).join('')}</ul>
     </div>
-
     <div class="role-section">
       <div class="rs-label">THINGS YOU MIGHT SAY</div>
-      ${hat.say.map(s=>`<div class="rs-say">"${s.replace(/^"|"$/g,'')}"</div>`).join('')}
+      ${hat.say.map(s=>`<div class="rs-say">${s}</div>`).join('')}
     </div>
-
     <div class="role-reminder" style="background:rgba(0,0,0,0.07)">
       <strong>REMEMBER</strong>
       When the Royal hat announces a different hat, you switch too. The power of this method comes from <em>everyone</em> thinking with the same hat at the same time.
@@ -345,7 +333,7 @@ function goToRole(){
   show('s-role');
 }
 
-function showRules(){show('s-rules');}
+function showRules(){ show('s-rules'); }
 </script>
 </body>
 </html>
