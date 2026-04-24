@@ -742,11 +742,16 @@ function drawScatter(){
   const CW=W2-pL-pR,CH=H2-pT-pB;
   const counts={TL:0,TR:0,BL:0,BR:0};
   allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
+  // Threshold positions — must match calcQuad() logic in index.html
+  // Awareness threshold: 0.50, Excitement threshold: 0.55 (inverted Y — high excitement = top)
+  const xThresh = pL + 0.50 * CW;          // vertical divider at awareness=50%
+  const yThresh = pT + (1 - 0.55) * CH;    // horizontal divider at excitement=55%
+
   const qFills=[
-    {q:'TL',x:pL,     y:pT,     w:CW/2,h:CH/2,bg:'rgba(225,245,238,0.6)',txt:'#085041'},
-    {q:'TR',x:pL+CW/2,y:pT,     w:CW/2,h:CH/2,bg:'rgba(230,241,251,0.6)',txt:'#042C53'},
-    {q:'BL',x:pL,     y:pT+CH/2,w:CW/2,h:CH/2,bg:'rgba(250,238,218,0.6)',txt:'#412402'},
-    {q:'BR',x:pL+CW/2,y:pT+CH/2,w:CW/2,h:CH/2,bg:'rgba(250,236,231,0.6)',txt:'#4A1B0C'},
+    {q:'TL',x:pL,      y:pT,      w:xThresh-pL,     h:yThresh-pT,         bg:'rgba(225,245,238,0.6)',txt:'#085041'},
+    {q:'TR',x:xThresh, y:pT,      w:pL+CW-xThresh,  h:yThresh-pT,         bg:'rgba(230,241,251,0.6)',txt:'#042C53'},
+    {q:'BL',x:pL,      y:yThresh, w:xThresh-pL,     h:pT+CH-yThresh,      bg:'rgba(250,238,218,0.6)',txt:'#412402'},
+    {q:'BR',x:xThresh, y:yThresh, w:pL+CW-xThresh,  h:pT+CH-yThresh,      bg:'rgba(250,236,231,0.6)',txt:'#4A1B0C'},
   ];
   qFills.forEach(f=>{
     ctx.fillStyle=f.bg;ctx.fillRect(f.x,f.y,f.w,f.h);
@@ -761,13 +766,9 @@ function drawScatter(){
     ctx.fillText(counts[f.q],f.x+f.w/2,f.y+f.h/2+Math.round(CH/14));
     ctx.globalAlpha=1;
   });
-  // Divider lines — dashed at quadrant thresholds (awareness 0.50, excitement 0.55)
+  // Threshold divider lines (dashed)
   ctx.strokeStyle='rgba(100,116,139,0.35)';ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
-  // Awareness threshold at 0.50
-  const xThresh=pL+0.50*CW;
   ctx.beginPath();ctx.moveTo(xThresh,pT);ctx.lineTo(xThresh,pT+CH);ctx.stroke();
-  // Excitement threshold at 0.55 (inverted: high excitement = top)
-  const yThresh=pT+(1-0.55)*CH;
   ctx.beginPath();ctx.moveTo(pL,yThresh);ctx.lineTo(pL+CW,yThresh);ctx.stroke();
   ctx.setLineDash([]);
 
