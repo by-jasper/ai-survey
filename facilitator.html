@@ -502,7 +502,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-const GAS = 'https://script.google.com/macros/s/AKfycbxRoCBMx7W1GY2VLfuG1vV-s0Y72wQ-J5Ut1Ww0viIZ1auIq0bSRaciOLIUNP0L4m4Clg/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
 const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
@@ -644,7 +644,7 @@ function rlabel(s){return s>=75?'AI-Ready':s>=60?'Progressing':s>=40?'Emerging':
 /* ── Stats ── */
 function updStats(){
   const c={TL:0,TR:0,BL:0,BR:0},sc=[];
-  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score)sc.push(Number(r.score));});
+  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score!==null&&r.score!==undefined&&r.score!=='')sc.push(Number(r.score));});
   const tot=allData.length;
   document.getElementById('f-total').textContent=tot;
   document.getElementById('g-pool').textContent=tot;
@@ -708,7 +708,10 @@ function getScatterPoints(){
       // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
       // We know which half of each axis the person is in from their quad
       // Use overall score to distribute between the two axes proportionally
-      const overall = r.score ? Number(r.score)/100 : 0.5;
+      // Fix: score can be 0 (all-A), so check for null/undefined explicitly, not falsy
+      const overall = (r.score !== null && r.score !== undefined && r.score !== '') 
+                      ? Number(r.score) / 100 
+                      : 0.5;
       const q = r.quad || 'BL';
       const highA = q==='TR'||q==='BR'; // awareness >= 0.50
       const highE = q==='TL'||q==='TR'; // excitement >= 0.55
