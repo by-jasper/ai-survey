@@ -97,16 +97,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ── Interpretation flip cards ── */
 .interp-grid{display:flex;flex-direction:column;gap:16px}
-.flip-card{perspective:1000px;cursor:pointer}
-.flip-card.expanded{perspective:none}
-.flip-inner{position:relative;width:100%;min-height:180px;transition:transform .5s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.flip-card{cursor:pointer;position:relative}
+/* The inner wrapper holds both faces stacked */
+.flip-inner{position:relative;width:100%;transform-style:preserve-3d;perspective:1200px;transition:transform .46s cubic-bezier(.4,0,.2,1)}
 .flip-card.flipped .flip-inner{transform:rotateY(180deg)}
-.flip-card.expanded .flip-inner{transform:none;transition:none}
-.flip-front,.flip-back{position:absolute;top:0;left:0;width:100%;border-radius:14px;padding:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.flip-front{min-height:180px;display:flex;flex-direction:column;justify-content:space-between}
-.flip-back{transform:rotateY(180deg);padding:24px 26px}
-.flip-card.expanded .flip-front{display:none;visibility:hidden}
-.flip-card.expanded .flip-back{position:static;transform:none;backface-visibility:visible}
+/* Front: in normal document flow so card has height */
+.flip-front{position:relative;width:100%;border-radius:14px;padding:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;min-height:180px;display:flex;flex-direction:column;justify-content:space-between}
+/* Back: absolutely positioned on top of front — invisible until flipped */
+.flip-back{position:absolute;top:0;left:0;width:100%;border-radius:14px;padding:24px 26px;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);pointer-events:none}
+/* Once flipped: show back in normal flow, hide front */
+.flip-card.flipped .flip-front{visibility:hidden;pointer-events:none}
+.flip-card.flipped .flip-back{position:relative;pointer-events:auto}
+/* After flip animation done: remove transform so text renders sharply */
+.flip-card.done .flip-inner{transform:none;transition:none}
+.flip-card.done .flip-back{transform:none;backface-visibility:visible;-webkit-backface-visibility:visible}
 .ff-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
 .ff-name{font-size:20px;font-weight:700;line-height:1.2}
 .ff-tag{font-size:12px;opacity:0.58;margin-top:3px}
@@ -502,7 +506,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbxRoCBMx7W1GY2VLfuG1vV-s0Y72wQ-J5Ut1Ww0viIZ1auIq0bSRaciOLIUNP0L4m4Clg/exec';
 const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
@@ -890,14 +894,25 @@ function buildInterp(){
 
 function flipCard(q){
   const card=document.getElementById('fc-'+q);
+  const isDone=card.classList.contains('done');
   const isFlipped=card.classList.contains('flipped');
-  if(isFlipped){
-    card.classList.remove('expanded');
-    card.style.height='';
-    requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.remove('flipped')));
+
+  if(isFlipped||isDone){
+    // Collapse: restore front, remove done/flipped
+    card.classList.remove('done');
+    // Small delay so position:relative swap happens before rotation starts
+    requestAnimationFrame(()=>{
+      card.classList.remove('flipped');
+    });
   } else {
+    // Expand: flip, then after animation clean up transform for crisp text
     card.classList.add('flipped');
-    setTimeout(()=>card.classList.add('expanded'),480);
+    const inner=card.querySelector('.flip-inner');
+    const onEnd=()=>{
+      inner.removeEventListener('transitionend',onEnd);
+      card.classList.add('done');
+    };
+    inner.addEventListener('transitionend',onEnd);
   }
 }
 
