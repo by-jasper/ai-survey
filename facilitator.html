@@ -502,7 +502,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
-const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbxRoCBMx7W1GY2VLfuG1vV-s0Y72wQ-J5Ut1Ww0viIZ1auIq0bSRaciOLIUNP0L4m4Clg/exec';
 const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
@@ -692,25 +692,42 @@ const CLUSTER_R=12;
 function getScatterPoints(){
   return allData.map(r=>{
     let aRaw=0.5,eRaw=0.5;
+
     if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
+      // Full answers stored — compute exact scores
       let aSum=0,aCnt=0,eSum=0,eCnt=0;
       r.answers.forEach(a=>{
         const isA=AWARENESS_SECS.has(a.section);
         const s=Number(a.score||0);
         if(isA){aSum+=s;aCnt++;}else{eSum+=s;eCnt++;}
       });
-      // Clamp to 0.04–0.96 so dots at 0% and 100% are fully visible on canvas
-      if(aCnt>0)aRaw=Math.min(0.96,Math.max(0.04,aSum/(aCnt*3)));
-      if(eCnt>0)eRaw=Math.min(0.96,Math.max(0.04,eSum/(eCnt*3)));
+      if(aCnt>0)aRaw=aSum/(aCnt*3);
+      if(eCnt>0)eRaw=eSum/(eCnt*3);
     } else {
-      // Fallback: approximate from stored quad with name-seeded jitter
+      // Answers not stored — use quad + overall score to estimate position
+      // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
+      // We know which half of each axis the person is in from their quad
+      // Use overall score to distribute between the two axes proportionally
+      const overall = r.score ? Number(r.score)/100 : 0.5;
+      const q = r.quad || 'BL';
+      const highA = q==='TR'||q==='BR'; // awareness >= 0.50
+      const highE = q==='TL'||q==='TR'; // excitement >= 0.55
+
+      // Each axis gets half the overall score as a starting estimate
+      // then constrained to the correct half by the quad
+      const aBase = highA ? Math.max(0.50, overall) : Math.min(0.49, overall);
+      const eBase = highE ? Math.max(0.55, overall) : Math.min(0.54, overall);
+
+      // Add small name-seeded jitter for visual spread within the quadrant
       const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-      const jitter=k=>(((seed*k)%23)/23)*0.18-0.09;
-      const base={TL:{a:0.22,e:0.78},TR:{a:0.78,e:0.78},BL:{a:0.22,e:0.22},BR:{a:0.78,e:0.22}};
-      const b=base[r.quad]||{a:0.5,e:0.5};
-      aRaw=Math.min(0.96,Math.max(0.04,b.a+jitter(3)));
-      eRaw=Math.min(0.96,Math.max(0.04,b.e+jitter(7)));
+      const jitter=k=>(((seed*k)%31)/31)*0.14-0.07;
+      aRaw=Math.min(0.97,Math.max(0.03,aBase+jitter(3)));
+      eRaw=Math.min(0.97,Math.max(0.03,eBase+jitter(7)));
     }
+
+    // Final clamp — keep dots fully inside canvas (dot radius = 7px, pad=58px, so safe range)
+    aRaw=Math.min(0.96,Math.max(0.04,aRaw));
+    eRaw=Math.min(0.96,Math.max(0.04,eRaw));
     return{name:r.name||'?',aRaw,eRaw,quad:r.quad};
   });
 }
