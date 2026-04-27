@@ -708,29 +708,44 @@ function getScatterPoints(){
       });
       if(aCnt>0)aRaw=aSum/(aCnt*3);
       if(eCnt>0)eRaw=eSum/(eCnt*3);
+
+      // Precision guard: if the computed position contradicts the stored quad,
+      // the score landed exactly on a threshold boundary (integer rounding).
+      // Nudge 2% inside the correct side so the dot always matches its quadrant colour.
+      const q = r.quad||'BL';
+      const shouldBeHighA = q==='TR'||q==='BR';
+      const shouldBeHighE = q==='TL'||q==='TR';
+      if(shouldBeHighA  && aRaw < 0.50) aRaw = 0.52;
+      if(!shouldBeHighA && aRaw >= 0.50) aRaw = 0.48;
+      if(shouldBeHighE  && eRaw < 0.55) eRaw = 0.57;
+      if(!shouldBeHighE && eRaw >= 0.55) eRaw = 0.53;
     } else {
       // Answers not stored — use quad + overall score to estimate position
       // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
       // We know which half of each axis the person is in from their quad
       // Use overall score to distribute between the two axes proportionally
-      // Fix: score can be 0 (all-A), so check for null/undefined explicitly, not falsy
-      const overall = (r.score !== null && r.score !== undefined && r.score !== '') 
-                      ? Number(r.score) / 100 
+      // Fallback: place dot within the correct quadrant zone using overall score + jitter
+      // Use midpoint of each half as the base, not the threshold (avoids pinning to the line)
+      const overall = (r.score !== null && r.score !== undefined && r.score !== '')
+                      ? Number(r.score) / 100
                       : 0.5;
       const q = r.quad || 'BL';
-      const highA = q==='TR'||q==='BR'; // awareness >= 0.50
-      const highE = q==='TL'||q==='TR'; // excitement >= 0.55
+      const highA = q==='TR'||q==='BR';
+      const highE = q==='TL'||q==='TR';
 
-      // Each axis gets half the overall score as a starting estimate
-      // then constrained to the correct half by the quad
-      const aBase = highA ? Math.max(0.50, overall) : Math.min(0.49, overall);
-      const eBase = highE ? Math.max(0.55, overall) : Math.min(0.54, overall);
+      // Place in the correct half: High = range 0.52–0.96, Low = range 0.04–0.48
+      // This guarantees the dot never touches or crosses the threshold line
+      const aBase = highA
+        ? 0.52 + (overall * 0.44)          // maps 0–1 to 0.52–0.96
+        : 0.04 + ((1 - overall) * 0.44);   // maps 0–1 to 0.48–0.04 (inverted: low score → further left)
+      const eBase = highE
+        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (excitement threshold is 0.55)
+        : 0.04 + ((1 - overall) * 0.49);   // maps 0–1 to 0.53–0.04
 
-      // Add small name-seeded jitter for visual spread within the quadrant
       const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-      const jitter=k=>(((seed*k)%31)/31)*0.14-0.07;
-      aRaw=Math.min(0.97,Math.max(0.03,aBase+jitter(3)));
-      eRaw=Math.min(0.97,Math.max(0.03,eBase+jitter(7)));
+      const jitter=k=>(((seed*k)%31)/31)*0.08-0.04;
+      aRaw=Math.min(0.96,Math.max(0.04,aBase+jitter(3)));
+      eRaw=Math.min(0.96,Math.max(0.04,eBase+jitter(7)));
     }
 
     // Final clamp — keep dots fully inside canvas (dot radius = 7px, pad=58px, so safe range)
