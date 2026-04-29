@@ -38,7 +38,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tn-more{position:relative;display:flex;align-items:center}
 .more-menu{display:none;position:absolute;top:100%;left:0;min-width:220px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 24px rgba(15,23,42,0.14);z-index:90;padding:6px}
 .more-menu.open{display:block}
-.tn-more:hover .more-menu{display:block}
 .more-item{width:100%;text-align:left;border:none;background:transparent;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .more-item:hover{background:var(--bg);color:var(--text)}
 .more-item.active{background:var(--green-xl);color:var(--green-dark)}
@@ -770,13 +769,11 @@ function getScatterPoints(){
       }
 
       // Keep all points in the correct quadrant half for visual consistency.
-      const q = r.quad||'';
-      if(q){
-        const shouldBeHighA = q==='TR'||q==='BR';
-        const shouldBeHighE = q==='TL'||q==='TR';
-        if(shouldBeHighA) aRaw=Math.max(0.52,aRaw); else aRaw=Math.min(0.48,aRaw);
-        if(shouldBeHighE) eRaw=Math.max(0.57,eRaw); else eRaw=Math.min(0.53,eRaw);
-      }
+      const q = r.quad||'BL';
+      const shouldBeHighA = q==='TR'||q==='BR';
+      const shouldBeHighE = q==='TL'||q==='TR';
+      if(shouldBeHighA) aRaw=Math.max(0.52,aRaw); else aRaw=Math.min(0.48,aRaw);
+      if(shouldBeHighE) eRaw=Math.max(0.57,eRaw); else eRaw=Math.min(0.53,eRaw);
     } else {
       // Answers not stored — use quad + overall score to estimate position
       // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
