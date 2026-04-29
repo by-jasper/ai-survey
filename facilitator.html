@@ -35,6 +35,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tn{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;flex-shrink:0}
 .tn:hover{color:var(--text)}
 .tn.active{color:var(--navy);border-bottom-color:var(--green-l)}
+.tn-more{position:relative;display:flex;align-items:center}
+.more-menu{display:none;position:absolute;top:100%;left:0;min-width:220px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 24px rgba(15,23,42,0.14);z-index:90;padding:6px}
+.more-menu.open{display:block}
+.more-item{width:100%;text-align:left;border:none;background:transparent;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.more-item:hover{background:var(--bg);color:var(--text)}
+.more-item.active{background:var(--green-xl);color:var(--green-dark)}
 .tn-spacer{flex:1}
 .tn-reset{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--red);border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
 .tn-reset:hover{background:var(--red-l)}
@@ -257,9 +263,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
-  <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
-  <button class="tn"        id="tn-grouping"        onclick="go('grouping')">Grouping</button>
-  <button class="tn"        id="tn-hats"            onclick="go('hats')">Six Thinking Hats</button>
+  <div class="tn-more">
+    <button class="tn" id="tn-more" onclick="toggleMore(event)">More ▾</button>
+    <div class="more-menu" id="more-menu">
+      <button class="more-item" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
+      <button class="more-item" id="tn-grouping" onclick="go('grouping')">Grouping</button>
+      <button class="more-item" id="tn-hats" onclick="go('hats')">Six Thinking Hats</button>
+    </div>
+  </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
 </div>
@@ -601,17 +612,31 @@ let allData=[], selQ=null, interpBuilt=false;
 /* ── Navigation ── */
 const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
 function go(t){
+  document.getElementById('more-menu')?.classList.remove('open');
   PAGES.forEach(x=>{
     const tn = document.getElementById('tn-'+x);
-    if(tn) tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
+    if(tn){
+      if(x==='draw'||x==='grouping'||x==='hats'){
+        tn.className='more-item'+(x===t?' active':'');
+      }else{
+        tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
+      }
+    }
     const pg = document.getElementById('page-'+x);
     if(pg) pg.className = 'page'+(x===t?' active':'');
   });
+  const moreBtn=document.getElementById('tn-more');
+  if(moreBtn) moreBtn.className='tn'+(['draw','grouping','hats'].includes(t)?' active':'');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
+function toggleMore(e){
+  e.stopPropagation();
+  document.getElementById('more-menu')?.classList.toggle('open');
+}
+document.addEventListener('click',()=>document.getElementById('more-menu')?.classList.remove('open'));
 
 function swDraw(d){
   ['all','quad'].forEach(x=>{
@@ -709,16 +734,12 @@ function getScatterPoints(){
       if(aCnt>0)aRaw=aSum/(aCnt*3);
       if(eCnt>0)eRaw=eSum/(eCnt*3);
 
-      // Precision guard: if the computed position contradicts the stored quad,
-      // the score landed exactly on a threshold boundary (integer rounding).
-      // Nudge 2% inside the correct side so the dot always matches its quadrant colour.
+      // Keep all points in the correct quadrant half for visual consistency.
       const q = r.quad||'BL';
       const shouldBeHighA = q==='TR'||q==='BR';
       const shouldBeHighE = q==='TL'||q==='TR';
-      if(shouldBeHighA  && aRaw < 0.50) aRaw = 0.52;
-      if(!shouldBeHighA && aRaw >= 0.50) aRaw = 0.48;
-      if(shouldBeHighE  && eRaw < 0.55) eRaw = 0.57;
-      if(!shouldBeHighE && eRaw >= 0.55) eRaw = 0.53;
+      if(shouldBeHighA) aRaw=Math.max(0.52,aRaw); else aRaw=Math.min(0.48,aRaw);
+      if(shouldBeHighE) eRaw=Math.max(0.57,eRaw); else eRaw=Math.min(0.53,eRaw);
     } else {
       // Answers not stored — use quad + overall score to estimate position
       // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
