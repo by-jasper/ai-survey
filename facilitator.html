@@ -762,6 +762,11 @@ function getScatterPoints(){
       });
       if(aCnt>0)aRaw=aSum/(aCnt*3);
       if(eCnt>0)eRaw=eSum/(eCnt*3);
+      if(aCnt===0 || eCnt===0){
+        const overall=(r.score !== null && r.score !== undefined && r.score !== '') ? Number(r.score)/100 : 0.5;
+        if(aCnt===0) aRaw=overall;
+        if(eCnt===0) eRaw=overall;
+      }
 
       // Keep all points in the correct quadrant half for visual consistency.
       const q = r.quad||'BL';
