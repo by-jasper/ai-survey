@@ -168,7 +168,9 @@
 const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
 const LTR=['A','B','C','D'];
 let pName='',pAnswers={},curQ=0;
-const SURVEY_SET = (new URLSearchParams(location.search).get('set')||'pre').toLowerCase()==='post' ? 'post' : 'pre';
+const qsSet=(new URLSearchParams(location.search).get('set')||'').toLowerCase();
+const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
+const SURVEY_SET = (qsSet==='pre'||qsSet==='post') ? qsSet : (storedSet==='post'?'post':'pre');
 const ACTIVE_QUESTIONS = (typeof SURVEY_SETS!=='undefined' && SURVEY_SETS[SURVEY_SET]) ? SURVEY_SETS[SURVEY_SET] : QUESTIONS;
 
 document.getElementById('h-title').textContent=QUIZ_CONFIG.title;
