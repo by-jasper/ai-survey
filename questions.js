@@ -93,4 +93,4 @@ const QUADRANTS = {
 };
 
 // Export for use in index.html and facilitator.html
-if (typeof module !== 'undefined') module.exports = { QUIZ_CONFIG, QUESTIONS, QUADRANTS };
+if (typeof module !== 'undefined') module.exports = { QUIZ_CONFIG, SURVEY_SETS, QUESTIONS, QUADRANTS, AWARENESS_CHANGE_EXPLANATION };

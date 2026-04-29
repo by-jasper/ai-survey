@@ -262,6 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
+  <button class="tn"        id="tn-compare"         onclick="go('compare')">Pre/Post Insights</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
   <div class="tn-more">
     <button class="tn" id="tn-more" onclick="toggleMore(event)">More ▾</button>
@@ -273,6 +274,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
+</div>
+
+<div class="page" id="page-compare">
+  <div class="card">
+    <div class="card-title">Pre vs Post Readiness</div>
+    <div id="cmp-summary" style="font-size:14px;color:var(--muted);line-height:1.7">No data yet.</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
@@ -519,7 +527,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
-const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
+const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness','AI Practice & Reflection','AI Governance & Team']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
        brief:'Passionate about AI but still building practical skills. Energy and openness are their superpower.'},
@@ -610,7 +618,7 @@ const HAT_INFO = [
 let allData=[], selQ=null, interpBuilt=false;
 
 /* ── Navigation ── */
-const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
+const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
 function go(t){
   document.getElementById('more-menu')?.classList.remove('open');
   PAGES.forEach(x=>{
@@ -629,6 +637,7 @@ function go(t){
   if(moreBtn) moreBtn.className='tn'+(['draw','grouping','hats'].includes(t)?' active':'');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
+  if(t==='compare')        renderCompare();
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
@@ -715,6 +724,25 @@ function updStats(){
     document.getElementById('sq-count').textContent='No data yet';
     document.getElementById('sq-brief').textContent='';
   }
+  renderCompare();
+}
+
+function getSetStats(setKey){
+  const rows = allData.filter(r=>String(r.surveySet||'pre').toLowerCase()===setKey && r.score!==null && r.score!==undefined && r.score!=='');
+  if(!rows.length)return {count:0,avg:null};
+  const avg=Math.round(rows.reduce((s,r)=>s+Number(r.score||0),0)/rows.length);
+  return {count:rows.length,avg};
+}
+function renderCompare(){
+  const pre=getSetStats('pre');
+  const post=getSetStats('post');
+  const el=document.getElementById('cmp-summary');
+  if(!el)return;
+  const delta=(pre.avg!==null && post.avg!==null)?(post.avg-pre.avg):null;
+  el.innerHTML=
+    `<div><strong>Pre-game average:</strong> ${pre.avg!==null?pre.avg+'%':'—'} <span style="color:var(--muted)">(${pre.count} responses)</span></div>
+     <div><strong>Post-game average:</strong> ${post.avg!==null?post.avg+'%':'—'} <span style="color:var(--muted)">(${post.count} responses)</span></div>
+     <div><strong>Change (Post - Pre):</strong> ${delta===null?'—':(delta>0?'+':'')+delta+'%'}</div>`;
 }
 
 /* ── Scatter ── */
@@ -727,7 +755,8 @@ function getScatterPoints(){
       // Full answers stored — compute exact scores
       let aSum=0,aCnt=0,eSum=0,eCnt=0;
       r.answers.forEach(a=>{
-        const isA=AWARENESS_SECS.has(a.section);
+        const axis = a.axis || (AWARENESS_SECS.has(a.section) ? 'awareness' : 'excitement');
+        const isA = axis==='awareness';
         const s=Number(a.score||0);
         if(isA){aSum+=s;aCnt++;}else{eSum+=s;eCnt++;}
       });

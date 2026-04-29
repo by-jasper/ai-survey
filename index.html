@@ -168,12 +168,14 @@
 const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
 const LTR=['A','B','C','D'];
 let pName='',pAnswers={},curQ=0;
+const SURVEY_SET = (new URLSearchParams(location.search).get('set')||'pre').toLowerCase()==='post' ? 'post' : 'pre';
+const ACTIVE_QUESTIONS = (typeof SURVEY_SETS!=='undefined' && SURVEY_SETS[SURVEY_SET]) ? SURVEY_SETS[SURVEY_SET] : QUESTIONS;
 
 document.getElementById('h-title').textContent=QUIZ_CONFIG.title;
 document.getElementById('h-sub').textContent=QUIZ_CONFIG.subtitle;
 document.getElementById('h-org').textContent=QUIZ_CONFIG.org;
-document.getElementById('p-q').textContent=QUESTIONS.length+' questions';
-document.getElementById('p-t').textContent=[...new Set(QUESTIONS.map(q=>q.section))].length+' topics';
+document.getElementById('p-q').textContent=ACTIVE_QUESTIONS.length+' questions';
+document.getElementById('p-t').textContent=[...new Set(ACTIVE_QUESTIONS.map(q=>q.section))].length+' topics';
 document.getElementById('p-m').textContent='~'+QUIZ_CONFIG.estimatedMinutes+' minutes';
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
@@ -186,10 +188,10 @@ function startQuiz(){
 }
 
 function renderQ(){
-  const q=QUESTIONS[curQ];
-  document.getElementById('prog').style.width=((curQ+1)/QUESTIONS.length*100)+'%';
+  const q=ACTIVE_QUESTIONS[curQ];
+  document.getElementById('prog').style.width=((curQ+1)/ACTIVE_QUESTIONS.length*100)+'%';
   document.getElementById('q-sec').textContent=q.section;
-  document.getElementById('q-cnt').textContent=(curQ+1)+' / '+QUESTIONS.length;
+  document.getElementById('q-cnt').textContent=(curQ+1)+' / '+ACTIVE_QUESTIONS.length;
   document.getElementById('q-text').textContent=q.q;
   const sel=pAnswers[curQ];
   document.getElementById('q-opts').innerHTML=q.o.map((o,i)=>
@@ -197,20 +199,20 @@ function renderQ(){
   ).join('');
   document.getElementById('btn-prev').disabled=curQ===0;
   const nb=document.getElementById('btn-next');
-  nb.textContent=curQ===QUESTIONS.length-1?'Submit ✓':'Next →';
+  nb.textContent=curQ===ACTIVE_QUESTIONS.length-1?'Submit ✓':'Next →';
   nb.disabled=sel===undefined;
 }
 
 function pick(i){
   pAnswers[curQ]=i;renderQ();
-  if(curQ<QUESTIONS.length-1)setTimeout(()=>{curQ++;renderQ();window.scrollTo(0,0);},280);
+  if(curQ<ACTIVE_QUESTIONS.length-1)setTimeout(()=>{curQ++;renderQ();window.scrollTo(0,0);},280);
 }
 function prevQ(){if(curQ>0){curQ--;renderQ();window.scrollTo(0,0);}}
-function nextQ(){if(curQ<QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}else submitQuiz();}
+function nextQ(){if(curQ<ACTIVE_QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}else submitQuiz();}
 
 function calcQuad(){
-  const aQs=QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
-  const eQs=QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
+  const aQs=ACTIVE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
+  const eQs=ACTIVE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
   const aScore=aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(aQs.length*3);
   const eScore=eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(eQs.length*3);
   // Thresholds: awareness >= 0.5 (avg option C), excitement >= 0.55 (between B and C)
@@ -233,7 +235,8 @@ async function submitQuiz(){
   try{
     await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'submit',name:pName,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
-        answers:QUESTIONS.map((q,i)=>({section:q.section,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
+        surveySet:SURVEY_SET,
+        answers:ACTIVE_QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
   }catch(e){document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';}
   show('s-done');
 }
