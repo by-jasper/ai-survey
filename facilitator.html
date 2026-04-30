@@ -660,6 +660,7 @@ function updateModeUI(){
 function setSurveyMode(mode){
   surveyMode=(mode==='post')?'post':'pre';
   localStorage.setItem('surveySetMode',surveyMode);
+  fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:surveyMode})}).catch(()=>{});
   updateModeUI();
 }
 function toggleMore(e){
@@ -1184,8 +1185,19 @@ async function doReset(){
   }catch(e){alert('Reset sent — refresh to confirm.');}
 }
 
-surveyMode=(localStorage.getItem('surveySetMode')||'pre').toLowerCase()==='post'?'post':'pre';
-updateModeUI();
+async function initMode(){
+  surveyMode=(localStorage.getItem('surveySetMode')||'pre').toLowerCase()==='post'?'post':'pre';
+  try{
+    const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
+    if(r.ok){
+      const j=await r.json();
+      const m=String(j.mode||'').toLowerCase();
+      if(m==='pre'||m==='post') surveyMode=m;
+    }
+  }catch(e){}
+  updateModeUI();
+}
+initMode();
 loadData(true);
 setInterval(()=>loadData(false),2000);
 window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});

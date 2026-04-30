@@ -169,16 +169,34 @@ const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2
 const LTR=['A','B','C','D'];
 let pName='',pAnswers={},curQ=0;
 const qsSet=(new URLSearchParams(location.search).get('set')||'').toLowerCase();
-const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
-const SURVEY_SET = (qsSet==='pre'||qsSet==='post') ? qsSet : (storedSet==='post'?'post':'pre');
-const ACTIVE_QUESTIONS = (typeof SURVEY_SETS!=='undefined' && SURVEY_SETS[SURVEY_SET]) ? SURVEY_SETS[SURVEY_SET] : QUESTIONS;
+let SURVEY_SET='pre';
+let ACTIVE_QUESTIONS=QUESTIONS;
+async function initSurveySet(){
+  const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
+  if(qsSet==='pre'||qsSet==='post'){
+    SURVEY_SET=qsSet;
+  }else{
+    SURVEY_SET=(storedSet==='post'?'post':'pre');
+    try{
+      const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
+      if(r.ok){
+        const j=await r.json();
+        const m=String(j.mode||'').toLowerCase();
+        if(m==='pre'||m==='post') SURVEY_SET=m;
+      }
+    }catch(e){}
+  }
+  ACTIVE_QUESTIONS=(typeof SURVEY_SETS!=='undefined' && SURVEY_SETS[SURVEY_SET]) ? SURVEY_SETS[SURVEY_SET] : QUESTIONS;
+  localStorage.setItem('surveySetMode',SURVEY_SET);
+  document.getElementById('p-q').textContent=ACTIVE_QUESTIONS.length+' questions';
+  document.getElementById('p-t').textContent=[...new Set(ACTIVE_QUESTIONS.map(q=>q.section))].length+' topics';
+}
 
 document.getElementById('h-title').textContent=QUIZ_CONFIG.title;
 document.getElementById('h-sub').textContent=QUIZ_CONFIG.subtitle;
 document.getElementById('h-org').textContent=QUIZ_CONFIG.org;
-document.getElementById('p-q').textContent=ACTIVE_QUESTIONS.length+' questions';
-document.getElementById('p-t').textContent=[...new Set(ACTIVE_QUESTIONS.map(q=>q.section))].length+' topics';
 document.getElementById('p-m').textContent='~'+QUIZ_CONFIG.estimatedMinutes+' minutes';
+initSurveySet();
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 
