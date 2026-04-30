@@ -168,6 +168,20 @@
 const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
 const LTR=['A','B','C','D'];
 let pName='',pAnswers={},curQ=0;
+let SURVEY_SET='pre';
+async function initSurveyModeOnly(){
+  const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
+  SURVEY_SET=(storedSet==='post')?'post':'pre';
+  try{
+    const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
+    if(r.ok){
+      const j=await r.json();
+      const m=String(j.mode||'').toLowerCase();
+      if(m==='pre'||m==='post') SURVEY_SET=m;
+    }
+  }catch(e){}
+  localStorage.setItem('surveySetMode',SURVEY_SET);
+}
 
 document.getElementById('h-title').textContent=QUIZ_CONFIG.title;
 document.getElementById('h-sub').textContent=QUIZ_CONFIG.subtitle;
@@ -175,6 +189,7 @@ document.getElementById('h-org').textContent=QUIZ_CONFIG.org;
 document.getElementById('p-q').textContent=QUESTIONS.length+' questions';
 document.getElementById('p-t').textContent=[...new Set(QUESTIONS.map(q=>q.section))].length+' topics';
 document.getElementById('p-m').textContent='~'+QUIZ_CONFIG.estimatedMinutes+' minutes';
+initSurveyModeOnly();
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 
@@ -233,7 +248,8 @@ async function submitQuiz(){
   try{
     await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'submit',name:pName,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
-        answers:QUESTIONS.map((q,i)=>({section:q.section,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
+        surveySet:SURVEY_SET,
+        answers:QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
   }catch(e){document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';}
   show('s-done');
 }
