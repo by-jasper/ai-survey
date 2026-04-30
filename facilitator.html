@@ -30,11 +30,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .icon-btn:hover{background:rgba(255,255,255,0.16)}
 
 /* ── Tab nav ── */
-.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;overflow-x:auto;gap:0}
+.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;overflow:visible;gap:0}
 .tab-nav::-webkit-scrollbar{display:none}
 .tn{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;flex-shrink:0}
 .tn:hover{color:var(--text)}
 .tn.active{color:var(--navy);border-bottom-color:var(--green-l)}
+.tn-more{position:relative;display:flex;align-items:center}
+.more-menu{display:none;position:absolute;top:100%;left:0;min-width:220px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 24px rgba(15,23,42,0.14);z-index:90;padding:6px}
+.more-menu.open{display:block}
+.tn-more:hover .more-menu{display:block}
+.more-item{width:100%;text-align:left;border:none;background:transparent;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.more-item:hover{background:var(--bg);color:var(--text)}
+.more-item.active{background:var(--green-xl);color:var(--green-dark)}
 .tn-spacer{flex:1}
 .tn-reset{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--red);border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
 .tn-reset:hover{background:var(--red-l)}
@@ -256,12 +263,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
+  <button class="tn"        id="tn-compare"         onclick="go('compare')">Pre/Post Insights</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
-  <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
-  <button class="tn"        id="tn-grouping"        onclick="go('grouping')">Grouping</button>
-  <button class="tn"        id="tn-hats"            onclick="go('hats')">Six Thinking Hats</button>
+  <div class="tn-more">
+    <button class="tn" id="tn-more" onclick="toggleMore(event)">More ▾</button>
+    <div class="more-menu" id="more-menu">
+      <button class="more-item" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
+      <button class="more-item" id="tn-grouping" onclick="go('grouping')">Grouping</button>
+      <button class="more-item" id="tn-hats" onclick="go('hats')">Six Thinking Hats</button>
+    </div>
+  </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
+</div>
+
+<div class="page" id="page-compare">
+  <div class="card">
+    <div class="card-title">Pre vs Post Readiness</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <strong style="font-size:13px">Incoming survey mode:</strong>
+      <button class="btn" id="mode-pre" onclick="setSurveyMode('pre')">Pre</button>
+      <button class="btn" id="mode-post" onclick="setSurveyMode('post')">Post</button>
+      <span id="mode-link" style="font-size:12px;color:var(--muted)"></span>
+    </div>
+    <div id="cmp-summary" style="font-size:14px;color:var(--muted);line-height:1.7">No data yet.</div>
+  </div>
 </div>
 
 <!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
@@ -272,7 +298,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <!-- Scatter -->
     <div class="chart-card">
       <div class="chart-title"><span class="live-dot"></span>AI Readiness Scatter Matrix</div>
-      <div class="chart-sub">Each dot = one participant · Hover to see names · Quadrant counts shown in centre</div>
+      <div class="chart-sub">Each dot = one participant · Hover to see names · Quadrant counts shown in centre · Scores ≤5% and ≥95% are corner-anchored for readability</div>
       <div class="scatter-wrap">
         <canvas id="scatter-canvas" class="scatter-canvas" role="img" aria-label="Scatter plot overlaid on the 2x2 quadrant matrix"></canvas>
       </div>
@@ -508,7 +534,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
-const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
+const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness','AI Practice & Reflection','AI Governance & Team']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
        brief:'Passionate about AI but still building practical skills. Energy and openness are their superpower.'},
@@ -596,22 +622,52 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
-let allData=[], selQ=null, interpBuilt=false;
+let allData=[], selQ=null, interpBuilt=false, surveyMode='pre';
 
 /* ── Navigation ── */
-const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
+const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
 function go(t){
+  document.getElementById('more-menu')?.classList.remove('open');
   PAGES.forEach(x=>{
     const tn = document.getElementById('tn-'+x);
-    if(tn) tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
+    if(tn){
+      if(x==='draw'||x==='grouping'||x==='hats'){
+        tn.className='more-item'+(x===t?' active':'');
+      }else{
+        tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
+      }
+    }
     const pg = document.getElementById('page-'+x);
     if(pg) pg.className = 'page'+(x===t?' active':'');
   });
+  const moreBtn=document.getElementById('tn-more');
+  if(moreBtn) moreBtn.className='tn'+(['draw','grouping','hats'].includes(t)?' active':'');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
+  if(t==='compare')        renderCompare();
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
+function updateModeUI(){
+  const isPost=surveyMode==='post';
+  document.getElementById('mode-pre')?.classList.toggle('primary',!isPost);
+  document.getElementById('mode-post')?.classList.toggle('primary',isPost);
+  const base=location.origin+location.pathname.replace('facilitator.html','index.html');
+  const link=base+'?set='+surveyMode;
+  const el=document.getElementById('mode-link');
+  if(el) el.textContent='Share this link: '+link;
+}
+function setSurveyMode(mode){
+  surveyMode=(mode==='post')?'post':'pre';
+  localStorage.setItem('surveySetMode',surveyMode);
+  fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:surveyMode})}).catch(()=>{});
+  updateModeUI();
+}
+function toggleMore(e){
+  e.stopPropagation();
+  document.getElementById('more-menu')?.classList.toggle('open');
+}
+document.addEventListener('click',()=>document.getElementById('more-menu')?.classList.remove('open'));
 
 function swDraw(d){
   ['all','quad'].forEach(x=>{
@@ -690,6 +746,25 @@ function updStats(){
     document.getElementById('sq-count').textContent='No data yet';
     document.getElementById('sq-brief').textContent='';
   }
+  renderCompare();
+}
+
+function getSetStats(setKey){
+  const rows = allData.filter(r=>String(r.surveySet||'pre').toLowerCase()===setKey && r.score!==null && r.score!==undefined && r.score!=='');
+  if(!rows.length)return {count:0,avg:null};
+  const avg=Math.round(rows.reduce((s,r)=>s+Number(r.score||0),0)/rows.length);
+  return {count:rows.length,avg};
+}
+function renderCompare(){
+  const pre=getSetStats('pre');
+  const post=getSetStats('post');
+  const el=document.getElementById('cmp-summary');
+  if(!el)return;
+  const delta=(pre.avg!==null && post.avg!==null)?(post.avg-pre.avg):null;
+  el.innerHTML=
+    `<div><strong>Pre-game average:</strong> ${pre.avg!==null?pre.avg+'%':'—'} <span style="color:var(--muted)">(${pre.count} responses)</span></div>
+     <div><strong>Post-game average:</strong> ${post.avg!==null?post.avg+'%':'—'} <span style="color:var(--muted)">(${post.count} responses)</span></div>
+     <div><strong>Change (Post - Pre):</strong> ${delta===null?'—':(delta>0?'+':'')+delta+'%'}</div>`;
 }
 
 /* ── Scatter ── */
@@ -697,28 +772,33 @@ const CLUSTER_R=12;
 function getScatterPoints(){
   return allData.map(r=>{
     let aRaw=0.5,eRaw=0.5;
+    const overallPct = (r.score !== null && r.score !== undefined && r.score !== '') ? Number(r.score) : null;
 
     if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
       // Full answers stored — compute exact scores
       let aSum=0,aCnt=0,eSum=0,eCnt=0;
       r.answers.forEach(a=>{
-        const isA=AWARENESS_SECS.has(a.section);
+        const axis = a.axis || (AWARENESS_SECS.has(a.section) ? 'awareness' : 'excitement');
+        const isA = axis==='awareness';
         const s=Number(a.score||0);
         if(isA){aSum+=s;aCnt++;}else{eSum+=s;eCnt++;}
       });
       if(aCnt>0)aRaw=aSum/(aCnt*3);
       if(eCnt>0)eRaw=eSum/(eCnt*3);
+      if(aCnt===0 || eCnt===0){
+        const overall=overallPct!==null ? overallPct/100 : 0.5;
+        if(aCnt===0) aRaw=overall;
+        if(eCnt===0) eRaw=overall;
+      }
 
-      // Precision guard: if the computed position contradicts the stored quad,
-      // the score landed exactly on a threshold boundary (integer rounding).
-      // Nudge 2% inside the correct side so the dot always matches its quadrant colour.
-      const q = r.quad||'BL';
-      const shouldBeHighA = q==='TR'||q==='BR';
-      const shouldBeHighE = q==='TL'||q==='TR';
-      if(shouldBeHighA  && aRaw < 0.50) aRaw = 0.52;
-      if(!shouldBeHighA && aRaw >= 0.50) aRaw = 0.48;
-      if(shouldBeHighE  && eRaw < 0.55) eRaw = 0.57;
-      if(!shouldBeHighE && eRaw >= 0.55) eRaw = 0.53;
+      // Keep all points in the correct quadrant half for visual consistency.
+      const q = r.quad||'';
+      if(q){
+        const shouldBeHighA = q==='TR'||q==='BR';
+        const shouldBeHighE = q==='TL'||q==='TR';
+        if(shouldBeHighA) aRaw=Math.max(0.52,aRaw); else aRaw=Math.min(0.48,aRaw);
+        if(shouldBeHighE) eRaw=Math.max(0.57,eRaw); else eRaw=Math.min(0.53,eRaw);
+      }
     } else {
       // Answers not stored — use quad + overall score to estimate position
       // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
@@ -726,9 +806,7 @@ function getScatterPoints(){
       // Use overall score to distribute between the two axes proportionally
       // Fallback: place dot within the correct quadrant zone using overall score + jitter
       // Use midpoint of each half as the base, not the threshold (avoids pinning to the line)
-      const overall = (r.score !== null && r.score !== undefined && r.score !== '')
-                      ? Number(r.score) / 100
-                      : 0.5;
+      const overall = overallPct!==null ? overallPct / 100 : 0.5;
       const q = r.quad || 'BL';
       const highA = q==='TR'||q==='BR';
       const highE = q==='TL'||q==='TR';
@@ -746,6 +824,12 @@ function getScatterPoints(){
       const jitter=k=>(((seed*k)%31)/31)*0.08-0.04;
       aRaw=Math.min(0.96,Math.max(0.04,aBase+jitter(3)));
       eRaw=Math.min(0.96,Math.max(0.04,eBase+jitter(7)));
+    }
+
+    // Hard floor/ceiling anchors: extreme scores should plot at corners, not near thresholds.
+    if(overallPct!==null){
+      if(overallPct<=5){ aRaw=0.04; eRaw=0.04; }
+      else if(overallPct>=95){ aRaw=0.96; eRaw=0.96; }
     }
 
     // Final clamp — keep dots fully inside canvas (dot radius = 7px, pad=58px, so safe range)
@@ -1101,6 +1185,19 @@ async function doReset(){
   }catch(e){alert('Reset sent — refresh to confirm.');}
 }
 
+async function initMode(){
+  surveyMode=(localStorage.getItem('surveySetMode')||'pre').toLowerCase()==='post'?'post':'pre';
+  try{
+    const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
+    if(r.ok){
+      const j=await r.json();
+      const m=String(j.mode||'').toLowerCase();
+      if(m==='pre'||m==='post') surveyMode=m;
+    }
+  }catch(e){}
+  updateModeUI();
+}
+initMode();
 loadData(true);
 setInterval(()=>loadData(false),2000);
 window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});
