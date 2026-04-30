@@ -282,8 +282,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="card-title">Pre vs Post Readiness</div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
       <strong style="font-size:13px">Incoming survey mode:</strong>
-      <button class="btn" id="mode-pre" onclick="setSurveyMode('pre')">Pre</button>
-      <button class="btn" id="mode-post" onclick="setSurveyMode('post')">Post</button>
+      <button class="btn" id="mode-pre" onclick="pickSurveyMode('pre')">Pre</button>
+      <button class="btn" id="mode-post" onclick="pickSurveyMode('post')">Post</button>
+      <button class="btn primary" onclick="applySurveyMode()">Submit Mode Change</button>
       <span id="mode-link" style="font-size:12px;color:var(--muted)"></span>
     </div>
     <div id="cmp-summary" style="font-size:14px;color:var(--muted);line-height:1.7">No data yet.</div>
@@ -622,7 +623,7 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
-let allData=[], selQ=null, interpBuilt=false, surveyMode='pre';
+let allData=[], selQ=null, interpBuilt=false, surveyMode='pre', pendingSurveyMode='pre';
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
@@ -649,18 +650,28 @@ function go(t){
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
 function updateModeUI(){
-  const isPost=surveyMode==='post';
+  const isPost=pendingSurveyMode==='post';
   document.getElementById('mode-pre')?.classList.toggle('primary',!isPost);
   document.getElementById('mode-post')?.classList.toggle('primary',isPost);
   const base=location.origin+location.pathname.replace('facilitator.html','index.html');
-  const link=base+'?set='+surveyMode;
+  const link=base+'?set='+pendingSurveyMode;
   const el=document.getElementById('mode-link');
-  if(el) el.textContent='Share this link: '+link;
+  if(el) el.textContent='Selected: '+pendingSurveyMode.toUpperCase()+' · Share this link: '+link;
 }
-function setSurveyMode(mode){
-  surveyMode=(mode==='post')?'post':'pre';
-  localStorage.setItem('surveySetMode',surveyMode);
-  fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:surveyMode})}).catch(()=>{});
+function pickSurveyMode(mode){
+  pendingSurveyMode=(mode==='post')?'post':'pre';
+  updateModeUI();
+}
+async function applySurveyMode(){
+  if(!confirm('Switch incoming survey mode to '+pendingSurveyMode.toUpperCase()+'?'))return;
+  try{
+    await fetch(GAS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:pendingSurveyMode})});
+    surveyMode=pendingSurveyMode;
+    localStorage.setItem('surveySetMode',surveyMode);
+    setStatus(true,'Survey mode updated to '+surveyMode.toUpperCase());
+  }catch(e){
+    setStatus(false,'Failed to update survey mode. Check GAS deployment and permissions.');
+  }
   updateModeUI();
 }
 function toggleMore(e){
@@ -1195,6 +1206,7 @@ async function initMode(){
       if(m==='pre'||m==='post') surveyMode=m;
     }
   }catch(e){}
+  pendingSurveyMode=surveyMode;
   updateModeUI();
 }
 initMode();
