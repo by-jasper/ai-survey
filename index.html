@@ -167,8 +167,15 @@
 <script>
 const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
 const LTR=['A','B','C','D'];
+
 let pName='',pAnswers={},curQ=0;
 let SURVEY_SET='pre';
+
+// single questionnaire source with fallback guard
+const SAFE_QUESTIONS = (Array.isArray(QUESTIONS)&&QUESTIONS.length)
+  ? QUESTIONS
+  : ((typeof SURVEY_SETS!=='undefined' && Array.isArray(SURVEY_SETS.pre)) ? SURVEY_SETS.pre : []);
+
 async function initSurveyModeOnly(){
   const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
   SURVEY_SET=(storedSet==='post')?'post':'pre';
@@ -186,49 +193,77 @@ async function initSurveyModeOnly(){
 document.getElementById('h-title').textContent=QUIZ_CONFIG.title;
 document.getElementById('h-sub').textContent=QUIZ_CONFIG.subtitle;
 document.getElementById('h-org').textContent=QUIZ_CONFIG.org;
+document.getElementById('p-q').textContent=SAFE_QUESTIONS.length+' questions';
+document.getElementById('p-t').textContent=[...new Set(SAFE_QUESTIONS.map(q=>q.section))].length+' topics';
 document.getElementById('p-m').textContent='~'+QUIZ_CONFIG.estimatedMinutes+' minutes';
 initSurveyModeOnly();
 
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
 
 function startQuiz(){
   const n=document.getElementById('inp-name').value.trim();
   const err=document.getElementById('join-err');
   if(!n){err.textContent='Please enter your name to continue.';return;}
   if(!SAFE_QUESTIONS.length){err.textContent='Survey questions failed to load. Please refresh the page.';return;}
-  err.textContent='';pName=n;pAnswers={};curQ=0;show('s-quiz');renderQ();
+  err.textContent='';
+  pName=n;
+  pAnswers={};
+  curQ=0;
+  show('s-quiz');
+  renderQ();
 }
 
 function renderQ(){
-  const q=ACTIVE_QUESTIONS[curQ];
-  document.getElementById('prog').style.width=((curQ+1)/ACTIVE_QUESTIONS.length*100)+'%';
+  const q=SAFE_QUESTIONS[curQ];
+  if(!q){
+    document.getElementById('q-text').textContent='Survey questions are unavailable. Please refresh.';
+    document.getElementById('q-opts').innerHTML='';
+    return;
+  }
+
+  document.getElementById('prog').style.width=((curQ+1)/SAFE_QUESTIONS.length*100)+'%';
   document.getElementById('q-sec').textContent=q.section;
-  document.getElementById('q-cnt').textContent=(curQ+1)+' / '+ACTIVE_QUESTIONS.length;
+  document.getElementById('q-cnt').textContent=(curQ+1)+' / '+SAFE_QUESTIONS.length;
   document.getElementById('q-text').textContent=q.q;
+
   const sel=pAnswers[curQ];
   document.getElementById('q-opts').innerHTML=q.o.map((o,i)=>
     '<div class="opt'+(sel===i?' sel':'')+'" onclick="pick('+i+')"><div class="opt-c">'+LTR[i]+'</div><div class="opt-t">'+o+'</div></div>'
   ).join('');
+
   document.getElementById('btn-prev').disabled=curQ===0;
   const nb=document.getElementById('btn-next');
-  nb.textContent=curQ===ACTIVE_QUESTIONS.length-1?'Submit ✓':'Next →';
+  nb.textContent=curQ===SAFE_QUESTIONS.length-1?'Submit ✓':'Next →';
   nb.disabled=sel===undefined;
 }
 
 function pick(i){
-  pAnswers[curQ]=i;renderQ();
-  if(curQ<ACTIVE_QUESTIONS.length-1)setTimeout(()=>{curQ++;renderQ();window.scrollTo(0,0);},280);
+  pAnswers[curQ]=i;
+  renderQ();
+  if(curQ<SAFE_QUESTIONS.length-1){
+    setTimeout(()=>{curQ++;renderQ();window.scrollTo(0,0);},280);
+  }
 }
-function prevQ(){if(curQ>0){curQ--;renderQ();window.scrollTo(0,0);}}
-function nextQ(){if(curQ<ACTIVE_QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}else submitQuiz();}
+
+function prevQ(){
+  if(curQ>0){curQ--;renderQ();window.scrollTo(0,0);}
+}
+
+function nextQ(){
+  if(curQ<SAFE_QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}
+  else submitQuiz();
+}
 
 function calcQuad(){
-  const aQs=ACTIVE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
-  const eQs=ACTIVE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
+  const aQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
+  const eQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
   const aScore=aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(aQs.length*3);
   const eScore=eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(eQs.length*3);
   // Thresholds: awareness >= 0.5 (avg option C), excitement >= 0.55 (between B and C)
-  // This prevents "normal professional" answers from inflating excitement scores
   return eScore>=0.55?(aScore>=0.5?'TR':'TL'):(aScore>=0.5?'BR':'BL');
 }
 
@@ -237,19 +272,42 @@ async function submitQuiz(){
   const quad=calcQuad();
   const qd=QUADRANTS[quad];
   const tot=Math.round(Object.values(pAnswers).reduce((a,v)=>a+v,0)/(Object.keys(pAnswers).length*3)*100);
+
   const card=document.getElementById('r-card');
-  card.style.background=qd.color;card.style.color=qd.textColor;
+  card.style.background=qd.color;
+  card.style.color=qd.textColor;
   document.getElementById('r-name').textContent=qd.name;
   document.getElementById('r-tag').textContent=qd.tagline;
   document.getElementById('r-praise').textContent=qd.praise;
   document.getElementById('r-tip').textContent=qd.suggestion;
   document.getElementById('submit-err').textContent='';
+
   try{
-    await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'submit',name:pName,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
+    await fetch(GAS,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        action:'submit',
+        name:pName,
+        quad,
+        quadLabel:qd.name,
+        score:tot,
+        timestamp:new Date().toISOString(),
         surveySet:SURVEY_SET,
-        answers:QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
-  }catch(e){document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';}
+        answers:SAFE_QUESTIONS.map((q,i)=>({
+          section:q.section,
+          axis:q.axis,
+          question:q.q,
+          answer:q.o[pAnswers[i]??0],
+          score:pAnswers[i]??0
+        }))
+      })
+    });
+  }catch(e){
+    document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';
+  }
+
   show('s-done');
 }
 </script>
