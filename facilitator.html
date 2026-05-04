@@ -287,6 +287,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn primary" onclick="applySurveyMode()">Submit Mode Change</button>
       <span id="mode-link" style="font-size:12px;color:var(--muted)"></span>
     </div>
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <strong style="font-size:13px">Cutoff time:</strong>
       <input type="datetime-local" id="cutoff-time" class="g-inp" style="width:230px;font-size:13px;padding:8px 10px">
@@ -294,6 +295,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn" onclick="clearCutoff()">Clear</button>
       <span id="cutoff-note" style="font-size:12px;color:var(--muted)"></span>
     </div>
+=======
+>>>>>>> main
     <div id="cmp-summary" style="font-size:14px;color:var(--muted);line-height:1.7">No data yet.</div>
   </div>
 </div>
@@ -630,7 +633,11 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
 let allData=[], selQ=null, interpBuilt=false, surveyMode='pre', pendingSurveyMode='pre', cutoffIso='';
+=======
+let allData=[], selQ=null, interpBuilt=false, surveyMode='pre', pendingSurveyMode='pre';
+>>>>>>> main
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
@@ -665,6 +672,7 @@ function updateModeUI(){
   const el=document.getElementById('mode-link');
   if(el) el.textContent='Selected: '+pendingSurveyMode.toUpperCase()+' · Share this link: '+link;
 }
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
 function parseTs(v){ const t=new Date(v); return isNaN(t.getTime())?null:t.getTime(); }
 function getScatterData(){
   if(!cutoffIso) return allData;
@@ -684,6 +692,8 @@ function clearCutoff(){
   document.getElementById('cutoff-note').textContent='';
   updStats(); drawScatter(); renderCompare();
 }
+=======
+>>>>>>> main
 function pickSurveyMode(mode){
   pendingSurveyMode=(mode==='post')?'post':'pre';
   updateModeUI();
@@ -788,6 +798,7 @@ function updStats(){
 }
 
 function getSetStats(setKey){
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
   let rows = allData.filter(r=>r.score!==null && r.score!==undefined && r.score!=='');
   if(cutoffIso){
     const cutMs=parseTs(cutoffIso);
@@ -799,6 +810,9 @@ function getSetStats(setKey){
   } else {
     rows = rows.filter(r=>String(r.surveySet||'pre').toLowerCase()===setKey);
   }
+=======
+  const rows = allData.filter(r=>String(r.surveySet||'pre').toLowerCase()===setKey && r.score!==null && r.score!==undefined && r.score!=='');
+>>>>>>> main
   if(!rows.length)return {count:0,avg:null};
   const avg=Math.round(rows.reduce((s,r)=>s+Number(r.score||0),0)/rows.length);
   return {count:rows.length,avg};
