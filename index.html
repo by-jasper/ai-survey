@@ -170,12 +170,16 @@ const LTR=['A','B','C','D'];
 
 let pName='',pAnswers={},curQ=0;
 let SURVEY_SET='pre';
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
+const SAFE_QUESTIONS = (Array.isArray(QUESTIONS)&&QUESTIONS.length) ? QUESTIONS : ((typeof SURVEY_SETS!=='undefined' && Array.isArray(SURVEY_SETS.pre)) ? SURVEY_SETS.pre : []);
+=======
 
 // single questionnaire source with fallback guard
 const SAFE_QUESTIONS = (Array.isArray(QUESTIONS)&&QUESTIONS.length)
   ? QUESTIONS
   : ((typeof SURVEY_SETS!=='undefined' && Array.isArray(SURVEY_SETS.pre)) ? SURVEY_SETS.pre : []);
 
+>>>>>>> main
 async function initSurveyModeOnly(){
   const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
   SURVEY_SET=(storedSet==='post')?'post':'pre';
@@ -209,22 +213,30 @@ function startQuiz(){
   const err=document.getElementById('join-err');
   if(!n){err.textContent='Please enter your name to continue.';return;}
   if(!SAFE_QUESTIONS.length){err.textContent='Survey questions failed to load. Please refresh the page.';return;}
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
+  err.textContent='';pName=n;pAnswers={};curQ=0;show('s-quiz');renderQ();
+=======
   err.textContent='';
   pName=n;
   pAnswers={};
   curQ=0;
   show('s-quiz');
   renderQ();
+>>>>>>> main
 }
 
 function renderQ(){
   const q=SAFE_QUESTIONS[curQ];
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
+  if(!q){document.getElementById('q-text').textContent='Survey questions are unavailable. Please refresh.';document.getElementById('q-opts').innerHTML='';return;}
+=======
   if(!q){
     document.getElementById('q-text').textContent='Survey questions are unavailable. Please refresh.';
     document.getElementById('q-opts').innerHTML='';
     return;
   }
 
+>>>>>>> main
   document.getElementById('prog').style.width=((curQ+1)/SAFE_QUESTIONS.length*100)+'%';
   document.getElementById('q-sec').textContent=q.section;
   document.getElementById('q-cnt').textContent=(curQ+1)+' / '+SAFE_QUESTIONS.length;
@@ -242,6 +254,13 @@ function renderQ(){
 }
 
 function pick(i){
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
+  pAnswers[curQ]=i;renderQ();
+  if(curQ<SAFE_QUESTIONS.length-1)setTimeout(()=>{curQ++;renderQ();window.scrollTo(0,0);},280);
+}
+function prevQ(){if(curQ>0){curQ--;renderQ();window.scrollTo(0,0);}}
+function nextQ(){if(curQ<SAFE_QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}else submitQuiz();}
+=======
   pAnswers[curQ]=i;
   renderQ();
   if(curQ<SAFE_QUESTIONS.length-1){
@@ -257,6 +276,7 @@ function nextQ(){
   if(curQ<SAFE_QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}
   else submitQuiz();
 }
+>>>>>>> main
 
 function calcQuad(){
   const aQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
@@ -283,6 +303,13 @@ async function submitQuiz(){
   document.getElementById('submit-err').textContent='';
 
   try{
+<<<<<<< codex/fix-scatter-matrix-issue-and-consolidate-tabs-dugtq5
+    await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'submit',name:pName,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
+        surveySet:SURVEY_SET,
+        answers:SAFE_QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
+  }catch(e){document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';}
+=======
     await fetch(GAS,{
       method:'POST',
       mode:'no-cors',
@@ -308,6 +335,7 @@ async function submitQuiz(){
     document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';
   }
 
+>>>>>>> main
   show('s-done');
 }
 </script>
