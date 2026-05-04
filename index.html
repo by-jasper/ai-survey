@@ -195,6 +195,7 @@ function startQuiz(){
   const n=document.getElementById('inp-name').value.trim();
   const err=document.getElementById('join-err');
   if(!n){err.textContent='Please enter your name to continue.';return;}
+  if(!SAFE_QUESTIONS.length){err.textContent='Survey questions failed to load. Please refresh the page.';return;}
   err.textContent='';pName=n;pAnswers={};curQ=0;show('s-quiz');renderQ();
 }
 
