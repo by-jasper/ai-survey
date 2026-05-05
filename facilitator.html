@@ -276,7 +276,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
 </div>
 
-<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
 <!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
 <div class="page active" id="page-dashboard">
   <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
@@ -346,8 +345,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="interp-grid" id="interp-grid"></div>
 </div>
 
-=======
->>>>>>> main
 <!-- ═══════════════════ TAB 3: LUCKY DRAW ═══════════════════ -->
 <div class="page" id="page-draw">
   <div class="draw-toggle">
@@ -611,11 +608,8 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
-<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
 let allData=[], selQ=null, interpBuilt=false;
-=======
-let allData=[], selQ=null, interpBuilt=false, cutoffIso='';
->>>>>>> main
+let allData=[], selQ=null, interpBuilt=false;
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
@@ -640,26 +634,8 @@ function go(t){
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
 function getScatterData(){
-<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
   return allData;
-=======
-  if(!cutoffIso) return allData;
-  const cutMs=parseTs(cutoffIso); if(cutMs===null) return allData;
-  return allData.filter(r=>{const t=parseTs(r.timestamp); return t!==null && t<=cutMs;});
-}
-function applyCutoff(){
-  const v=document.getElementById('cutoff-time').value;
-  if(!v){setStatus(false,'Please pick a cutoff time first.');return;}
-  cutoffIso=new Date(v).toISOString();
-  document.getElementById('cutoff-note').textContent='Scatter + stats now use responses up to '+new Date(cutoffIso).toLocaleString();
-  updStats(); drawScatter();
-}
-function clearCutoff(){
-  cutoffIso='';
-  document.getElementById('cutoff-time').value='';
-  document.getElementById('cutoff-note').textContent='';
-  updStats(); drawScatter();
->>>>>>> main
+  return allData;
 }
 function toggleMore(e){
   e.stopPropagation();
@@ -686,12 +662,23 @@ function swGroup(g){
   });
 }
 
+
+async function fetchJsonWithTimeout(url, opts={}, timeoutMs=8000){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), timeoutMs);
+  try{
+    const r = await fetch(url,{...opts,signal:ctrl.signal});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 /* ── Data loading ── */
 async function loadData(fb){
   try{
-    const r=await fetch(GAS+'?action=getAll',{cache:'no-store'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const j=await r.json();
+    const j=await fetchJsonWithTimeout(GAS+'?action=getAll',{cache:'no-store'},8000);
     allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
     updStats(); updDrawCounts();
     if(document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
@@ -699,7 +686,12 @@ async function loadData(fb){
     const n=new Date();
     document.getElementById('ts').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');
     if(fb) setStatus(true,'Connected · '+allData.length+' response'+(allData.length!==1?'s':'')+' loaded');
-  }catch(e){ if(fb) setStatus(false,'Cannot reach Google Sheets — check deployment settings'); }
+  }catch(e){
+    if(fb || !allData.length){
+      const isTimeout=e && e.name==='AbortError';
+      setStatus(false,isTimeout?'Google Sheets request timed out (8s). Check Apps Script deployment/network.':'Cannot reach Google Sheets — check deployment settings');
+    }
+  }
 }
 
 function setStatus(ok,msg){const el=document.getElementById('status');el.textContent=msg;el.className='status-bar '+(ok?'s-ok':'s-err');}
