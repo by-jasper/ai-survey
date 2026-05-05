@@ -30,22 +30,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .icon-btn:hover{background:rgba(255,255,255,0.16)}
 
 /* ── Tab nav ── */
-.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;overflow:visible;gap:0}
+.tab-nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;display:flex;overflow-x:auto;overflow-y:visible;gap:0}
 .tab-nav::-webkit-scrollbar{display:none}
 .tn{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;flex-shrink:0}
 .tn:hover{color:var(--text)}
 .tn.active{color:var(--navy);border-bottom-color:var(--green-l)}
-.tn-more{position:relative;display:flex;align-items:center}
-.more-menu{display:none;position:absolute;top:100%;left:0;min-width:220px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 24px rgba(15,23,42,0.14);z-index:90;padding:6px}
-.more-menu.open{display:block}
-.tn-more:hover .more-menu{display:block}
-.more-item{width:100%;text-align:left;border:none;background:transparent;padding:10px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
-.more-item:hover{background:var(--bg);color:var(--text)}
-.more-item.active{background:var(--green-xl);color:var(--green-dark)}
 .tn-spacer{flex:1}
 .tn-reset{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--red);border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
 .tn-reset:hover{background:var(--red-l)}
 .tn-reset.active{border-bottom-color:var(--red);background:var(--red-l)}
+.tn-more{position:relative;display:flex;align-items:stretch;flex-shrink:0}
+.tn-more-btn::after{content:' ▾';font-size:11px}
+.tn-more-menu{display:none;position:absolute;top:100%;left:0;min-width:210px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 20px rgba(2,6,23,0.12);z-index:30;padding:6px}
+.tn-more:hover .tn-more-menu,.tn-more:focus-within .tn-more-menu,.tn-more.open .tn-more-menu{display:block}
+.tn-more-item{display:block;width:100%;text-align:left;padding:10px 12px;font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer}
+.tn-more-item:hover{background:var(--bg);color:var(--text)}
+.tn-more-item.active{background:var(--green-xl);color:var(--green-dark)}
 
 /* ── Pages ── */
 .page{display:none;max-width:1100px;margin:0 auto;padding:22px 22px}
@@ -264,18 +264,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
-  <div class="tn-more">
-    <button class="tn" id="tn-more" onclick="toggleMore(event)">More ▾</button>
-    <div class="more-menu" id="more-menu">
-      <button class="more-item" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
-      <button class="more-item" id="tn-grouping" onclick="go('grouping')">Grouping</button>
-      <button class="more-item" id="tn-hats" onclick="go('hats')">Six Thinking Hats</button>
+  <div class="tn-more" id="tn-more-wrap">
+    <button class="tn tn-more-btn" id="tn-more" type="button" onclick="toggleMore(event)">More</button>
+    <div class="tn-more-menu">
+      <button class="tn-more-item" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
+      <button class="tn-more-item" id="tn-grouping" onclick="go('grouping')">Grouping</button>
+      <button class="tn-more-item" id="tn-hats" onclick="go('hats')">Six Thinking Hats</button>
     </div>
   </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
 </div>
 
+<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
 <!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
 <div class="page active" id="page-dashboard">
   <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
@@ -345,6 +346,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="interp-grid" id="interp-grid"></div>
 </div>
 
+=======
+>>>>>>> main
 <!-- ═══════════════════ TAB 3: LUCKY DRAW ═══════════════════ -->
 <div class="page" id="page-draw">
   <div class="draw-toggle">
@@ -520,7 +523,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
-const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness','AI Practice & Reflection','AI Governance & Team']);
+const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
        brief:'Passionate about AI but still building practical skills. Energy and openness are their superpower.'},
@@ -608,39 +611,66 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
+<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
 let allData=[], selQ=null, interpBuilt=false;
+=======
+let allData=[], selQ=null, interpBuilt=false, cutoffIso='';
+>>>>>>> main
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
 function go(t){
-  document.getElementById('more-menu')?.classList.remove('open');
   PAGES.forEach(x=>{
     const tn = document.getElementById('tn-'+x);
     if(tn){
-      if(x==='draw'||x==='grouping'||x==='hats'){
-        tn.className='more-item'+(x===t?' active':'');
-      }else{
-        tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
-      }
+      if(x==='reset') tn.className='tn-reset'+(x===t?' active':'');
+      else if(MORE_PAGES.has(x)) tn.className='tn-more-item'+(x===t?' active':'');
+      else tn.className='tn'+(x===t?' active':'');
     }
     const pg = document.getElementById('page-'+x);
     if(pg) pg.className = 'page'+(x===t?' active':'');
   });
   const moreBtn=document.getElementById('tn-more');
-  if(moreBtn) moreBtn.className='tn'+(['draw','grouping','hats'].includes(t)?' active':'');
+  if(moreBtn) moreBtn.className='tn tn-more-btn'+(MORE_PAGES.has(t)?' active':'');
+  const moreWrap=document.getElementById('tn-more-wrap');
+  if(moreWrap) moreWrap.classList.remove('open');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
 function getScatterData(){
+<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
   return allData;
+=======
+  if(!cutoffIso) return allData;
+  const cutMs=parseTs(cutoffIso); if(cutMs===null) return allData;
+  return allData.filter(r=>{const t=parseTs(r.timestamp); return t!==null && t<=cutMs;});
+}
+function applyCutoff(){
+  const v=document.getElementById('cutoff-time').value;
+  if(!v){setStatus(false,'Please pick a cutoff time first.');return;}
+  cutoffIso=new Date(v).toISOString();
+  document.getElementById('cutoff-note').textContent='Scatter + stats now use responses up to '+new Date(cutoffIso).toLocaleString();
+  updStats(); drawScatter();
+}
+function clearCutoff(){
+  cutoffIso='';
+  document.getElementById('cutoff-time').value='';
+  document.getElementById('cutoff-note').textContent='';
+  updStats(); drawScatter();
+>>>>>>> main
 }
 function toggleMore(e){
   e.stopPropagation();
-  document.getElementById('more-menu')?.classList.toggle('open');
+  const wrap=document.getElementById('tn-more-wrap');
+  if(wrap) wrap.classList.toggle('open');
 }
-document.addEventListener('click',()=>document.getElementById('more-menu')?.classList.remove('open'));
+
+document.addEventListener('click',()=>{
+  const wrap=document.getElementById('tn-more-wrap');
+  if(wrap) wrap.classList.remove('open');
+});
 
 function swDraw(d){
   ['all','quad'].forEach(x=>{
@@ -677,10 +707,9 @@ function rlabel(s){return s>=75?'AI-Ready':s>=60?'Progressing':s>=40?'Emerging':
 
 /* ── Stats ── */
 function updStats(){
-  const rows=getScatterData();
   const c={TL:0,TR:0,BL:0,BR:0},sc=[];
-  rows.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score!==null&&r.score!==undefined&&r.score!=='')sc.push(Number(r.score));});
-  const tot=rows.length;
+  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score!==null&&r.score!==undefined&&r.score!=='')sc.push(Number(r.score));});
+  const tot=allData.length;
   document.getElementById('f-total').textContent=tot;
   document.getElementById('g-pool').textContent=tot;
   document.getElementById('g-hats-pool').textContent=tot;
@@ -727,33 +756,28 @@ const CLUSTER_R=12;
 function getScatterPoints(){
   return allData.map(r=>{
     let aRaw=0.5,eRaw=0.5;
-    const overallPct = (r.score !== null && r.score !== undefined && r.score !== '') ? Number(r.score) : null;
 
     if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
       // Full answers stored — compute exact scores
       let aSum=0,aCnt=0,eSum=0,eCnt=0;
       r.answers.forEach(a=>{
-        const axis = a.axis || (AWARENESS_SECS.has(a.section) ? 'awareness' : 'excitement');
-        const isA = axis==='awareness';
+        const isA=AWARENESS_SECS.has(a.section);
         const s=Number(a.score||0);
         if(isA){aSum+=s;aCnt++;}else{eSum+=s;eCnt++;}
       });
       if(aCnt>0)aRaw=aSum/(aCnt*3);
       if(eCnt>0)eRaw=eSum/(eCnt*3);
-      if(aCnt===0 || eCnt===0){
-        const overall=overallPct!==null ? overallPct/100 : 0.5;
-        if(aCnt===0) aRaw=overall;
-        if(eCnt===0) eRaw=overall;
-      }
 
-      // Keep all points in the correct quadrant half for visual consistency.
-      const q = r.quad||'';
-      if(q){
-        const shouldBeHighA = q==='TR'||q==='BR';
-        const shouldBeHighE = q==='TL'||q==='TR';
-        if(shouldBeHighA) aRaw=Math.max(0.52,aRaw); else aRaw=Math.min(0.48,aRaw);
-        if(shouldBeHighE) eRaw=Math.max(0.57,eRaw); else eRaw=Math.min(0.53,eRaw);
-      }
+      // Precision guard: if the computed position contradicts the stored quad,
+      // the score landed exactly on a threshold boundary (integer rounding).
+      // Nudge 2% inside the correct side so the dot always matches its quadrant colour.
+      const q = r.quad||'BL';
+      const shouldBeHighA = q==='TR'||q==='BR';
+      const shouldBeHighE = q==='TL'||q==='TR';
+      if(shouldBeHighA  && aRaw < 0.50) aRaw = 0.52;
+      if(!shouldBeHighA && aRaw >= 0.50) aRaw = 0.48;
+      if(shouldBeHighE  && eRaw < 0.55) eRaw = 0.57;
+      if(!shouldBeHighE && eRaw >= 0.55) eRaw = 0.53;
     } else {
       // Answers not stored — use quad + overall score to estimate position
       // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
@@ -788,8 +812,8 @@ function getScatterPoints(){
     }
 
     // Final clamp — keep dots fully inside canvas (dot radius = 7px, pad=58px, so safe range)
-    aRaw=Math.min(0.96,Math.max(0.04,aRaw));
-    eRaw=Math.min(0.96,Math.max(0.04,eRaw));
+    aRaw=Math.min(1,Math.max(0,aRaw));
+    eRaw=Math.min(1,Math.max(0,eRaw));
     return{name:r.name||'?',aRaw,eRaw,quad:r.quad};
   });
 }
@@ -820,8 +844,7 @@ function drawScatter(){
   const pL=58,pR=18,pT=18,pB=44;
   const CW=W2-pL-pR,CH=H2-pT-pB;
   const counts={TL:0,TR:0,BL:0,BR:0};
-  const rows=getScatterData();
-  rows.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
+  allData.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
   // Threshold positions — must match calcQuad() logic in index.html
   // Awareness threshold: 0.50, Excitement threshold: 0.50 (inverted Y — high excitement = top)
   const xThresh = pL + 0.50 * CW;          // vertical divider at awareness=50%
@@ -877,15 +900,12 @@ function drawScatter(){
   ctx.fillText('Low Awareness',pL+CW/4,H2-2);ctx.fillText('High Awareness',pL+3*CW/4,H2-2);
   ctx.save();ctx.translate(14,pT+CH/4);ctx.rotate(-Math.PI/2);ctx.fillText('High Excitement',0,0);ctx.restore();
   ctx.save();ctx.translate(14,pT+3*CH/4);ctx.rotate(-Math.PI/2);ctx.fillText('Low Excitement',0,0);ctx.restore();
-  if(!rows.length){
+  if(!allData.length){
     ctx.fillStyle='#94A3B8';ctx.font='13px -apple-system,sans-serif';ctx.textAlign='center';
     ctx.fillText('Waiting for responses…',pL+CW/2,pT+CH/2);
     canvas._clusters=[];return;
   }
-  const backup=allData;
-  allData=rows;
   const pts=getScatterPoints().map(p=>({...p,cx:pL+p.aRaw*CW,cy:pT+(1-p.eRaw)*CH}));
-  allData=backup;
   const clusters=clusterPoints(pts);
   canvas._clusters=clusters;
   const R=7;
