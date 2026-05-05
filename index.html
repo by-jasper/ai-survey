@@ -169,8 +169,7 @@ const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2
 const LTR=['A','B','C','D'];
 
 let pName='',pAnswers={},curQ=0;
-const SURVEY_SET='pre';
-const SAFE_QUESTIONS = (Array.isArray(QUESTIONS)&&QUESTIONS.length) ? QUESTIONS : ((typeof SURVEY_SETS!=='undefined' && Array.isArray(SURVEY_SETS.pre)) ? SURVEY_SETS.pre : []);
+let SURVEY_SET='pre';
 const SAFE_QUESTIONS = (Array.isArray(QUESTIONS)&&QUESTIONS.length) ? QUESTIONS : ((typeof SURVEY_SETS!=='undefined' && Array.isArray(SURVEY_SETS.pre)) ? SURVEY_SETS.pre : []);
 async function initSurveyModeOnly(){
   const storedSet=(localStorage.getItem('surveySetMode')||'pre').toLowerCase();
@@ -205,7 +204,6 @@ function startQuiz(){
   const err=document.getElementById('join-err');
   if(!n){err.textContent='Please enter your name to continue.';return;}
   if(!SAFE_QUESTIONS.length){err.textContent='Survey questions failed to load. Please refresh the page.';return;}
-  err.textContent='';pName=n;pAnswers={};curQ=0;show('s-quiz');renderQ();
   err.textContent='';
   pName=n;
   pAnswers={};
@@ -216,7 +214,6 @@ function startQuiz(){
 
 function renderQ(){
   const q=SAFE_QUESTIONS[curQ];
-  if(!q){document.getElementById('q-text').textContent='Survey questions are unavailable. Please refresh.';document.getElementById('q-opts').innerHTML='';return;}
   if(!q){document.getElementById('q-text').textContent='Survey questions are unavailable. Please refresh.';document.getElementById('q-opts').innerHTML='';return;}
   document.getElementById('prog').style.width=((curQ+1)/SAFE_QUESTIONS.length*100)+'%';
   document.getElementById('q-sec').textContent=q.section;
