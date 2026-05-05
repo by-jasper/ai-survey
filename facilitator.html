@@ -263,7 +263,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
-  <button class="tn"        id="tn-compare"         onclick="go('compare')">Pre/Post Insights</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
   <div class="tn-more">
     <button class="tn" id="tn-more" onclick="toggleMore(event)">More ▾</button>
@@ -275,91 +274,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
-</div>
-
-<div class="page" id="page-compare">
-  <div class="card">
-    <div class="card-title">Pre vs Post Readiness</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <strong style="font-size:13px">Manual cutoff time:</strong>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <strong style="font-size:13px">Cutoff time:</strong>
-      <input type="datetime-local" id="cutoff-time" class="g-inp" style="width:230px;font-size:13px;padding:8px 10px">
-      <button class="btn" onclick="applyCutoff()">Apply Cutoff</button>
-      <button class="btn" onclick="clearCutoff()">Clear</button>
-      <span id="cutoff-note" style="font-size:12px;color:var(--muted)"></span>
-    </div>
-    <div id="cmp-summary" style="font-size:14px;color:var(--muted);line-height:1.7">No data yet.</div>
-  </div>
-</div>
-
-<!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
-<div class="page active" id="page-dashboard">
-  <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
-  <div class="dash-layout">
-
-    <!-- Scatter -->
-    <div class="chart-card">
-      <div class="chart-title"><span class="live-dot"></span>AI Readiness Scatter Matrix</div>
-      <div class="chart-sub">Each dot = one participant · Hover to see names · Quadrant counts shown in centre · Scores ≤5% and ≥95% are corner-anchored for readability</div>
-      <div class="scatter-wrap">
-        <canvas id="scatter-canvas" class="scatter-canvas" role="img" aria-label="Scatter plot overlaid on the 2x2 quadrant matrix"></canvas>
-      </div>
-      <div class="legend">
-        <div class="li"><div class="ld" style="background:var(--tl-dot)"></div>Enthusiastic Learners</div>
-        <div class="li"><div class="ld" style="background:var(--tr-dot)"></div>AI Advocates</div>
-        <div class="li"><div class="ld" style="background:var(--bl-dot)"></div>Cautious Observers</div>
-        <div class="li"><div class="ld" style="background:var(--br-dot)"></div>Informed Sceptics</div>
-      </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="stat-sidebar">
-
-      <!-- Total responses -->
-      <div class="sc-total">
-        <div class="lbl">TOTAL RESPONSES</div>
-        <div class="val" id="f-total">0</div>
-        <div class="sub">participants submitted</div>
-      </div>
-
-      <!-- Largest quadrant (coloured) -->
-      <div class="sc-quad" id="sc-quad" style="background:var(--bg);border:1px solid var(--border)">
-        <div class="sq-lbl" id="sq-lbl">LARGEST QUADRANT</div>
-        <div class="sq-name" id="sq-name">—</div>
-        <div class="sq-count" id="sq-count">No data yet</div>
-        <div class="sq-brief" id="sq-brief"></div>
-      </div>
-
-      <!-- Avg readiness — horizontal linear meter -->
-      <div class="sc-avg">
-        <div class="lbl">AVG READINESS SCORE
-          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Early Stage &lt;40% · 🟢 Emerging 40–59% · 🟡 Progressing 60–74% · 🔴 AI-Ready 75%+</div></span>
-        </div>
-        <div class="meter-wrap">
-          <div class="meter-track">
-            <div class="meter-pointer" id="meter-pointer" style="left:0%"></div>
-          </div>
-          <div class="meter-labels">
-            <span class="meter-lbl">Early Stage</span>
-            <span class="meter-lbl">Emerging</span>
-            <span class="meter-lbl">Progressing</span>
-            <span class="meter-lbl">AI-Ready</span>
-          </div>
-        </div>
-        <div class="meter-score" id="meter-score">—</div>
-        <div class="meter-stage" id="meter-stage">No data yet</div>
-        <div class="meter-desc" id="meter-desc"></div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════ TAB 2: INTERPRETATION ═══════════════════ -->
-<div class="page" id="page-interpretation">
-  <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Click any card to reveal the full interpretation. Click again to collapse.</p>
-  <div class="interp-grid" id="interp-grid"></div>
 </div>
 
 <!-- ═══════════════════ TAB 3: LUCKY DRAW ═══════════════════ -->
@@ -626,10 +540,9 @@ const HAT_INFO = [
 ];
 
 let allData=[], selQ=null, interpBuilt=false, cutoffIso='';
-let allData=[], selQ=null, interpBuilt=false, surveyMode='pre', pendingSurveyMode='pre', cutoffIso='';
 
 /* ── Navigation ── */
-const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
+const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
 function go(t){
   document.getElementById('more-menu')?.classList.remove('open');
   PAGES.forEach(x=>{
@@ -648,7 +561,6 @@ function go(t){
   if(moreBtn) moreBtn.className='tn'+(['draw','grouping','hats'].includes(t)?' active':'');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
-  if(t==='compare')        renderCompare();
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
@@ -663,29 +575,13 @@ function applyCutoff(){
   if(!v){setStatus(false,'Please pick a cutoff time first.');return;}
   cutoffIso=new Date(v).toISOString();
   document.getElementById('cutoff-note').textContent='Scatter + stats now use responses up to '+new Date(cutoffIso).toLocaleString();
-  updStats(); drawScatter(); renderCompare();
+  updStats(); drawScatter();
 }
 function clearCutoff(){
   cutoffIso='';
   document.getElementById('cutoff-time').value='';
   document.getElementById('cutoff-note').textContent='';
-  updStats(); drawScatter(); renderCompare();
-}
-function pickSurveyMode(mode){
-  pendingSurveyMode=(mode==='post')?'post':'pre';
-  updateModeUI();
-}
-async function applySurveyMode(){
-  if(!confirm('Switch incoming survey mode to '+pendingSurveyMode.toUpperCase()+'?'))return;
-  try{
-    await fetch(GAS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:pendingSurveyMode})});
-    surveyMode=pendingSurveyMode;
-    localStorage.setItem('surveySetMode',surveyMode);
-    setStatus(true,'Survey mode updated to '+surveyMode.toUpperCase());
-  }catch(e){
-    setStatus(false,'Failed to update survey mode. Check GAS deployment and permissions.');
-  }
-  updateModeUI();
+  updStats(); drawScatter();
 }
 function toggleMore(e){
   e.stopPropagation();
@@ -771,35 +667,6 @@ function updStats(){
     document.getElementById('sq-count').textContent='No data yet';
     document.getElementById('sq-brief').textContent='';
   }
-  renderCompare();
-}
-
-function getSetStats(setKey){
-  let rows = allData.filter(r=>r.score!==null && r.score!==undefined && r.score!=='');
-  if(cutoffIso){
-    const cutMs=parseTs(cutoffIso);
-    rows = rows.filter(r=>{const t=parseTs(r.timestamp); return t!==null;})
-               .map(r=>({...r,_t:parseTs(r.timestamp)}));
-    if(cutMs!==null){
-      rows = setKey==='pre' ? rows.filter(r=>r._t<=cutMs) : rows.filter(r=>r._t>cutMs);
-    }
-  } else {
-    rows = rows.filter(r=>String(r.surveySet||'pre').toLowerCase()===setKey);
-  }
-  if(!rows.length)return {count:0,avg:null};
-  const avg=Math.round(rows.reduce((s,r)=>s+Number(r.score||0),0)/rows.length);
-  return {count:rows.length,avg};
-}
-function renderCompare(){
-  const pre=getSetStats('pre');
-  const post=getSetStats('post');
-  const el=document.getElementById('cmp-summary');
-  if(!el)return;
-  const delta=(pre.avg!==null && post.avg!==null)?(post.avg-pre.avg):null;
-  el.innerHTML=
-    `<div><strong>Before cutoff average:</strong> ${pre.avg!==null?pre.avg+'%':'—'} <span style="color:var(--muted)">(${pre.count} responses)</span></div>
-     <div><strong>After cutoff average:</strong> ${post.avg!==null?post.avg+'%':'—'} <span style="color:var(--muted)">(${post.count} responses)</span></div>
-     <div><strong>Change (After - Before):</strong> ${delta===null?'—':(delta>0?'+':'')+delta+'%'}</div>`;
 }
 
 /* ── Scatter ── */
@@ -852,7 +719,7 @@ function getScatterPoints(){
         ? 0.52 + (overall * 0.44)          // maps 0–1 to 0.52–0.96
         : 0.04 + ((1 - overall) * 0.44);   // maps 0–1 to 0.48–0.04 (inverted: low score → further left)
       const eBase = highE
-        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (excitement threshold is 0.55)
+        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (upper-half excitement placement)
         : 0.04 + ((1 - overall) * 0.49);   // maps 0–1 to 0.53–0.04
 
       const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
@@ -903,9 +770,9 @@ function drawScatter(){
   const rows=getScatterData();
   rows.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
   // Threshold positions — must match calcQuad() logic in index.html
-  // Awareness threshold: 0.50, Excitement threshold: 0.55 (inverted Y — high excitement = top)
+  // Awareness threshold: 0.50, Excitement threshold: 0.50 (inverted Y — high excitement = top)
   const xThresh = pL + 0.50 * CW;          // vertical divider at awareness=50%
-  const yThresh = pT + (1 - 0.55) * CH;    // horizontal divider at excitement=55%
+  const yThresh = pT + (1 - 0.50) * CH;    // horizontal divider at excitement=50%
 
   const qFills=[
     {q:'TL',x:pL,      y:pT,      w:xThresh-pL,     h:yThresh-pT,         bg:'rgba(225,245,238,0.6)',txt:'#085041'},
@@ -951,7 +818,7 @@ function drawScatter(){
   ctx.fillStyle='rgba(100,116,139,0.65)';ctx.font='700 8px -apple-system,sans-serif';
   ctx.textAlign='center';ctx.fillText('A=50%',xThresh,pT-5);
   ctx.save();ctx.translate(pL+CW+14,yThresh);ctx.rotate(-Math.PI/2);
-  ctx.textAlign='center';ctx.fillText('E=55%',0,0);ctx.restore();
+  ctx.textAlign='center';ctx.fillText('E=50%',0,0);ctx.restore();
   ctx.fillStyle='#94A3B8';ctx.font='500 10px -apple-system,sans-serif';
   ctx.textAlign='center';
   ctx.fillText('Low Awareness',pL+CW/4,H2-2);ctx.fillText('High Awareness',pL+3*CW/4,H2-2);
@@ -1224,20 +1091,7 @@ async function doReset(){
   }catch(e){alert('Reset sent — refresh to confirm.');}
 }
 
-async function initMode(){
-  surveyMode=(localStorage.getItem('surveySetMode')||'pre').toLowerCase()==='post'?'post':'pre';
-  try{
-    const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
-    if(r.ok){
-      const j=await r.json();
-      const m=String(j.mode||'').toLowerCase();
-      if(m==='pre'||m==='post') surveyMode=m;
-    }
-  }catch(e){}
-  pendingSurveyMode=surveyMode;
-  updateModeUI();
-}
-initMode();
+
 loadData(true);
 setInterval(()=>loadData(false),2000);
 window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});
