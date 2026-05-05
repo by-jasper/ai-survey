@@ -638,7 +638,7 @@ function getScatterData(){
   return allData;
 }
 function toggleMore(e){
-  e.stopPropagation();
+  if(e && typeof e.stopPropagation==='function') e.stopPropagation();
   const wrap=document.getElementById('tn-more-wrap');
   if(wrap) wrap.classList.toggle('open');
 }
