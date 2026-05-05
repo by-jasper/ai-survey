@@ -747,6 +747,9 @@ const CLUSTER_R=12;
 function getScatterPoints(){
   return allData.map(r=>{
     let aRaw=0.5,eRaw=0.5;
+    const overallPct = (r.score!==null && r.score!==undefined && r.score!=='')
+      ? Number(r.score)
+      : null;
 
     if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
       // Full answers stored — compute exact scores
