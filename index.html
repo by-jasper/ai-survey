@@ -238,13 +238,18 @@ function pick(i){
 function prevQ(){if(curQ>0){curQ--;renderQ();window.scrollTo(0,0);}}
 function nextQ(){if(curQ<SAFE_QUESTIONS.length-1){curQ++;renderQ();window.scrollTo(0,0);}else submitQuiz();}
 
-function calcQuad(){
+function getAxisScores(){
   const aQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
   const eQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
-  const aScore=aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(aQs.length*3);
-  const eScore=eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(eQs.length*3);
-  // Thresholds: awareness >= 0.5 (avg option C), excitement >= 0.55 (between B and C)
-  return eScore>=0.55?(aScore>=0.5?'TR':'TL'):(aScore>=0.5?'BR':'BL');
+  const aScore=aQs.length ? aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(aQs.length*3) : 0;
+  const eScore=eQs.length ? eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(eQs.length*3) : 0;
+  return {aScore,eScore};
+}
+
+function calcQuad(){
+  const {aScore,eScore}=getAxisScores();
+  // Split each axis at 50% so A/B answers are "low" and C/D answers are "high".
+  return eScore>=0.5?(aScore>=0.5?'TR':'TL'):(aScore>=0.5?'BR':'BL');
 }
 
 async function submitQuiz(){
