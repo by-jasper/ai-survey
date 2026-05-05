@@ -282,6 +282,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="card-title">Pre vs Post Readiness</div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
       <strong style="font-size:13px">Manual cutoff time:</strong>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <strong style="font-size:13px">Cutoff time:</strong>
       <input type="datetime-local" id="cutoff-time" class="g-inp" style="width:230px;font-size:13px;padding:8px 10px">
       <button class="btn" onclick="applyCutoff()">Apply Cutoff</button>
       <button class="btn" onclick="clearCutoff()">Clear</button>
@@ -624,6 +626,7 @@ const HAT_INFO = [
 ];
 
 let allData=[], selQ=null, interpBuilt=false, cutoffIso='';
+let allData=[], selQ=null, interpBuilt=false, surveyMode='pre', pendingSurveyMode='pre', cutoffIso='';
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
@@ -667,6 +670,22 @@ function clearCutoff(){
   document.getElementById('cutoff-time').value='';
   document.getElementById('cutoff-note').textContent='';
   updStats(); drawScatter(); renderCompare();
+}
+function pickSurveyMode(mode){
+  pendingSurveyMode=(mode==='post')?'post':'pre';
+  updateModeUI();
+}
+async function applySurveyMode(){
+  if(!confirm('Switch incoming survey mode to '+pendingSurveyMode.toUpperCase()+'?'))return;
+  try{
+    await fetch(GAS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:pendingSurveyMode})});
+    surveyMode=pendingSurveyMode;
+    localStorage.setItem('surveySetMode',surveyMode);
+    setStatus(true,'Survey mode updated to '+surveyMode.toUpperCase());
+  }catch(e){
+    setStatus(false,'Failed to update survey mode. Check GAS deployment and permissions.');
+  }
+  updateModeUI();
 }
 function toggleMore(e){
   e.stopPropagation();
@@ -1205,6 +1224,20 @@ async function doReset(){
   }catch(e){alert('Reset sent — refresh to confirm.');}
 }
 
+async function initMode(){
+  surveyMode=(localStorage.getItem('surveySetMode')||'pre').toLowerCase()==='post'?'post':'pre';
+  try{
+    const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
+    if(r.ok){
+      const j=await r.json();
+      const m=String(j.mode||'').toLowerCase();
+      if(m==='pre'||m==='post') surveyMode=m;
+    }
+  }catch(e){}
+  pendingSurveyMode=surveyMode;
+  updateModeUI();
+}
+initMode();
 loadData(true);
 setInterval(()=>loadData(false),2000);
 window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});
