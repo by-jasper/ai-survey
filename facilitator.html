@@ -39,6 +39,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tn-reset{padding:13px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--red);border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
 .tn-reset:hover{background:var(--red-l)}
 .tn-reset.active{border-bottom-color:var(--red);background:var(--red-l)}
+.tn-more{position:relative;display:flex;align-items:stretch;flex-shrink:0}
+.tn-more-btn::after{content:' ▾';font-size:11px}
+.tn-more-menu{display:none;position:absolute;top:100%;left:0;min-width:210px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 20px rgba(2,6,23,0.12);z-index:30;padding:6px}
+.tn-more:hover .tn-more-menu,.tn-more:focus-within .tn-more-menu{display:block}
+.tn-more-item{display:block;width:100%;text-align:left;padding:10px 12px;font-size:13px;font-weight:600;border:none;background:transparent;color:var(--muted);border-radius:8px;cursor:pointer}
+.tn-more-item:hover{background:var(--bg);color:var(--text)}
+.tn-more-item.active{background:var(--green-xl);color:var(--green-dark)}
 
 /* ── Pages ── */
 .page{display:none;max-width:1100px;margin:0 auto;padding:22px 22px}
@@ -257,9 +264,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
-  <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
-  <button class="tn"        id="tn-grouping"        onclick="go('grouping')">Grouping</button>
-  <button class="tn"        id="tn-hats"            onclick="go('hats')">Six Thinking Hats</button>
+  <div class="tn-more" id="tn-more-wrap">
+    <button class="tn tn-more-btn" id="tn-more" type="button">More</button>
+    <div class="tn-more-menu">
+      <button class="tn-more-item" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
+      <button class="tn-more-item" id="tn-grouping" onclick="go('grouping')">Grouping</button>
+      <button class="tn-more-item" id="tn-hats" onclick="go('hats')">Six Thinking Hats</button>
+    </div>
+  </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
 </div>
@@ -600,13 +612,20 @@ let allData=[], selQ=null, interpBuilt=false;
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
+const MORE_PAGES = new Set(['draw','grouping','hats']);
 function go(t){
   PAGES.forEach(x=>{
     const tn = document.getElementById('tn-'+x);
-    if(tn) tn.className = (x==='reset'?'tn-reset':'tn') + (x===t?' active':'');
+    if(tn){
+      if(x==='reset') tn.className='tn-reset'+(x===t?' active':'');
+      else if(MORE_PAGES.has(x)) tn.className='tn-more-item'+(x===t?' active':'');
+      else tn.className='tn'+(x===t?' active':'');
+    }
     const pg = document.getElementById('page-'+x);
     if(pg) pg.className = 'page'+(x===t?' active':'');
   });
+  const moreBtn=document.getElementById('tn-more');
+  if(moreBtn) moreBtn.className='tn tn-more-btn'+(MORE_PAGES.has(t)?' active':'');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
   if(t==='draw')           updDrawCounts();
@@ -736,21 +755,21 @@ function getScatterPoints(){
       // Place in the correct half: High = range 0.52–0.96, Low = range 0.04–0.48
       // This guarantees the dot never touches or crosses the threshold line
       const aBase = highA
-        ? 0.52 + (overall * 0.44)          // maps 0–1 to 0.52–0.96
-        : 0.04 + ((1 - overall) * 0.44);   // maps 0–1 to 0.48–0.04 (inverted: low score → further left)
+        ? 0.50 + (overall * 0.50)          // maps 0–1 to 0.50–1.00
+        : (1 - overall) * 0.50;            // maps 0–1 to 0.50–0.00 (inverted: low score → further left)
       const eBase = highE
-        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (excitement threshold is 0.55)
-        : 0.04 + ((1 - overall) * 0.49);   // maps 0–1 to 0.53–0.04
+        ? 0.55 + (overall * 0.45)          // maps 0–1 to 0.55–1.00 (excitement threshold is 0.55)
+        : (1 - overall) * 0.55;            // maps 0–1 to 0.55–0.00
 
       const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
       const jitter=k=>(((seed*k)%31)/31)*0.08-0.04;
-      aRaw=Math.min(0.96,Math.max(0.04,aBase+jitter(3)));
-      eRaw=Math.min(0.96,Math.max(0.04,eBase+jitter(7)));
+      aRaw=Math.min(1,Math.max(0,aBase+jitter(3)));
+      eRaw=Math.min(1,Math.max(0,eBase+jitter(7)));
     }
 
     // Final clamp — keep dots fully inside canvas (dot radius = 7px, pad=58px, so safe range)
-    aRaw=Math.min(0.96,Math.max(0.04,aRaw));
-    eRaw=Math.min(0.96,Math.max(0.04,eRaw));
+    aRaw=Math.min(1,Math.max(0,aRaw));
+    eRaw=Math.min(1,Math.max(0,eRaw));
     return{name:r.name||'?',aRaw,eRaw,quad:r.quad};
   });
 }
