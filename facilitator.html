@@ -276,6 +276,78 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
 </div>
 
+<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
+<!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div id="status" class="status-bar s-ok">Connecting to Google Sheets…</div>
+  <div class="dash-layout">
+
+    <!-- Scatter -->
+    <div class="chart-card">
+      <div class="chart-title"><span class="live-dot"></span>AI Readiness Scatter Matrix</div>
+      <div class="chart-sub">Each dot = one participant · Hover to see names · Quadrant counts shown in centre · Scores ≤5% and ≥95% are corner-anchored for readability</div>
+      <div class="scatter-wrap">
+        <canvas id="scatter-canvas" class="scatter-canvas" role="img" aria-label="Scatter plot overlaid on the 2x2 quadrant matrix"></canvas>
+      </div>
+      <div class="legend">
+        <div class="li"><div class="ld" style="background:var(--tl-dot)"></div>Enthusiastic Learners</div>
+        <div class="li"><div class="ld" style="background:var(--tr-dot)"></div>AI Advocates</div>
+        <div class="li"><div class="ld" style="background:var(--bl-dot)"></div>Cautious Observers</div>
+        <div class="li"><div class="ld" style="background:var(--br-dot)"></div>Informed Sceptics</div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="stat-sidebar">
+
+      <!-- Total responses -->
+      <div class="sc-total">
+        <div class="lbl">TOTAL RESPONSES</div>
+        <div class="val" id="f-total">0</div>
+        <div class="sub">participants submitted</div>
+      </div>
+
+      <!-- Largest quadrant (coloured) -->
+      <div class="sc-quad" id="sc-quad" style="background:var(--bg);border:1px solid var(--border)">
+        <div class="sq-lbl" id="sq-lbl">LARGEST QUADRANT</div>
+        <div class="sq-name" id="sq-name">—</div>
+        <div class="sq-count" id="sq-count">No data yet</div>
+        <div class="sq-brief" id="sq-brief"></div>
+      </div>
+
+      <!-- Avg readiness — horizontal linear meter -->
+      <div class="sc-avg">
+        <div class="lbl">AVG READINESS SCORE
+          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Early Stage &lt;40% · 🟢 Emerging 40–59% · 🟡 Progressing 60–74% · 🔴 AI-Ready 75%+</div></span>
+        </div>
+        <div class="meter-wrap">
+          <div class="meter-track">
+            <div class="meter-pointer" id="meter-pointer" style="left:0%"></div>
+          </div>
+          <div class="meter-labels">
+            <span class="meter-lbl">Early Stage</span>
+            <span class="meter-lbl">Emerging</span>
+            <span class="meter-lbl">Progressing</span>
+            <span class="meter-lbl">AI-Ready</span>
+          </div>
+        </div>
+        <div class="meter-score" id="meter-score">—</div>
+        <div class="meter-stage" id="meter-stage">No data yet</div>
+        <div class="meter-desc" id="meter-desc"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 2: INTERPRETATION ═══════════════════ -->
+<div class="page" id="page-interpretation">
+  <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Click any card to reveal the full interpretation. Click again to collapse.</p>
+  <div class="interp-grid" id="interp-grid"></div>
+</div>
+
+=======
+>>>>>>> main
 <!-- ═══════════════════ TAB 3: LUCKY DRAW ═══════════════════ -->
 <div class="page" id="page-draw">
   <div class="draw-toggle">
@@ -539,7 +611,11 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
+<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
+let allData=[], selQ=null, interpBuilt=false;
+=======
 let allData=[], selQ=null, interpBuilt=false, cutoffIso='';
+>>>>>>> main
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
@@ -563,8 +639,10 @@ function go(t){
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
-function parseTs(v){ const t=new Date(v); return isNaN(t.getTime())?null:t.getTime(); }
 function getScatterData(){
+<<<<<<< codex/review-ai-survey-code-for-scatter-plot-issue-7vp4ws
+  return allData;
+=======
   if(!cutoffIso) return allData;
   const cutMs=parseTs(cutoffIso); if(cutMs===null) return allData;
   return allData.filter(r=>{const t=parseTs(r.timestamp); return t!==null && t<=cutMs;});
@@ -581,6 +659,7 @@ function clearCutoff(){
   document.getElementById('cutoff-time').value='';
   document.getElementById('cutoff-note').textContent='';
   updStats(); drawScatter();
+>>>>>>> main
 }
 function toggleMore(e){
   e.stopPropagation();
