@@ -607,6 +607,7 @@ const HAT_INFO = [
   { key:'blue',   label:'💙 Blue',    bg:'#DBEAFE', txt:'#1E40AF', desc:'Planning'    },
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
+const MORE_PAGES = new Set(['draw','grouping','hats']);
 
 let allData=[], selQ=null, interpBuilt=false;
 
@@ -637,7 +638,7 @@ function getScatterData(){
   return allData;
 }
 function toggleMore(e){
-  e.stopPropagation();
+  if(e && typeof e.stopPropagation==='function') e.stopPropagation();
   const wrap=document.getElementById('tn-more-wrap');
   if(wrap) wrap.classList.toggle('open');
 }
@@ -747,6 +748,9 @@ const CLUSTER_R=12;
 function getScatterPoints(){
   return allData.map(r=>{
     let aRaw=0.5,eRaw=0.5;
+    const overallPct = (r.score!==null && r.score!==undefined && r.score!=='')
+      ? Number(r.score)
+      : null;
 
     if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
       // Full answers stored — compute exact scores
