@@ -677,7 +677,7 @@ async function fetchJsonWithTimeout(url, opts={}, timeoutMs=8000){
 /* ── Data loading ── */
 async function loadData(fb){
   try{
-    const j=await fetchJsonWithTimeout(GAS+'?action=getAll',{cache:'no-store'},8000);
+    const j=await fetchJsonWithTimeout(GAS+'?action=getAll',{cache:'no-store'},80000);
     allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
     updStats(); updDrawCounts();
     if(document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
