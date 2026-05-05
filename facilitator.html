@@ -263,7 +263,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
-  <button class="tn"        id="tn-compare"         onclick="go('compare')">Pre/Post Insights</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
   <div class="tn-more">
     <button class="tn" id="tn-more" onclick="toggleMore(event)">More ▾</button>
@@ -275,22 +274,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="tn-spacer"></div>
   <button class="tn-reset"  id="tn-reset"           onclick="go('reset')">Reset Data</button>
-</div>
-
-<div class="page" id="page-compare">
-  <div class="card">
-    <div class="card-title">Pre vs Post Readiness</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <strong style="font-size:13px">Manual cutoff time:</strong>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <strong style="font-size:13px">Cutoff time:</strong>
-      <input type="datetime-local" id="cutoff-time" class="g-inp" style="width:230px;font-size:13px;padding:8px 10px">
-      <button class="btn" onclick="applyCutoff()">Apply Cutoff</button>
-      <button class="btn" onclick="clearCutoff()">Clear</button>
-      <span id="cutoff-note" style="font-size:12px;color:var(--muted)"></span>
-    </div>
-    <div id="cmp-summary" style="font-size:14px;color:var(--muted);line-height:1.7">No data yet.</div>
-  </div>
 </div>
 
 <!-- ═══════════════════ TAB 1: LIVE DASHBOARD ═══════════════════ -->
@@ -625,11 +608,10 @@ const HAT_INFO = [
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
 
-let allData=[], selQ=null, interpBuilt=false, cutoffIso='';
-let allData=[], selQ=null, interpBuilt=false, surveyMode='pre', pendingSurveyMode='pre', cutoffIso='';
+let allData=[], selQ=null, interpBuilt=false;
 
 /* ── Navigation ── */
-const PAGES = ['dashboard','compare','interpretation','draw','grouping','hats','reset'];
+const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
 function go(t){
   document.getElementById('more-menu')?.classList.remove('open');
   PAGES.forEach(x=>{
@@ -648,44 +630,11 @@ function go(t){
   if(moreBtn) moreBtn.className='tn'+(['draw','grouping','hats'].includes(t)?' active':'');
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
-  if(t==='compare')        renderCompare();
   if(t==='draw')           updDrawCounts();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
-function parseTs(v){ const t=new Date(v); return isNaN(t.getTime())?null:t.getTime(); }
 function getScatterData(){
-  if(!cutoffIso) return allData;
-  const cutMs=parseTs(cutoffIso); if(cutMs===null) return allData;
-  return allData.filter(r=>{const t=parseTs(r.timestamp); return t!==null && t<=cutMs;});
-}
-function applyCutoff(){
-  const v=document.getElementById('cutoff-time').value;
-  if(!v){setStatus(false,'Please pick a cutoff time first.');return;}
-  cutoffIso=new Date(v).toISOString();
-  document.getElementById('cutoff-note').textContent='Scatter + stats now use responses up to '+new Date(cutoffIso).toLocaleString();
-  updStats(); drawScatter(); renderCompare();
-}
-function clearCutoff(){
-  cutoffIso='';
-  document.getElementById('cutoff-time').value='';
-  document.getElementById('cutoff-note').textContent='';
-  updStats(); drawScatter(); renderCompare();
-}
-function pickSurveyMode(mode){
-  pendingSurveyMode=(mode==='post')?'post':'pre';
-  updateModeUI();
-}
-async function applySurveyMode(){
-  if(!confirm('Switch incoming survey mode to '+pendingSurveyMode.toUpperCase()+'?'))return;
-  try{
-    await fetch(GAS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'setMode',mode:pendingSurveyMode})});
-    surveyMode=pendingSurveyMode;
-    localStorage.setItem('surveySetMode',surveyMode);
-    setStatus(true,'Survey mode updated to '+surveyMode.toUpperCase());
-  }catch(e){
-    setStatus(false,'Failed to update survey mode. Check GAS deployment and permissions.');
-  }
-  updateModeUI();
+  return allData;
 }
 function toggleMore(e){
   e.stopPropagation();
@@ -707,12 +656,23 @@ function swGroup(g){
   });
 }
 
+
+async function fetchJsonWithTimeout(url, opts={}, timeoutMs=8000){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), timeoutMs);
+  try{
+    const r = await fetch(url,{...opts,signal:ctrl.signal});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 /* ── Data loading ── */
 async function loadData(fb){
   try{
-    const r=await fetch(GAS+'?action=getAll',{cache:'no-store'});
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const j=await r.json();
+    const j=await fetchJsonWithTimeout(GAS+'?action=getAll',{cache:'no-store'},8000);
     allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
     updStats(); updDrawCounts();
     if(document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
@@ -720,7 +680,12 @@ async function loadData(fb){
     const n=new Date();
     document.getElementById('ts').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');
     if(fb) setStatus(true,'Connected · '+allData.length+' response'+(allData.length!==1?'s':'')+' loaded');
-  }catch(e){ if(fb) setStatus(false,'Cannot reach Google Sheets — check deployment settings'); }
+  }catch(e){
+    if(fb || !allData.length){
+      const isTimeout=e && e.name==='AbortError';
+      setStatus(false,isTimeout?'Google Sheets request timed out (8s). Check Apps Script deployment/network.':'Cannot reach Google Sheets — check deployment settings');
+    }
+  }
 }
 
 function setStatus(ok,msg){const el=document.getElementById('status');el.textContent=msg;el.className='status-bar '+(ok?'s-ok':'s-err');}
@@ -771,35 +736,6 @@ function updStats(){
     document.getElementById('sq-count').textContent='No data yet';
     document.getElementById('sq-brief').textContent='';
   }
-  renderCompare();
-}
-
-function getSetStats(setKey){
-  let rows = allData.filter(r=>r.score!==null && r.score!==undefined && r.score!=='');
-  if(cutoffIso){
-    const cutMs=parseTs(cutoffIso);
-    rows = rows.filter(r=>{const t=parseTs(r.timestamp); return t!==null;})
-               .map(r=>({...r,_t:parseTs(r.timestamp)}));
-    if(cutMs!==null){
-      rows = setKey==='pre' ? rows.filter(r=>r._t<=cutMs) : rows.filter(r=>r._t>cutMs);
-    }
-  } else {
-    rows = rows.filter(r=>String(r.surveySet||'pre').toLowerCase()===setKey);
-  }
-  if(!rows.length)return {count:0,avg:null};
-  const avg=Math.round(rows.reduce((s,r)=>s+Number(r.score||0),0)/rows.length);
-  return {count:rows.length,avg};
-}
-function renderCompare(){
-  const pre=getSetStats('pre');
-  const post=getSetStats('post');
-  const el=document.getElementById('cmp-summary');
-  if(!el)return;
-  const delta=(pre.avg!==null && post.avg!==null)?(post.avg-pre.avg):null;
-  el.innerHTML=
-    `<div><strong>Before cutoff average:</strong> ${pre.avg!==null?pre.avg+'%':'—'} <span style="color:var(--muted)">(${pre.count} responses)</span></div>
-     <div><strong>After cutoff average:</strong> ${post.avg!==null?post.avg+'%':'—'} <span style="color:var(--muted)">(${post.count} responses)</span></div>
-     <div><strong>Change (After - Before):</strong> ${delta===null?'—':(delta>0?'+':'')+delta+'%'}</div>`;
 }
 
 /* ── Scatter ── */
@@ -852,7 +788,7 @@ function getScatterPoints(){
         ? 0.52 + (overall * 0.44)          // maps 0–1 to 0.52–0.96
         : 0.04 + ((1 - overall) * 0.44);   // maps 0–1 to 0.48–0.04 (inverted: low score → further left)
       const eBase = highE
-        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (excitement threshold is 0.55)
+        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (upper-half excitement placement)
         : 0.04 + ((1 - overall) * 0.49);   // maps 0–1 to 0.53–0.04
 
       const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
@@ -903,9 +839,9 @@ function drawScatter(){
   const rows=getScatterData();
   rows.forEach(r=>{if(r.quad&&counts[r.quad]!==undefined)counts[r.quad]++;});
   // Threshold positions — must match calcQuad() logic in index.html
-  // Awareness threshold: 0.50, Excitement threshold: 0.55 (inverted Y — high excitement = top)
+  // Awareness threshold: 0.50, Excitement threshold: 0.50 (inverted Y — high excitement = top)
   const xThresh = pL + 0.50 * CW;          // vertical divider at awareness=50%
-  const yThresh = pT + (1 - 0.55) * CH;    // horizontal divider at excitement=55%
+  const yThresh = pT + (1 - 0.50) * CH;    // horizontal divider at excitement=50%
 
   const qFills=[
     {q:'TL',x:pL,      y:pT,      w:xThresh-pL,     h:yThresh-pT,         bg:'rgba(225,245,238,0.6)',txt:'#085041'},
@@ -951,7 +887,7 @@ function drawScatter(){
   ctx.fillStyle='rgba(100,116,139,0.65)';ctx.font='700 8px -apple-system,sans-serif';
   ctx.textAlign='center';ctx.fillText('A=50%',xThresh,pT-5);
   ctx.save();ctx.translate(pL+CW+14,yThresh);ctx.rotate(-Math.PI/2);
-  ctx.textAlign='center';ctx.fillText('E=55%',0,0);ctx.restore();
+  ctx.textAlign='center';ctx.fillText('E=50%',0,0);ctx.restore();
   ctx.fillStyle='#94A3B8';ctx.font='500 10px -apple-system,sans-serif';
   ctx.textAlign='center';
   ctx.fillText('Low Awareness',pL+CW/4,H2-2);ctx.fillText('High Awareness',pL+3*CW/4,H2-2);
@@ -1224,20 +1160,7 @@ async function doReset(){
   }catch(e){alert('Reset sent — refresh to confirm.');}
 }
 
-async function initMode(){
-  surveyMode=(localStorage.getItem('surveySetMode')||'pre').toLowerCase()==='post'?'post':'pre';
-  try{
-    const r=await fetch(GAS+'?action=getMode',{cache:'no-store'});
-    if(r.ok){
-      const j=await r.json();
-      const m=String(j.mode||'').toLowerCase();
-      if(m==='pre'||m==='post') surveyMode=m;
-    }
-  }catch(e){}
-  pendingSurveyMode=surveyMode;
-  updateModeUI();
-}
-initMode();
+
 loadData(true);
 setInterval(()=>loadData(false),2000);
 window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});
