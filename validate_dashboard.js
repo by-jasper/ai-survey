@@ -22,8 +22,12 @@ assertContains(fac, 'id="avg-awareness-score"', 'average awareness score card');
 assertContains(fac, 'function calcRowAxisScores(r)', 'dashboard axis score fallback');
 assertContains(fac, 'r.awarenessScore', 'dashboard awarenessScore field');
 assertContains(fac, 'r.excitementScore', 'dashboard excitementScore field');
+assertContains(fac, 'if(shouldBeHighE  && eRaw < 0.50) eRaw = 0.52;', 'scatter excitement high-side guard');
+assertContains(fac, 'if(!shouldBeHighE && eRaw >= 0.50) eRaw = 0.48;', 'scatter excitement low-side guard');
 
 // Survey axis-based quadrant essentials
+assertContains(idx, 'function getSurveyQuestions(mode)', 'survey set question selector');
+assertContains(idx, 'refreshSurveyMeta();', 'survey metadata refresh after mode load');
 assertContains(idx, 'function getAxisScores()', 'getAxisScores function');
 assertContains(idx, 'function calcQuad()', 'calcQuad function');
 assertContains(idx, 'id="r-excitement-score"', 'participant excitement result row');
@@ -41,6 +45,8 @@ assertContains(gas, "'Quad': 'Quadrant'", 'Apps Script Quad legacy alias');
 assertContains(gas, "'Answers': 'Answers JSON'", 'Apps Script Answers legacy alias');
 assertContains(gas, 'function ensureHeaderOrder_(sheet)', 'Apps Script header ordering repair');
 assertContains(gas, 'function backfillAxisScores_(sheet)', 'Apps Script axis score backfill');
+assertContains(gas, 'function normalizeAnswers_(answers)', 'Apps Script answer normalization');
+assertContains(gas, 'const calculatedAxisScores = calculateAxisScoresFromAnswers_(answers);', 'Apps Script server-side axis fallback');
 assertContains(gas, 'function calculateAxisScoresFromAnswers_(answersJson)', 'Apps Script answer-based axis calculation');
 
 console.log('Dashboard validation passed');
