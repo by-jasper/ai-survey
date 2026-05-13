@@ -651,7 +651,6 @@ function go(t){
 }
 function getScatterData(){
   return allData;
-  return allData;
 }
 function toggleMore(e){
   if(e && typeof e.stopPropagation==='function') e.stopPropagation();
@@ -823,8 +822,8 @@ function getScatterPoints(){
       const shouldBeHighE = q==='TL'||q==='TR';
       if(shouldBeHighA  && aRaw < 0.50) aRaw = 0.52;
       if(!shouldBeHighA && aRaw >= 0.50) aRaw = 0.48;
-      if(shouldBeHighE  && eRaw < 0.55) eRaw = 0.57;
-      if(!shouldBeHighE && eRaw >= 0.55) eRaw = 0.53;
+      if(shouldBeHighE  && eRaw < 0.50) eRaw = 0.52;
+      if(!shouldBeHighE && eRaw >= 0.50) eRaw = 0.48;
     } else {
       // Answers not stored — use quad + overall score to estimate position
       // Overall score = (awarenessScore*7*3 + excitementScore*7*3) / (14*3) = (awarenessScore+excitementScore)/2
@@ -843,8 +842,8 @@ function getScatterPoints(){
         ? 0.52 + (overall * 0.44)          // maps 0–1 to 0.52–0.96
         : 0.04 + ((1 - overall) * 0.44);   // maps 0–1 to 0.48–0.04 (inverted: low score → further left)
       const eBase = highE
-        ? 0.57 + (overall * 0.39)          // maps 0–1 to 0.57–0.96 (upper-half excitement placement)
-        : 0.04 + ((1 - overall) * 0.49);   // maps 0–1 to 0.53–0.04
+        ? 0.52 + (overall * 0.44)          // maps 0–1 to 0.52–0.96
+        : 0.04 + ((1 - overall) * 0.44);   // maps 0–1 to 0.48–0.04
 
       const seed=(r.name||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
       const jitter=k=>(((seed*k)%31)/31)*0.08-0.04;

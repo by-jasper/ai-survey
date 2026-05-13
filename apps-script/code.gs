@@ -145,16 +145,22 @@ function findEmployeeRow_(sheet, employeeIdColumn, employeeId) {
 function buildResponseRow_(sheet, col, payload, employeeId) {
   const row = new Array(sheet.getLastColumn()).fill('');
   const timestamp = payload.timestamp ? new Date(payload.timestamp) : new Date();
+  const answers = normalizeAnswers_(payload.answers);
+  const calculatedAxisScores = calculateAxisScoresFromAnswers_(answers);
+  const excitementScore = toOptionalNumber_(payload.excitementScore);
+  const awarenessScore = toOptionalNumber_(payload.awarenessScore);
+  const overallScore = toOptionalNumber_(payload.score);
+
   row[col.timestamp - 1] = timestamp;
   row[col.employeeId - 1] = employeeId;
   row[col.name - 1] = String(payload.name || '').trim();
   row[col.surveySet - 1] = normalizeSurveyMode_(payload.surveySet);
   row[col.quadrant - 1] = String(payload.quad || '').trim();
   row[col.quadrantLabel - 1] = String(payload.quadLabel || '').trim();
-  row[col.excitementScore - 1] = toOptionalNumber_(payload.excitementScore);
-  row[col.awarenessScore - 1] = toOptionalNumber_(payload.awarenessScore);
-  row[col.score - 1] = toOptionalNumber_(payload.score);
-  row[col.answersJson - 1] = JSON.stringify(Array.isArray(payload.answers) ? payload.answers : []);
+  row[col.excitementScore - 1] = isValidNumber_(excitementScore) ? excitementScore : (calculatedAxisScores ? calculatedAxisScores.excitementScore : '');
+  row[col.awarenessScore - 1] = isValidNumber_(awarenessScore) ? awarenessScore : (calculatedAxisScores ? calculatedAxisScores.awarenessScore : '');
+  row[col.score - 1] = isValidNumber_(overallScore) ? overallScore : calculateOverallScoreFromAnswers_(answers);
+  row[col.answersJson - 1] = JSON.stringify(answers);
   return row;
 }
 
@@ -245,6 +251,29 @@ function backfillAxisScores_(sheet) {
   if (changed) sheet.getRange(2, 1, values.length, sheet.getLastColumn()).setValues(values);
 }
 
+
+function normalizeAnswers_(answers) {
+  if (!Array.isArray(answers)) return [];
+  return answers.map(answer => {
+    const entry = answer || {};
+    const score = toOptionalNumber_(entry.score);
+    const normalized = {
+      section: String(entry.section || '').trim(),
+      axis: getAnswerAxis_(entry),
+      question: String(entry.question || '').trim(),
+      answer: String(entry.answer || '').trim(),
+      score: isValidNumber_(score) ? score : 0
+    };
+    return normalized;
+  });
+}
+
+function calculateOverallScoreFromAnswers_(answers) {
+  if (!Array.isArray(answers) || !answers.length) return '';
+  const total = answers.reduce((sum, answer) => sum + Number(answer.score || 0), 0);
+  return Math.round(total / (answers.length * 3) * 100);
+}
+
 function calculateAxisScoresFromAnswers_(answersJson) {
   if (!answersJson) return null;
 
@@ -321,6 +350,10 @@ function setSurveyMode_(mode) {
 
 function toOptionalNumber_(value) {
   return value === '' || value === null || value === undefined ? '' : Number(value);
+}
+
+function isValidNumber_(value) {
+  return value !== '' && value !== null && value !== undefined && !isNaN(Number(value));
 }
 
 function normalizeEmployeeId_(value) {

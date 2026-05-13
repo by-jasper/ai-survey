@@ -1,6 +1,6 @@
 # AI Survey
 
-Quick AI Awareness Survey for HR professionals.
+Quick AI Awareness and Excitement Survey for HR professionals.
 
 - Open `/` for participants to take the survey.
 - Open `/facilitator` for the organiser dashboard.
@@ -28,7 +28,7 @@ Participants must enter both their name and Employee ID before starting the surv
 GET ?action=checkEmployeeId&employeeId=E123456
 ```
 
-If the Employee ID already exists, the participant is warned that continuing will overwrite the previous survey response. Final submission sends `employeeId` with the response payload, and the Google Apps Script backend must upsert by Employee ID so the Google Sheet stores only one current response per Employee ID.
+If the Employee ID already exists, the participant is warned that continuing will overwrite the previous survey response. Final submission sends `employeeId` with the response payload, and the Google Apps Script backend upserts by Employee ID so the Google Sheet stores only one current response per Employee ID.
 
 ## Google Apps Script update
 
@@ -77,4 +77,4 @@ The response sheet uses these columns:
 9. `Score`
 10. `Answers JSON`
 
-The dashboard API returns `excitementScore` and `awarenessScore` for rows that have those columns. For older rows without explicit axis-score values, the dashboard recalculates axis scores from stored answer data when available.
+The dashboard API returns `excitementScore` and `awarenessScore` for rows that have those columns. New submissions store both scores explicitly, and the Apps Script backend recalculates them from the submitted answer payload if the client ever omits or sends invalid axis scores. For older rows without explicit axis-score values, the dashboard recalculates axis scores from stored answer data when available.
