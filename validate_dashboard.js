@@ -36,5 +36,11 @@ assertContains(gas, "'AI Excitement Score',", 'Apps Script excitement header');
 assertContains(gas, "'AI Awareness Score',", 'Apps Script awareness header');
 assertContains(gas, 'excitementScore: row[col.excitementScore - 1]', 'Apps Script dashboard excitement return');
 assertContains(gas, 'awarenessScore: row[col.awarenessScore - 1]', 'Apps Script dashboard awareness return');
+assertContains(gas, 'function normalizeLegacyHeaders_(sheet)', 'Apps Script legacy header normalization');
+assertContains(gas, "'Quad': 'Quadrant'", 'Apps Script Quad legacy alias');
+assertContains(gas, "'Answers': 'Answers JSON'", 'Apps Script Answers legacy alias');
+assertContains(gas, 'function ensureHeaderOrder_(sheet)', 'Apps Script header ordering repair');
+assertContains(gas, 'function backfillAxisScores_(sheet)', 'Apps Script axis score backfill');
+assertContains(gas, 'function calculateAxisScoresFromAnswers_(answersJson)', 'Apps Script answer-based axis calculation');
 
 console.log('Dashboard validation passed');

@@ -52,6 +52,18 @@ Required API actions:
 - `POST { action: 'reset' }`
 - Optional: `POST { action: 'setMode', mode: 'pre' | 'post' }`
 
+### Existing response sheets
+
+You do **not** need to delete old response rows or manually insert the new headers. When the updated Apps Script runs, it repairs the response sheet automatically by:
+
+- Renaming legacy headers (`Quad` → `Quadrant`, `Quad Label` → `Quadrant Label`, `Answers` → `Answers JSON`).
+- Inserting blank `Employee ID` and `Survey Set` columns for older rows that did not collect those fields yet.
+- Inserting `AI Excitement Score` and `AI Awareness Score` immediately before `Score`.
+- Backfilling the two axis-score cells for older rows when the stored answers contain per-question scores and axis/section metadata.
+- Preserving old row data in place so the dashboard can continue using stored `Score`, `Quadrant`, and answer JSON where available.
+
+Older rows will only keep blank axis-score cells if their stored answers do not contain enough per-question detail to reconstruct the two axes. New submissions will populate both axis-score columns automatically.
+
 The response sheet uses these columns:
 
 1. `Timestamp`

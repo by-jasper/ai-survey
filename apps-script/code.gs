@@ -10,6 +10,12 @@
  */
 const RESPONSE_SHEET_NAME = 'Responses';
 const MODE_PROPERTY_KEY = 'surveyMode';
+const AWARENESS_SECTION_NAMES = new Set([
+  'AI Awareness & Current Use',
+  'Organisational Readiness',
+  'AI Practice & Reflection',
+  'AI Governance & Team'
+]);
 
 const HEADERS = [
   'Timestamp',
@@ -169,30 +175,125 @@ function ensureHeaders_(sheet) {
     return;
   }
 
-  // Older response sheets only have Score/Answers JSON. Insert the two axis-score
-  // columns immediately before Score so existing Score/Answers data shifts safely.
-  const scoreIndex = existing.indexOf('Score') + 1;
-  if (scoreIndex > 0) {
-    ['AI Excitement Score', 'AI Awareness Score'].forEach(header => {
-      const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-      if (headers.indexOf(header) === -1) {
-        const currentScoreIndex = headers.indexOf('Score') + 1;
-        sheet.insertColumnBefore(currentScoreIndex);
-        sheet.getRange(1, currentScoreIndex).setValue(header);
-      }
-    });
-  }
+  normalizeLegacyHeaders_(sheet);
+  ensureHeaderOrder_(sheet);
+  backfillAxisScores_(sheet);
+}
 
-  const repaired = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const missing = HEADERS.filter(header => repaired.indexOf(header) === -1);
-  if (missing.length) {
-    sheet.getRange(1, repaired.length + 1, 1, missing.length).setValues([missing]);
+function normalizeLegacyHeaders_(sheet) {
+  const aliases = {
+    'Quad': 'Quadrant',
+    'Quad Label': 'Quadrant Label',
+    'Answers': 'Answers JSON'
+  };
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  headers.forEach((header, index) => {
+    const normalized = aliases[String(header || '').trim()];
+    if (normalized) sheet.getRange(1, index + 1).setValue(normalized);
+  });
+}
+
+function ensureHeaderOrder_(sheet) {
+  HEADERS.forEach((header, index) => {
+    const targetColumn = index + 1;
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const currentColumn = headers.indexOf(header) + 1;
+
+    if (!currentColumn) {
+      if (targetColumn <= sheet.getLastColumn()) {
+        sheet.insertColumnBefore(targetColumn);
+      } else {
+        sheet.insertColumnAfter(sheet.getLastColumn());
+      }
+      sheet.getRange(1, targetColumn).setValue(header);
+      return;
+    }
+
+    if (currentColumn !== targetColumn) {
+      sheet.moveColumns(sheet.getRange(1, currentColumn, sheet.getMaxRows(), 1), targetColumn);
+    }
+  });
+}
+
+function backfillAxisScores_(sheet) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return;
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const col = getColumnIndexesFromHeaders_(headers);
+  const values = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getValues();
+  let changed = false;
+
+  values.forEach(row => {
+    const hasExcitement = row[col.excitementScore - 1] !== '' && row[col.excitementScore - 1] !== null;
+    const hasAwareness = row[col.awarenessScore - 1] !== '' && row[col.awarenessScore - 1] !== null;
+    if (hasExcitement && hasAwareness) return;
+
+    const axisScores = calculateAxisScoresFromAnswers_(row[col.answersJson - 1]);
+    if (!axisScores) return;
+
+    if (!hasExcitement) {
+      row[col.excitementScore - 1] = axisScores.excitementScore;
+      changed = true;
+    }
+    if (!hasAwareness) {
+      row[col.awarenessScore - 1] = axisScores.awarenessScore;
+      changed = true;
+    }
+  });
+
+  if (changed) sheet.getRange(2, 1, values.length, sheet.getLastColumn()).setValues(values);
+}
+
+function calculateAxisScoresFromAnswers_(answersJson) {
+  if (!answersJson) return null;
+
+  let answers = [];
+  try {
+    answers = typeof answersJson === 'string' ? JSON.parse(answersJson) : answersJson;
+  } catch (err) {
+    return null;
   }
+  if (!Array.isArray(answers) || !answers.length) return null;
+
+  let awarenessTotal = 0;
+  let awarenessCount = 0;
+  let excitementTotal = 0;
+  let excitementCount = 0;
+
+  answers.forEach(answer => {
+    const axis = getAnswerAxis_(answer);
+    const score = Number(answer.score || 0);
+    if (axis === 'awareness') {
+      awarenessTotal += score;
+      awarenessCount++;
+    }
+    if (axis === 'excitement') {
+      excitementTotal += score;
+      excitementCount++;
+    }
+  });
+
+  if (!awarenessCount || !excitementCount) return null;
+  return {
+    awarenessScore: Math.round(awarenessTotal / (awarenessCount * 3) * 100),
+    excitementScore: Math.round(excitementTotal / (excitementCount * 3) * 100)
+  };
+}
+
+function getAnswerAxis_(answer) {
+  const entry = answer || {};
+  if (entry.axis === 'awareness' || entry.axis === 'excitement') return entry.axis;
+  return AWARENESS_SECTION_NAMES.has(entry.section) ? 'awareness' : 'excitement';
 }
 
 function getColumnIndexes_(sheet) {
   ensureHeaders_(sheet);
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  return getColumnIndexesFromHeaders_(headers);
+}
+
+function getColumnIndexesFromHeaders_(headers) {
   const indexOf = header => headers.indexOf(header) + 1;
   return {
     timestamp: indexOf('Timestamp'),
