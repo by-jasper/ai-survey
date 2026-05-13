@@ -1,5 +1,5 @@
 // questions.js — HR & AI Adoption Survey Questions
-// 20 questions across 4 themes, 4 options each (scored 0–3)
+// 14 questions total: 7 AI Awareness + 7 AI Excitement, 4 options each (scored 0–3)
 // Edit this file to update questions without touching index.html or facilitator.html
 
 const QUIZ_CONFIG = {

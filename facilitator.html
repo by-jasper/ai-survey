@@ -101,6 +101,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .meter-score{font-size:28px;font-weight:700;color:var(--text);line-height:1;margin-top:12px;text-align:center}
 .meter-stage{font-size:12px;color:var(--muted);font-weight:600;text-align:center;margin-top:3px;margin-bottom:10px}
 .meter-desc{font-size:12px;color:var(--muted);line-height:1.6;background:var(--bg);border-radius:8px;padding:10px 12px}
+.axis-score{font-size:34px;font-weight:800;color:var(--text);line-height:1;text-align:center;margin:6px 0}
+.axis-note{font-size:12px;color:var(--muted);line-height:1.5;text-align:center}
 
 /* ── Interpretation cards ── */
 .interp-grid{display:flex;flex-direction:column;gap:16px}
@@ -314,6 +316,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="sq-brief" id="sq-brief"></div>
       </div>
 
+
+      <!-- Average axis scores -->
+      <div class="sc-avg sc-axis">
+        <div class="lbl">AVG AI EXCITEMENT</div>
+        <div class="axis-score" id="avg-excitement-score">—</div>
+        <div class="axis-note">Average enthusiasm and motivation to adopt AI.</div>
+      </div>
+
+      <div class="sc-avg sc-axis">
+        <div class="lbl">AVG AI AWARENESS</div>
+        <div class="axis-score" id="avg-awareness-score">—</div>
+        <div class="axis-note">Average AI literacy, current use, and readiness understanding.</div>
+      </div>
+
       <!-- Avg readiness — horizontal linear meter -->
       <div class="sc-avg">
         <div class="lbl">AVG READINESS SCORE
@@ -520,7 +536,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 const GAS = 'https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
-const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness']);
+const AWARENESS_SECS = new Set(['AI Awareness & Current Use','Organisational Readiness','AI Practice & Reflection','AI Governance & Team']);
 const QMETA = {
   TL:{ name:'Enthusiastic Learners', tagline:'High excitement · Growing awareness', bg:'#E1F5EE', txt:'#085041', dot:'#1D9E75', css:'q1',
        brief:'Passionate about AI but still building practical skills. Energy and openness are their superpower.'},
@@ -698,9 +714,46 @@ function setStatus(ok,msg){const el=document.getElementById('status');el.textCon
 function rlabel(s){return s>=75?'AI-Ready':s>=60?'Progressing':s>=40?'Emerging':'Early Stage';}
 
 /* ── Stats ── */
+function hasNumber(v){return v!==null&&v!==undefined&&v!==''&&!Number.isNaN(Number(v));}
+
+function getAnswerAxis(answer){
+  if(answer.axis==='awareness'||answer.axis==='excitement') return answer.axis;
+  return AWARENESS_SECS.has(answer.section) ? 'awareness' : 'excitement';
+}
+
+function calcRowAxisScores(r){
+  const explicitAwareness=hasNumber(r.awarenessScore) ? Number(r.awarenessScore) : null;
+  const explicitExcitement=hasNumber(r.excitementScore) ? Number(r.excitementScore) : null;
+  if(explicitAwareness!==null && explicitExcitement!==null){
+    return {awarenessScore:explicitAwareness,excitementScore:explicitExcitement};
+  }
+
+  if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
+    let aSum=0,aCnt=0,eSum=0,eCnt=0;
+    r.answers.forEach(a=>{
+      const axis=getAnswerAxis(a);
+      const s=Number(a.score||0);
+      if(axis==='awareness'){aSum+=s;aCnt++;}
+      if(axis==='excitement'){eSum+=s;eCnt++;}
+    });
+    return {
+      awarenessScore: explicitAwareness!==null ? explicitAwareness : (aCnt ? Math.round(aSum/(aCnt*3)*100) : null),
+      excitementScore: explicitExcitement!==null ? explicitExcitement : (eCnt ? Math.round(eSum/(eCnt*3)*100) : null)
+    };
+  }
+
+  return {awarenessScore:explicitAwareness,excitementScore:explicitExcitement};
+}
+
 function updStats(){
-  const c={TL:0,TR:0,BL:0,BR:0},sc=[];
-  allData.forEach(r=>{if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;if(r.score!==null&&r.score!==undefined&&r.score!=='')sc.push(Number(r.score));});
+  const c={TL:0,TR:0,BL:0,BR:0},sc=[],aSc=[],eSc=[];
+  allData.forEach(r=>{
+    if(r.quad&&c[r.quad]!==undefined)c[r.quad]++;
+    if(hasNumber(r.score))sc.push(Number(r.score));
+    const axis=calcRowAxisScores(r);
+    if(hasNumber(axis.awarenessScore))aSc.push(Number(axis.awarenessScore));
+    if(hasNumber(axis.excitementScore))eSc.push(Number(axis.excitementScore));
+  });
   const tot=allData.length;
   document.getElementById('f-total').textContent=tot;
   document.getElementById('g-pool').textContent=tot;
@@ -710,6 +763,10 @@ function updStats(){
 
   // Fan gauge
   const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
+  const avgAwareness=aSc.length?Math.round(aSc.reduce((a,b)=>a+b)/aSc.length):null;
+  const avgExcitement=eSc.length?Math.round(eSc.reduce((a,b)=>a+b)/eSc.length):null;
+  document.getElementById('avg-awareness-score').textContent=avgAwareness!==null ? avgAwareness+'%' : '—';
+  document.getElementById('avg-excitement-score').textContent=avgExcitement!==null ? avgExcitement+'%' : '—';
   // Linear meter
   const meterDescs = {
     'Early Stage':'The team is at the start of the AI journey. Focus on building awareness and psychological safety before tool adoption.',
@@ -752,16 +809,11 @@ function getScatterPoints(){
       ? Number(r.score)
       : null;
 
-    if(r.answers&&Array.isArray(r.answers)&&r.answers.length>0){
-      // Full answers stored — compute exact scores
-      let aSum=0,aCnt=0,eSum=0,eCnt=0;
-      r.answers.forEach(a=>{
-        const isA=AWARENESS_SECS.has(a.section);
-        const s=Number(a.score||0);
-        if(isA){aSum+=s;aCnt++;}else{eSum+=s;eCnt++;}
-      });
-      if(aCnt>0)aRaw=aSum/(aCnt*3);
-      if(eCnt>0)eRaw=eSum/(eCnt*3);
+    const axisScores=calcRowAxisScores(r);
+    if(hasNumber(axisScores.awarenessScore)||hasNumber(axisScores.excitementScore)){
+      // Prefer explicit stored axis scores; fall back to recalculating from answers for older rows.
+      if(hasNumber(axisScores.awarenessScore))aRaw=Number(axisScores.awarenessScore)/100;
+      if(hasNumber(axisScores.excitementScore))eRaw=Number(axisScores.excitementScore)/100;
 
       // Precision guard: if the computed position contradicts the stored quad,
       // the score landed exactly on a threshold boundary (integer rounding).
@@ -775,7 +827,7 @@ function getScatterPoints(){
       if(!shouldBeHighE && eRaw >= 0.55) eRaw = 0.53;
     } else {
       // Answers not stored — use quad + overall score to estimate position
-      // Overall score = (aScore*10*3 + eScore*10*3) / (20*3) = (aScore+eScore)/2
+      // Overall score = (awarenessScore*7*3 + excitementScore*7*3) / (14*3) = (awarenessScore+excitementScore)/2
       // We know which half of each axis the person is in from their quad
       // Use overall score to distribute between the two axes proportionally
       // Fallback: place dot within the correct quadrant zone using overall score + jitter
