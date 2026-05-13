@@ -76,6 +76,10 @@
   .r-name{font-size:22px;font-weight:700;margin-bottom:6px}
   .r-tag{font-size:13px;opacity:0.7;margin-bottom:14px;font-weight:500}
   .r-div{height:1px;background:currentColor;opacity:0.15;margin-bottom:14px}
+  .r-scores{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .r-score-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;line-height:1.3}
+  .r-score-label{opacity:0.72;font-weight:700}
+  .r-score-value{font-size:16px;font-weight:800}
   .r-praise{font-size:14px;line-height:1.6;margin-bottom:12px;opacity:0.85}
   .r-tip-lbl{font-size:11px;font-weight:700;letter-spacing:0.5px;opacity:0.55;margin-bottom:5px}
   .r-tip{font-size:14px;line-height:1.6;opacity:0.8}
@@ -156,6 +160,12 @@
       <div class="r-lbl">YOU ARE PLACED IN</div>
       <div class="r-name" id="r-name"></div>
       <div class="r-tag" id="r-tag"></div>
+      <div class="r-div"></div>
+      <div class="r-scores">
+        <div class="r-score-row"><span class="r-score-label">AI Excitement</span><span class="r-score-value" id="r-excitement-score">—</span></div>
+        <div class="r-score-row"><span class="r-score-label">AI Awareness</span><span class="r-score-value" id="r-awareness-score">—</span></div>
+        <div class="r-score-row"><span class="r-score-label">Overall Score</span><span class="r-score-value" id="r-overall-score">—</span></div>
+      </div>
       <div class="r-div"></div>
       <div class="r-praise" id="r-praise"></div>
       <div class="r-tip-lbl">SUGGESTED NEXT STEP</div>
@@ -273,9 +283,20 @@ function nextQ(){if(curQ<SAFE_QUESTIONS.length-1){curQ++;renderQ();window.scroll
 function getAxisScores(){
   const aQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='awareness');
   const eQs=SAFE_QUESTIONS.map((q,i)=>({...q,i})).filter(q=>q.axis==='excitement');
-  const aScore=aQs.length ? aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(aQs.length*3) : 0;
-  const eScore=eQs.length ? eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0)/(eQs.length*3) : 0;
-  return {aScore,eScore};
+  const awarenessTotal=aQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0);
+  const excitementTotal=eQs.reduce((a,q)=>a+(pAnswers[q.i]??0),0);
+  const aScore=aQs.length ? awarenessTotal/(aQs.length*3) : 0;
+  const eScore=eQs.length ? excitementTotal/(eQs.length*3) : 0;
+  const awarenessScore=Math.round(aScore*100);
+  const excitementScore=Math.round(eScore*100);
+  return {
+    aScore,
+    eScore,
+    awarenessTotal,
+    excitementTotal,
+    awarenessScore,
+    excitementScore
+  };
 }
 
 function calcQuad(){
@@ -288,6 +309,7 @@ async function submitQuiz(){
   show('s-submitting');
   const quad=calcQuad();
   const qd=QUADRANTS[quad];
+  const {awarenessScore,excitementScore}=getAxisScores();
   const tot=Math.round(Object.values(pAnswers).reduce((a,v)=>a+v,0)/(Object.keys(pAnswers).length*3)*100);
 
   const card=document.getElementById('r-card');
@@ -296,12 +318,15 @@ async function submitQuiz(){
   document.getElementById('r-name').textContent=qd.name;
   document.getElementById('r-tag').textContent=qd.tagline;
   document.getElementById('r-praise').textContent=qd.praise;
+  document.getElementById('r-excitement-score').textContent=excitementScore+'%';
+  document.getElementById('r-awareness-score').textContent=awarenessScore+'%';
+  document.getElementById('r-overall-score').textContent=tot+'%';
   document.getElementById('r-tip').textContent=qd.suggestion;
   document.getElementById('submit-err').textContent='';
 
   try{
     await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'submit',name:pName,employeeId:pEmployeeId,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
+      body:JSON.stringify({action:'submit',name:pName,employeeId:pEmployeeId,quad,quadLabel:qd.name,excitementScore,awarenessScore,score:tot,timestamp:new Date().toISOString(),
         surveySet:SURVEY_SET,
         answers:SAFE_QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
   }catch(e){document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';}

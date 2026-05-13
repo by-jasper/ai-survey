@@ -18,6 +18,8 @@ const HEADERS = [
   'Survey Set',
   'Quadrant',
   'Quadrant Label',
+  'AI Excitement Score',
+  'AI Awareness Score',
   'Score',
   'Answers JSON'
 ];
@@ -109,6 +111,8 @@ function getAllResponses_() {
       surveySet: row[col.surveySet - 1],
       quad: row[col.quadrant - 1],
       quadLabel: row[col.quadrantLabel - 1],
+      excitementScore: row[col.excitementScore - 1],
+      awarenessScore: row[col.awarenessScore - 1],
       score: row[col.score - 1],
       answers
     };
@@ -141,7 +145,9 @@ function buildResponseRow_(sheet, col, payload, employeeId) {
   row[col.surveySet - 1] = normalizeSurveyMode_(payload.surveySet);
   row[col.quadrant - 1] = String(payload.quad || '').trim();
   row[col.quadrantLabel - 1] = String(payload.quadLabel || '').trim();
-  row[col.score - 1] = payload.score === '' || payload.score === null || payload.score === undefined ? '' : Number(payload.score);
+  row[col.excitementScore - 1] = toOptionalNumber_(payload.excitementScore);
+  row[col.awarenessScore - 1] = toOptionalNumber_(payload.awarenessScore);
+  row[col.score - 1] = toOptionalNumber_(payload.score);
   row[col.answersJson - 1] = JSON.stringify(Array.isArray(payload.answers) ? payload.answers : []);
   return row;
 }
@@ -155,16 +161,32 @@ function getResponseSheet_() {
 }
 
 function ensureHeaders_(sheet) {
-  const existing = sheet.getLastColumn() ? sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), HEADERS.length)).getValues()[0] : [];
-  const missing = HEADERS.filter(header => existing.indexOf(header) === -1);
+  const lastColumn = Math.max(sheet.getLastColumn(), 1);
+  const existing = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
 
   if (sheet.getLastRow() === 0 || existing.every(cell => cell === '')) {
     sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     return;
   }
 
+  // Older response sheets only have Score/Answers JSON. Insert the two axis-score
+  // columns immediately before Score so existing Score/Answers data shifts safely.
+  const scoreIndex = existing.indexOf('Score') + 1;
+  if (scoreIndex > 0) {
+    ['AI Excitement Score', 'AI Awareness Score'].forEach(header => {
+      const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      if (headers.indexOf(header) === -1) {
+        const currentScoreIndex = headers.indexOf('Score') + 1;
+        sheet.insertColumnBefore(currentScoreIndex);
+        sheet.getRange(1, currentScoreIndex).setValue(header);
+      }
+    });
+  }
+
+  const repaired = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const missing = HEADERS.filter(header => repaired.indexOf(header) === -1);
   if (missing.length) {
-    sheet.getRange(1, existing.length + 1, 1, missing.length).setValues([missing]);
+    sheet.getRange(1, repaired.length + 1, 1, missing.length).setValues([missing]);
   }
 }
 
@@ -179,6 +201,8 @@ function getColumnIndexes_(sheet) {
     surveySet: indexOf('Survey Set'),
     quadrant: indexOf('Quadrant'),
     quadrantLabel: indexOf('Quadrant Label'),
+    excitementScore: indexOf('AI Excitement Score'),
+    awarenessScore: indexOf('AI Awareness Score'),
     score: indexOf('Score'),
     answersJson: indexOf('Answers JSON')
   };
@@ -192,6 +216,10 @@ function setSurveyMode_(mode) {
   const normalized = normalizeSurveyMode_(mode);
   PropertiesService.getScriptProperties().setProperty(MODE_PROPERTY_KEY, normalized);
   return jsonResponse({ ok: true, mode: normalized });
+}
+
+function toOptionalNumber_(value) {
+  return value === '' || value === null || value === undefined ? '' : Number(value);
 }
 
 function normalizeEmployeeId_(value) {
