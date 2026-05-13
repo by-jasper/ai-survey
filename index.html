@@ -35,7 +35,8 @@
   .field-err{font-size:13px;color:var(--red);min-height:20px;margin-bottom:14px}
   .name-note{font-size:14px;color:var(--blue-txt);background:var(--blue-bg);padding:14px 16px;border-radius:12px;line-height:1.55;margin-bottom:30px}
   .sub-btn{width:100%;padding:18px;background:var(--green);color:#fff;font-size:18px;font-weight:700;border:none;border-radius:16px;cursor:pointer}
-  .sub-btn:active{background:var(--green-dark)}
+  .sub-btn:disabled{opacity:0.55;cursor:wait}
+  .sub-btn:active:not(:disabled){background:var(--green-dark)}
 
   .quiz-top{background:var(--white);padding:14px 20px 0;border-bottom:1px solid var(--border);flex-shrink:0}
   .quiz-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -104,14 +105,16 @@
   <div style="display:flex;flex-direction:column;min-height:100vh">
     <div class="hdr">
       <button class="back" onclick="show('s-home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
-      <div class="hdr-title">Your name</div>
+      <div class="hdr-title">Your details</div>
     </div>
     <div class="body">
       <div class="lbl">ENTER YOUR NAME</div>
-      <input type="text" id="inp-name" class="name-inp" placeholder="e.g. Sarah Tan" maxlength="40" autocomplete="name" onkeydown="if(event.key==='Enter')startQuiz()">
+      <input type="text" id="inp-name" class="name-inp" placeholder="e.g. Sarah Tan" maxlength="40" autocomplete="name" onkeydown="if(event.key==='Enter')document.getElementById('inp-employee-id').focus()">
+      <div class="lbl">ENTER YOUR EMPLOYEE ID</div>
+      <input type="text" id="inp-employee-id" class="name-inp" placeholder="e.g. E123456" maxlength="30" autocomplete="off" autocapitalize="characters" onkeydown="if(event.key==='Enter')startQuiz()">
       <div class="field-err" id="join-err"></div>
-      <div class="name-note">Your name is used only for the lucky draw. All survey answers are anonymous.</div>
-      <button class="sub-btn" onclick="startQuiz()">Begin Survey →</button>
+      <div class="name-note">Your name is used only for the lucky draw. Your Employee ID is used to keep only one survey response per person; submitting again with the same Employee ID will overwrite your previous response.</div>
+      <button class="sub-btn" id="btn-start" onclick="startQuiz()">Begin Survey →</button>
     </div>
   </div>
 </div>
@@ -168,7 +171,7 @@
 const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
 const LTR=['A','B','C','D'];
 
-let pName='',pAnswers={},curQ=0;
+let pName='',pEmployeeId='',pAnswers={},curQ=0;
 let SURVEY_SET='pre';
 const SAFE_QUESTIONS = (Array.isArray(QUESTIONS)&&QUESTIONS.length) ? QUESTIONS : ((typeof SURVEY_SETS!=='undefined' && Array.isArray(SURVEY_SETS.pre)) ? SURVEY_SETS.pre : []);
 async function initSurveyModeOnly(){
@@ -199,17 +202,46 @@ function show(id){
   window.scrollTo(0,0);
 }
 
-function startQuiz(){
+function normalizeEmployeeId(v){return String(v||'').trim().toUpperCase();}
+
+async function checkEmployeeIdExists(employeeId){
+  const r=await fetch(GAS+'?action=checkEmployeeId&employeeId='+encodeURIComponent(employeeId),{cache:'no-store'});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const j=await r.json();
+  return !!j.exists;
+}
+
+async function startQuiz(){
   const n=document.getElementById('inp-name').value.trim();
+  const employeeId=normalizeEmployeeId(document.getElementById('inp-employee-id').value);
   const err=document.getElementById('join-err');
+  const btn=document.getElementById('btn-start');
   if(!n){err.textContent='Please enter your name to continue.';return;}
+  if(!employeeId){err.textContent='Please enter your Employee ID to continue.';return;}
   if(!SAFE_QUESTIONS.length){err.textContent='Survey questions failed to load. Please refresh the page.';return;}
-  err.textContent='';
-  pName=n;
-  pAnswers={};
-  curQ=0;
-  show('s-quiz');
-  renderQ();
+
+  err.textContent='Checking Employee ID…';
+  btn.disabled=true;
+  btn.textContent='Checking…';
+  try{
+    const exists=await checkEmployeeIdExists(employeeId);
+    if(exists && !confirm('A previous survey response already exists for this Employee ID. If you continue, your new submission will overwrite the previous response. Do you want to continue?')){
+      err.textContent='You can update the Employee ID or return later.';
+      return;
+    }
+    err.textContent='';
+    pName=n;
+    pEmployeeId=employeeId;
+    pAnswers={};
+    curQ=0;
+    show('s-quiz');
+    renderQ();
+  }catch(e){
+    err.textContent='Could not verify Employee ID. Please check your connection and try again.';
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Begin Survey →';
+  }
 }
 
 function renderQ(){
@@ -269,7 +301,7 @@ async function submitQuiz(){
 
   try{
     await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'submit',name:pName,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
+      body:JSON.stringify({action:'submit',name:pName,employeeId:pEmployeeId,quad,quadLabel:qd.name,score:tot,timestamp:new Date().toISOString(),
         surveySet:SURVEY_SET,
         answers:SAFE_QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
   }catch(e){document.getElementById('submit-err').textContent='Could not confirm save — check your connection.';}
