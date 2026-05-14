@@ -3,7 +3,7 @@
 Quick AI Awareness and Excitement Survey for HR professionals.
 
 - Open `/` for participants to take the survey.
-- Open `/facilitator` for the organiser dashboard.
+- Open `/facilitator` for the organiser dashboard. If your host does not support extensionless routes, open `/facilitator.html` directly.
 
 ## Survey scoring
 
