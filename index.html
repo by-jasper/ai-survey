@@ -115,9 +115,9 @@
       <div class="lbl">ENTER YOUR NAME</div>
       <input type="text" id="inp-name" class="name-inp" placeholder="e.g. Sarah Tan" maxlength="40" autocomplete="name" onkeydown="if(event.key==='Enter')document.getElementById('inp-employee-id').focus()">
       <div class="lbl">ENTER YOUR EMPLOYEE ID</div>
-      <input type="text" id="inp-employee-id" class="name-inp" placeholder="e.g. E123456" maxlength="30" autocomplete="off" autocapitalize="characters" onkeydown="if(event.key==='Enter')startQuiz()">
+      <input type="text" id="inp-employee-id" class="name-inp" placeholder="e.g. 123456" maxlength="5" autocomplete="off" autocapitalize="characters" onkeydown="if(event.key==='Enter')startQuiz()">
       <div class="field-err" id="join-err"></div>
-      <div class="name-note">Your name is used only for the lucky draw. Your Employee ID is used to keep only one survey response per person; submitting again with the same Employee ID will overwrite your previous response.</div>
+      <div class="name-note">One response per Employee ID. Resubmissions will overwrite the previous response.</div>
       <button class="sub-btn" id="btn-start" onclick="startQuiz()">Begin Survey →</button>
     </div>
   </div>
