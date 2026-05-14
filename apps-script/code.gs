@@ -11,6 +11,7 @@
 const RESPONSE_SHEET_NAME = 'Responses';
 const MODE_PROPERTY_KEY = 'surveyMode';
 const AWARENESS_SECTION_NAMES = new Set([
+  'Awareness',
   'AI Awareness & Current Use',
   'Organisational Readiness',
   'AI Practice & Reflection',
@@ -33,14 +34,14 @@ const HEADERS = [
 function doGet(e) {
   const action = String((e && e.parameter && e.parameter.action) || '').trim();
 
-  if (action === 'getAll') return jsonResponse({ data: getAllResponses_() });
-  if (action === 'getMode') return jsonResponse({ mode: getSurveyMode_() });
+  if (action === 'getAll') return jsonResponse({ data: getAllResponses_() }, e);
+  if (action === 'getMode') return jsonResponse({ mode: getSurveyMode_() }, e);
   if (action === 'checkEmployeeId') {
     const employeeId = normalizeEmployeeId_(e.parameter.employeeId);
-    return jsonResponse({ exists: employeeId ? employeeIdExists_(employeeId) : false });
+    return jsonResponse({ exists: employeeId ? employeeIdExists_(employeeId) : false }, e);
   }
 
-  return jsonResponse({ ok: true, message: 'AI Survey API is running.' });
+  return jsonResponse({ ok: true, message: 'AI Survey API is running.' }, e);
 }
 
 function doPost(e) {
@@ -364,8 +365,17 @@ function normalizeSurveyMode_(value) {
   return String(value || '').trim().toLowerCase() === 'post' ? 'post' : 'pre';
 }
 
-function jsonResponse(obj) {
+function jsonResponse(obj, e) {
+  const json = JSON.stringify(obj);
+  const callback = e && e.parameter && String(e.parameter.callback || '').trim();
+  if (callback) {
+    const safeCallback = callback.replace(/[^a-zA-Z0-9_$.[\]]/g, '');
+    return ContentService
+      .createTextOutput(safeCallback + '(' + json + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
   return ContentService
-    .createTextOutput(JSON.stringify(obj))
+    .createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
 }

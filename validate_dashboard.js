@@ -51,4 +51,12 @@ assertContains(gas, 'function normalizeAnswers_(answers)', 'Apps Script answer n
 assertContains(gas, 'const calculatedAxisScores = calculateAxisScoresFromAnswers_(answers);', 'Apps Script server-side axis fallback');
 assertContains(gas, 'function calculateAxisScoresFromAnswers_(answersJson)', 'Apps Script answer-based axis calculation');
 
+assertContains(idx, 'function fetchGasJson(url, opts={}, timeoutMs=80000)', 'participant JSONP-capable fetch helper');
+assertContains(fac, 'function fetchJsonp(url, timeoutMs=80000)', 'dashboard JSONP fallback helper');
+assertContains(gas, 'ContentService.MimeType.JAVASCRIPT', 'Apps Script JSONP response support');
+assertContains(gas, "'Awareness',", 'Apps Script Awareness section fallback');
+assertContains(fac, "'Awareness'", 'dashboard Awareness section fallback');
+assertContains(fs.readFileSync('questions.js','utf8'), 'How would you describe your overall awareness of AI tools that is applicable to your work?', 'updated awareness question 1');
+assertContains(fs.readFileSync('questions.js','utf8'), 'How do you feel if AI is being introduced into your work?', 'updated excitement question 8');
+
 console.log('Dashboard validation passed');

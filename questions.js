@@ -13,39 +13,29 @@ const QUIZ_CONFIG = {
 // AWARENESS sections  → used to plot X-axis (left = low, right = high)
 // EXCITEMENT sections → used to plot Y-axis (top = high, bottom = low)
 
+const AWARENESS_QUESTIONS = [
+  {section:"Awareness",axis:"awareness",q:"How would you describe your overall awareness of AI tools that is applicable to your work?",o:["Not aware at all","Slightly aware, but limited understanding","Moderately aware and understand key tools","Highly aware and keep up with developments regularly"]},
+  {section:"Awareness",axis:"awareness",q:"How would you describe your current utilisation of AI tools in your work?",o:["I do not use AI tools in my work","I rarely use AI tools in my work (once a month or less)","I use AI tools occasionally in my work (a few times a month)","I use AI tools frequently in my work (weekly or more)"]},
+  {section:"Awareness",axis:"awareness",q:"When you come across a new AI tool, how do you typically respond?",o:["I ignore it — not relevant to me","I review basic information but rarely try it","I test it occasionally to assess its relevance","I actively explore and adopt it where applicable"]},
+  {section:"Awareness",axis:"awareness",q:"Which HR tasks have you personally used AI to help with? (pick the most advanced)",o:["I have not used AI for any HR tasks","Basic administrative tasks (e.g. drafting emails, simple summaries)","Intermediate tasks (e.g. analysing survey results, preparing reports, drafting policies)","Advanced tasks (e.g. workforce planning insights, predictive analysis, decision support)"]},
+  {section:"Awareness",axis:"awareness",q:"How well do you understand the risks of using AI in your work (e.g. bias, data privacy)?",o:["I have no understanding of these risks","I have a basic awareness of the risks","I have a good understanding and consider them in my work","I have a strong understanding and actively manage these risks in practice"]},
+  {section:"Awareness",axis:"awareness",q:"How would you rate the support available to HR staff for learning AI skills?",o:["No support at all — we're on our own","Minimal — some resources exist but not structured","Moderate — there are programmes but gaps remain","Strong — clear learning pathways and active support"]},
+  {section:"Awareness",axis:"awareness",q:"How much has AI changed the way your team operates day-to-day?",o:["Not at all — we work exactly as before","Slightly — one or two tools have been adopted","Noticeably — several workflows have changed","Significantly — AI is reshaping how we work"]}
+];
+
+const EXCITEMENT_QUESTIONS = [
+  {section:"Excitement",axis:"excitement",q:"How do you feel if AI is being introduced into your work?",o:["Uncomfortable — I would prefer status quo","Cautious — I am open but have some concerns","Optimistic — I see more benefits than risks","Excited — I want to be at the front of this change"]},
+  {section:"Excitement",axis:"excitement",q:"If you were allocated one hour per week to explore AI tools, how would you most likely use it?",o:["Prefer to use the time for regular work","I would review materials or observe demonstrations","I would experiment with AI tools for basic tasks","I would actively test and apply AI tools to improve my work processes"]},
+  {section:"Excitement",axis:"excitement",q:"How motivated are you to upskill in AI-related competencies in the next 12 months?",o:["Not motivated — I don't see the value for my role","Slightly motivated — I would do it only if it was required","Motivated — I have a specific plan to upskill this year","Very motivated — I have already started and am making progress"]},
+  {section:"Excitement",axis:"excitement",q:'To what extent do you agree with the statement: "AI will enhance my effectiveness at work rather than replace my role"?',o:["Strongly disagree — I think it threatens my role","Disagree — I am not convinced yet","Agree — I can see how it helps","Strongly Agree — I am already experiencing this"]},
+  {section:"Excitement",axis:"excitement",q:"How confident are you that you will thrive in an AI-enabled work environment over the next 3 years?",o:["Not confident — I am worried about falling behind","Uncertain — I will manage but it will be a stretch","Fairly confident — I am actively building the right skills","Very confident — I am already ahead of where I need to be"]},
+  {section:"Excitement",axis:"excitement",q:"Which statement best reflects your view on AI's impact on HR over the next 5 years?",o:["AI will disrupt HR in ways that worry me greatly","AI will bring changes I find mostly unsettling","AI will improve HR, though I have some reservations","AI will elevate HR into a far more strategic function"]},
+  {section:"Excitement",axis:"excitement",q:"Complete this sentence: 'My role in SMRT's AI journey is…'",o:["…not something I have thought about","…to follow along and support what is decided","…to stay informed and contribute when I can","…to help lead, shape, and accelerate our AI adoption"]}
+];
+
 const SURVEY_SETS = {
-  pre:[
-    {section:"AI Awareness & Current Use",axis:"awareness",q:"How would you describe your current use of AI tools in your HR work?",o:["I don't use any AI tools at all","I've tried one or two tools but not regularly","I use AI tools a few times a week","AI is a core part of how I work every day"]},
-    {section:"AI Awareness & Current Use",axis:"awareness",q:"How confident are you explaining what generative AI can do for HR tasks?",o:["Not confident","Slightly confident","Fairly confident","Very confident"]},
-    {section:"AI Awareness & Current Use",axis:"awareness",q:"How well do you understand risks of AI in HR (bias, privacy, compliance)?",o:["I haven't thought about this much","I know risks exist but not details","I understand the main risks and precautions","I can identify and mitigate risks confidently"]},
-    {section:"Organisational Readiness",axis:"awareness",q:"How clearly has SMRT communicated its AI direction to HR staff?",o:["Not clear at all","Somewhat vague","Generally clear","Very clear with clear role expectations"]},
-    {section:"Organisational Readiness",axis:"awareness",q:"How clear are your team's AI usage guidelines?",o:["No guidelines I know of","Some informal guidance","Formal guidelines but unevenly applied","Clear and consistently applied"]},
-    {section:"Organisational Readiness",axis:"awareness",q:"How much support exists for learning AI skills in HR?",o:["No support","Limited support","Moderate support","Strong, structured support"]},
-    {section:"Organisational Readiness",axis:"awareness",q:"How prepared do you feel to apply AI responsibly in your role today?",o:["Not prepared","Slightly prepared","Mostly prepared","Highly prepared"]},
-    {section:"Attitude & Acceptance",axis:"excitement",q:"How do you feel about AI being introduced into your HR role?",o:["Uncomfortable","Cautious but open","Optimistic","Excited"]},
-    {section:"Attitude & Acceptance",axis:"excitement",q:"When a new AI tool is rolled out at work, your instinct is to…",o:["Wait and see","Use only if required","Try when time allows","Dive in and share learnings"]},
-    {section:"Attitude & Acceptance",axis:"excitement",q:"How much do you agree: AI will make me better at my HR job?",o:["Strongly disagree","Somewhat disagree","Somewhat agree","Strongly agree"]},
-    {section:"Future Outlook & Confidence",axis:"excitement",q:"How confident are you that you will thrive in an AI-enabled HR environment?",o:["Not confident","Uncertain","Fairly confident","Very confident"]},
-    {section:"Future Outlook & Confidence",axis:"excitement",q:"How motivated are you to upskill in AI competencies this year?",o:["Not motivated","Slightly motivated","Motivated","Very motivated"]},
-    {section:"Future Outlook & Confidence",axis:"excitement",q:"How likely are you to recommend or introduce an AI tool to your team?",o:["Very unlikely","Unlikely","Likely","Very likely"]},
-    {section:"Future Outlook & Confidence",axis:"excitement",q:"My role in SMRT's AI journey is…",o:["Not something I've thought about","To follow and support decisions","To stay informed and contribute","To help lead and accelerate adoption"]}
-  ],
-  post:[
-    {section:"AI Practice & Reflection",axis:"awareness",q:"After the game, how clearly can you explain practical AI use cases for HR?",o:["Still unclear","Somewhat clearer","Mostly clear","Very clear and specific"]},
-    {section:"AI Practice & Reflection",axis:"awareness",q:"How confident are you now in writing effective prompts for HR tasks?",o:["Not confident","Slightly confident","Fairly confident","Very confident"]},
-    {section:"AI Practice & Reflection",axis:"awareness",q:"How strong is your understanding of AI risk controls after the session?",o:["Still weak","Basic awareness","Good working understanding","Strong and actionable understanding"]},
-    {section:"AI Practice & Reflection",axis:"awareness",q:"How ready are you to apply one AI workflow in your role this week?",o:["Not ready","Need more guidance","Ready with some support","Ready to execute independently"]},
-    {section:"AI Governance & Team",axis:"awareness",q:"How clear are you on when to escalate AI-related risk or ethics concerns?",o:["Not clear","Somewhat clear","Clear in most cases","Very clear in all common cases"]},
-    {section:"AI Governance & Team",axis:"awareness",q:"How well can your team distinguish between AI outputs to trust vs verify?",o:["Poorly","Inconsistently","Generally well","Very well and consistently"]},
-    {section:"AI Governance & Team",axis:"awareness",q:"How prepared is your team to embed AI into current HR SOPs?",o:["Not prepared","Slightly prepared","Moderately prepared","Highly prepared"]},
-    {section:"Adoption Energy",axis:"excitement",q:"How energised are you to continue experimenting with AI after this game?",o:["Not energised","Mildly energised","Energised","Highly energised"]},
-    {section:"Adoption Energy",axis:"excitement",q:"How willing are you to mentor a colleague on one AI use case?",o:["Not willing","Only if asked","Willing","Very willing"]},
-    {section:"Adoption Energy",axis:"excitement",q:"How much do you believe responsible AI can improve HR outcomes at SMRT?",o:["Very little","Some improvement","Clear improvement","Major improvement"]},
-    {section:"Adoption Energy",axis:"excitement",q:"How comfortable are you discussing AI concerns openly with your team?",o:["Not comfortable","Somewhat comfortable","Comfortable","Very comfortable"]},
-    {section:"Action Intent",axis:"excitement",q:"How committed are you to complete one AI-enabled HR task in the next 7 days?",o:["Not committed","Somewhat committed","Committed","Highly committed"]},
-    {section:"Action Intent",axis:"excitement",q:"How likely are you to propose one AI improvement in your next team meeting?",o:["Very unlikely","Unlikely","Likely","Very likely"]},
-    {section:"Action Intent",axis:"excitement",q:"Compared with before the game, your readiness now is…",o:["Lower","About the same","Higher","Much higher"]}
-  ]
+  pre:[...AWARENESS_QUESTIONS, ...EXCITEMENT_QUESTIONS],
+  post:[...AWARENESS_QUESTIONS, ...EXCITEMENT_QUESTIONS]
 };
 
 const QUESTIONS = SURVEY_SETS.pre;
