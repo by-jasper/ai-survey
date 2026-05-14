@@ -8,12 +8,14 @@ function assertContains(text, needle, label){
 const fac = fs.readFileSync('facilitator.html','utf8');
 const idx = fs.readFileSync('index.html','utf8');
 const gas = fs.readFileSync('apps-script/code.gs','utf8');
+const route = fs.readFileSync('facilitator/index.html','utf8');
 
 // Facilitator scatter essentials
 assertContains(fac, 'id="page-dashboard"', 'dashboard page');
 assertContains(fac, 'id="scatter-canvas"', 'scatter canvas');
 assertContains(fac, "function drawScatter()", 'drawScatter function');
 assertContains(fac, "function loadData(fb)", 'loadData function');
+assertContains(route, '../facilitator.html', 'extensionless facilitator route redirect');
 assertContains(fac, "page-dashboard').classList.contains('active')) drawScatter()", 'loadData draw call');
 assertContains(fac, "(1 - 0.50) * CH", '50% excitement threshold');
 assertContains(fac, "fillText('E=50%'", 'E=50 axis label');
