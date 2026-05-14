@@ -5,6 +5,10 @@ function assertContains(text, needle, label){
   if(!text.includes(needle)) throw new Error(`Missing ${label}: ${needle}`);
 }
 
+function assertNotContains(text, needle, label){
+  if(text.includes(needle)) throw new Error(`Unexpected ${label}: ${needle}`);
+}
+
 const fac = fs.readFileSync('facilitator.html','utf8');
 const idx = fs.readFileSync('index.html','utf8');
 const gas = fs.readFileSync('apps-script/code.gs','utf8');
@@ -19,8 +23,8 @@ assertContains(route, '../facilitator.html', 'extensionless facilitator route re
 assertContains(fac, "page-dashboard').classList.contains('active')) drawScatter()", 'loadData draw call');
 assertContains(fac, "(1 - 0.50) * CH", '50% excitement threshold');
 assertContains(fac, "fillText('E=50%'", 'E=50 axis label');
-assertContains(fac, 'id="avg-excitement-score"', 'average excitement score card');
-assertContains(fac, 'id="avg-awareness-score"', 'average awareness score card');
+assertNotContains(fac, 'id="avg-excitement-score"', 'average excitement score card');
+assertNotContains(fac, 'id="avg-awareness-score"', 'average awareness score card');
 assertContains(fac, 'function calcRowAxisScores(r)', 'dashboard axis score fallback');
 assertContains(fac, 'r.awarenessScore', 'dashboard awarenessScore field');
 assertContains(fac, 'r.excitementScore', 'dashboard excitementScore field');
