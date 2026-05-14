@@ -178,7 +178,7 @@
 
 <script src="questions.js"></script>
 <script>
-const GAS='https://script.google.com/macros/s/AKfycbzKtI9FaHHe9lCicoXjMRKniLhek2IQWgeYaDmN1XnoTcouqKnr74tWKGpWKHpBmVTeRw/exec';
+const GAS='https://script.google.com/macros/s/AKfycbxRoCBMx7W1GY2VLfuG1vV-s0Y72wQ-J5Ut1Ww0viIZ1auIq0bSRaciOLIUNP0L4m4Clg/exec';
 const LTR=['A','B','C','D'];
 
 let pName='',pEmployeeId='',pAnswers={},curQ=0;
@@ -367,7 +367,7 @@ async function submitQuiz(){
   document.getElementById('submit-err').textContent='';
 
   try{
-    await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    await fetch(GAS,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify({action:'submit',name:pName,employeeId:pEmployeeId,quad,quadLabel:qd.name,excitementScore,awarenessScore,score:tot,timestamp:new Date().toISOString(),
         surveySet:SURVEY_SET,
         answers:SAFE_QUESTIONS.map((q,i)=>({section:q.section,axis:q.axis,question:q.q,answer:q.o[pAnswers[i]??0],score:pAnswers[i]??0}))})});
