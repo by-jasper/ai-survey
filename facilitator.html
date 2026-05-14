@@ -161,6 +161,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pool-box{background:var(--bg);border-radius:12px;padding:20px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:16px}
 .pool-n{font-size:52px;font-weight:700;color:var(--text)}
 .pool-l{font-size:13px;color:var(--muted);line-height:1.55}
+.draw-setup{display:flex;justify-content:center;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:0 auto 16px}
+.prize-field{display:flex;flex-direction:column;gap:6px;text-align:left}
+.prize-label{font-size:12px;font-weight:700;color:var(--muted)}
+.prize-input{width:120px;padding:12px 14px;font-size:18px;font-weight:800;border:2px solid var(--border);border-radius:12px;text-align:center;color:var(--text);background:var(--white);outline:none}
+.prize-input:focus{border-color:var(--green-l);box-shadow:0 0 0 3px rgba(29,158,117,0.12)}
+.winner-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:0 auto 18px;max-width:760px;text-align:left}
+.winner-pill{background:var(--green-xl);color:var(--green-dark);border:1px solid rgba(15,110,86,0.16);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}
+.winner-rank{width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
 .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 /* Confetti */
 .confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confetti-fall 2s ease-in forwards;pointer-events:none}
@@ -268,10 +276,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
+  <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
   <div class="tn-more" id="tn-more-wrap">
     <button class="tn tn-more-btn" id="tn-more" type="button" onclick="toggleMore(event)">More</button>
     <div class="tn-more-menu">
-      <button class="tn-more-item" id="tn-draw" onclick="go('draw')">Lucky Draw</button>
       <button class="tn-more-item" id="tn-grouping" onclick="go('grouping')">Grouping</button>
       <button class="tn-more-item" id="tn-hats" onclick="go('hats')">Six Thinking Hats</button>
     </div>
@@ -374,13 +382,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="dp active" id="dp-all">
     <div class="draw-box" id="draw-all-box">
       <div style="font-size:15px;font-weight:700;margin-bottom:4px">Draw from Everyone</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Pick a winner from all participants who responded</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Enter the number of prizes, then draw unique winners from all participants who responded</div>
       <div class="pool-box">
         <div class="pool-n" id="pool-n">0</div>
         <div class="pool-l">participants<br>in the draw pool</div>
       </div>
+      <div class="draw-setup">
+        <label class="prize-field" for="prize-n">
+          <span class="prize-label">Number of prizes required</span>
+          <input class="prize-input" id="prize-n" type="number" min="1" step="1" value="1" inputmode="numeric">
+        </label>
+      </div>
       <div class="dhint" id="all-hint">Everyone who submitted is in this draw</div>
       <div class="dw" id="all-win">—</div>
+      <div class="winner-list" id="all-winners"></div>
       <div class="btn-row">
         <button class="btn primary lg" id="btn-all" onclick="spinAll()" disabled>Spin Lucky Draw</button>
         <button class="btn lg" onclick="clearAll()">Clear</button>
@@ -625,9 +640,9 @@ const HAT_INFO = [
   { key:'blue',   label:'💙 Blue',    bg:'#DBEAFE', txt:'#1E40AF', desc:'Planning'    },
   { key:'black',  label:'🖤 Black',   bg:'#E5E7EB', txt:'#111827', desc:'Judgement'   }
 ];
-const MORE_PAGES = new Set(['draw','grouping','hats']);
+const MORE_PAGES = new Set(['grouping','hats']);
 
-let allData=[], selQ=null, interpBuilt=false;
+let allData=[], selQ=null, interpBuilt=false, allDrawSpinning=false;
 
 /* ── Navigation ── */
 const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
@@ -781,7 +796,7 @@ function updStats(){
   document.getElementById('g-pool').textContent=tot;
   document.getElementById('g-hats-pool').textContent=tot;
   document.getElementById('pool-n').textContent=tot;
-  document.getElementById('btn-all').disabled=tot===0;
+  document.getElementById('btn-all').disabled=tot===0||allDrawSpinning;
 
   // Fan gauge
   const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b)/sc.length):null;
@@ -1079,8 +1094,72 @@ function pickQ(q){
 
 function spinQuad(){if(!selQ)return;const pool=allData.filter(r=>r.quad===selQ);if(!pool.length)return;spin(pool,'q-win','btn-q','q-hint','draw-quad-box');}
 function clearQ(){selQ=null;['TL','TR','BL','BR'].forEach(x=>document.getElementById('dq-'+x).classList.remove('picked'));document.getElementById('q-win').textContent='—';document.getElementById('q-hint').textContent='Tap a quadrant above to select it';document.getElementById('btn-q').disabled=true;}
-function spinAll(){if(!allData.length)return;spin(allData,'all-win','btn-all','all-hint','draw-all-box');}
-function clearAll(){document.getElementById('all-win').textContent='—';document.getElementById('all-hint').textContent='Everyone who submitted is in this draw';}
+function spinAll(){
+  if(allDrawSpinning)return;
+  if(!allData.length)return;
+  const n=parseInt(document.getElementById('prize-n').value,10);
+  if(!n||n<1){alert('Please enter a valid number of prizes.');return;}
+  if(n>allData.length){alert('Cannot draw more prizes than participants ('+allData.length+').');return;}
+  spinMany(allData,n,'all-win','all-winners','btn-all','all-hint','draw-all-box');
+}
+function clearAll(){
+  if(allDrawSpinning)return;
+  document.getElementById('all-win').textContent='—';
+  document.getElementById('all-winners').innerHTML='';
+  document.getElementById('all-hint').textContent='Everyone who submitted is in this draw';
+}
+
+function renderWinnerList(winners,listId){
+  const list=document.getElementById(listId);
+  list.innerHTML='';
+  winners.forEach((w,i)=>{
+    const item=document.createElement('div');
+    item.className='winner-pill';
+    const rank=document.createElement('span');
+    rank.className='winner-rank';
+    rank.textContent=i+1;
+    const name=document.createElement('span');
+    name.textContent=w.name||'—';
+    item.appendChild(rank);
+    item.appendChild(name);
+    list.appendChild(item);
+  });
+}
+
+function spinMany(pool,count,nameId,listId,btnId,hintId,boxId){
+  const ne=document.getElementById(nameId),be=document.getElementById(btnId),he=document.getElementById(hintId);
+  const available=[...pool],winners=[];
+  let prizeNo=0;
+  allDrawSpinning=true;
+  be.disabled=true;
+  ne.textContent='—';
+  renderWinnerList(winners,listId);
+  const drawNext=()=>{
+    prizeNo++;
+    he.textContent='Drawing prize '+prizeNo+' of '+count+'…';
+    let i=0,rounds=24+Math.floor(Math.random()*12),delay=38;
+    const step=()=>{
+      ne.textContent=available[i%available.length].name||'—';i++;
+      if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.1,260);}
+      else{
+        const idx=Math.floor(Math.random()*available.length);
+        const w=available.splice(idx,1)[0];
+        winners.push(w);
+        ne.textContent=w.name||'—';
+        renderWinnerList(winners,listId);
+        launchConfetti(boxId);
+        if(prizeNo<count){setTimeout(drawNext,520);}
+        else{
+          he.textContent='🎉 '+count+' winner'+(count!==1?'s':'')+' selected!';
+          allDrawSpinning=false;
+          be.disabled=false;
+        }
+      }
+    };
+    step();
+  };
+  drawNext();
+}
 
 function spin(pool,nameId,btnId,hintId,boxId){
   const ne=document.getElementById(nameId),be=document.getElementById(btnId),he=document.getElementById(hintId);
