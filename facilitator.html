@@ -1427,7 +1427,7 @@ async function doReset(){
 
 
 loadData(true);
-setInterval(()=>loadData(false),2000);
+setInterval(()=>loadData(false),10000);
 window.addEventListener('resize',()=>{if(document.getElementById('page-dashboard').classList.contains('active'))drawScatter();});
 </script>
 </body>
