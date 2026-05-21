@@ -262,6 +262,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dg-step-pts li{font-size:11px;color:var(--muted);line-height:1.5;padding-left:10px;position:relative}
 .dg-step-pts li::before{content:"•";position:absolute;left:0}
 
+/* ── Spectrum tab ── */
+.spectrum-wrap{display:grid;gap:14px}
+.spectrum-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px}
+.spectrum-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.spectrum-sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+.spectrum-table{width:100%;border-collapse:collapse;font-size:13px}
+.spectrum-table th,.spectrum-table td{padding:10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.spectrum-table th{font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.spectrum-badge{display:inline-flex;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.s-top{background:#E1F5EE;color:#085041}
+.s-bottom{background:#FAECE7;color:#4A1B0C}
+.spectrum-empty{font-size:13px;color:var(--muted)}
+.spectrum-expand{margin-top:6px}
+.spectrum-expand summary{cursor:pointer;color:var(--navy);font-weight:600}
+.spectrum-expand ul{margin:8px 0 0 18px}
+.spectrum-expand li{margin-bottom:4px}
+
 
 .stage-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .stage-btn { padding: 8px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-secondary); font-size: 13px; cursor: pointer; transition: all 0.15s; }
@@ -357,6 +374,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
   <button class="tn"        id="tn-guide"           onclick="go('guide')">Guide</button>
   <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
+  <button class="tn"        id="tn-spectrum"        onclick="go('spectrum')">Spectrum</button>
   <div class="tn-more" id="tn-more-wrap">
     <button class="tn tn-more-btn" id="tn-more" type="button" onclick="toggleMore(event)">More</button>
     <div class="tn-more-menu">
@@ -549,6 +567,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="btn primary lg" id="btn-q" onclick="spinQuad()" disabled>Spin Lucky Draw</button>
         <button class="btn lg" onclick="clearQ()">Clear</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-spectrum">
+  <div class="spectrum-wrap">
+    <div class="spectrum-card">
+      <div class="spectrum-title">AI Spectrum Rankings</div>
+      <div class="spectrum-sub">Pulled from Google Apps Script fields: <strong>AI Excitement Score</strong>, <strong>AI Awareness Score</strong>, and <strong>Score (average)</strong>.</div>
+      <div id="spectrum-content"></div>
     </div>
   </div>
 </div>
@@ -774,7 +802,7 @@ const MORE_PAGES = new Set(['grouping','hats']);
 let allData=[], selQ=null, interpBuilt=false, allDrawSpinning=false;
 
 /* ── Navigation ── */
-const PAGES = ['dashboard','interpretation','guide','draw','grouping','hats','reset'];
+const PAGES = ['dashboard','interpretation','guide','draw','spectrum','grouping','hats','reset'];
 function showGuide(idx){
   document.querySelectorAll('#page-guide .stage-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#page-guide .stage-btn').forEach(b=>b.classList.remove('active'));
@@ -802,6 +830,7 @@ function go(t){
   if(t==='dashboard')      drawScatter();
   if(t==='interpretation') buildInterp();
   if(t==='draw')           updDrawCounts();
+  if(t==='spectrum')       renderSpectrum();
   if(t==='grouping')       { document.getElementById('g-pool').textContent=allData.length; document.getElementById('g-hats-pool').textContent=allData.length; }
 }
 function getScatterData(){
@@ -873,6 +902,7 @@ async function loadData(fb){
     allData=Array.isArray(j.data)?j.data:Array.isArray(j)?j:[];
     updStats(); updDrawCounts();
     if(document.getElementById('page-dashboard').classList.contains('active')) drawScatter();
+    if(document.getElementById('page-spectrum').classList.contains('active')) renderSpectrum();
     if(interpBuilt) refreshInterpCounts();
     const n=new Date();
     document.getElementById('ts').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');
@@ -948,6 +978,59 @@ function updStats(){
   const ptr = document.getElementById('meter-pointer');
   if (ptr) ptr.style.left = avg !== null ? Math.min(Math.max(avg, 2), 98) + '%' : '0%';
 
+}
+
+function getSpectrumRows(){
+  return allData.map((r, idx)=>{
+    const axis=calcRowAxisScores(r);
+    const awareness=hasNumber(axis.awarenessScore) ? Number(axis.awarenessScore) : null;
+    const excitement=hasNumber(axis.excitementScore) ? Number(axis.excitementScore) : null;
+    const avg=hasNumber(r.score)
+      ? Number(r.score)
+      : (awareness!==null && excitement!==null ? Math.round((awareness+excitement)/2) : null);
+    return {
+      name:(r.name||'Participant '+(idx+1)).trim(),
+      awareness,
+      excitement,
+      avg,
+      raw:r
+    };
+  }).filter(r=>r.avg!==null);
+}
+
+function renderSpectrum(){
+  const host=document.getElementById('spectrum-content');
+  if(!host) return;
+  const rows=getSpectrumRows().sort((a,b)=>b.avg-a.avg||b.excitement-a.excitement||b.awareness-a.awareness||a.name.localeCompare(b.name));
+  if(!rows.length){
+    host.innerHTML='<div class="spectrum-empty">No scoring data yet.</div>';
+    return;
+  }
+  const top=rows.slice(0,3);
+  const bottom=[...rows].reverse().slice(0,3);
+  const renderGroup=(items,label,klass)=>`
+    <table class="spectrum-table">
+      <thead><tr><th style="width:110px">${label}</th><th>Name</th><th>AI Excitement</th><th>AI Awareness</th><th>Score (avg)</th><th>Details</th></tr></thead>
+      <tbody>
+        ${items.map((r,i)=>`<tr>
+          <td><span class="spectrum-badge ${klass}">#${i+1} ${label==='Top 3'?'Top':'Bottom'}</span></td>
+          <td>${r.name}</td>
+          <td>${r.excitement!==null?Math.round(r.excitement)+'%':'—'}</td>
+          <td>${r.awareness!==null?Math.round(r.awareness)+'%':'—'}</td>
+          <td><strong>${Math.round(r.avg)}%</strong></td>
+          <td>
+            <details class="spectrum-expand">
+              <summary>Expand</summary>
+              <ul>
+                <li>Quadrant: ${r.raw.quad||'—'}</li>
+                <li>Readiness label: ${rlabel(Math.round(r.avg))}</li>
+              </ul>
+            </details>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  host.innerHTML = renderGroup(top,'Top 3','s-top') + '<div style="height:12px"></div>' + renderGroup(bottom,'Bottom 3','s-bottom');
 }
 
 /* ── Scatter ── */
