@@ -262,6 +262,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dg-step-pts li{font-size:11px;color:var(--muted);line-height:1.5;padding-left:10px;position:relative}
 .dg-step-pts li::before{content:"•";position:absolute;left:0}
 
+
+.stage-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.stage-btn { padding: 8px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-secondary); font-size: 13px; cursor: pointer; transition: all 0.15s; }
+.stage-btn:hover { background: var(--color-background-secondary); }
+.stage-btn.active { font-weight: 500; }
+.stage-btn.s0.active { background: #D3D1C7; color: #2C2C2A; border-color: #888780; }
+.stage-btn.s1.active { background: #B5D4F4; color: #042C53; border-color: #378ADD; }
+.stage-btn.s2.active { background: #C0DD97; color: #173404; border-color: #639922; }
+.stage-btn.s3.active { background: #9FE1CB; color: #04342C; border-color: #1D9E75; }
+.stage-panel { display: none; }
+.stage-panel.active { display: block; }
+.hero-band { border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.hero-band.s0 { background: #F1EFE8; border: 0.5px solid #888780; }
+.hero-band.s1 { background: #E6F1FB; border: 0.5px solid #378ADD; }
+.hero-band.s2 { background: #EAF3DE; border: 0.5px solid #639922; }
+.hero-band.s3 { background: #E1F5EE; border: 0.5px solid #1D9E75; }
+.hero-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.hero-title { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+.hero-desc { font-size: 14px; line-height: 1.6; }
+
 /* ── Buttons ── */
 .btn{padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;display:inline-block;text-align:center}
 .btn:hover{background:var(--bg)}
@@ -306,6 +326,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="tab-nav">
   <button class="tn active" id="tn-dashboard"      onclick="go('dashboard')">Live Dashboard</button>
   <button class="tn"        id="tn-interpretation"  onclick="go('interpretation')">Interpretation</button>
+  <button class="tn"        id="tn-guide"           onclick="go('guide')">Guide</button>
   <button class="tn"        id="tn-draw"            onclick="go('draw')">Lucky Draw</button>
   <div class="tn-more" id="tn-more-wrap">
     <button class="tn tn-more-btn" id="tn-more" type="button" onclick="toggleMore(event)">More</button>
@@ -391,7 +412,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="interp-grid" id="interp-grid"></div>
 </div>
 
-<!-- ═══════════════════ TAB 3: LUCKY DRAW ═══════════════════ -->
+
+
+<!-- ═══════════════════ TAB 3: GUIDE ═══════════════════ -->
+<div class="page" id="page-guide">
+  <style>
+    #page-guide{--color-border-secondary:var(--border);--color-background-primary:var(--white);--color-text-secondary:var(--muted);--border-radius-md:10px;--color-background-secondary:var(--bg);--border-radius-lg:14px;--color-text-primary:var(--text);--color-border-tertiary:var(--border)}
+  </style>
+  <h2 class="sr-only">AI awareness stage guide — what to do at each stage</h2>
+  <div style="padding: 1rem 0;">
+    <div class="stage-nav">
+      <button class="stage-btn s0" onclick="showGuide(0)">Early stage &nbsp;0–39%</button>
+      <button class="stage-btn s1 active" onclick="showGuide(1)">Emerging &nbsp;40–59%</button>
+      <button class="stage-btn s2" onclick="showGuide(2)">Progressing &nbsp;60–74%</button>
+      <button class="stage-btn s3" onclick="showGuide(3)">AI-ready &nbsp;75–100%</button>
+    </div>
+    <div class="stage-panel s0" id="panel-0"><div class="hero-band s0"><div class="hero-label">Early stage · 0–39%</div><div class="hero-title">Building the foundation</div><div class="hero-desc">The team is at the start of the AI journey. The priority here is not tools — it's trust and shared vocabulary. People need to feel psychologically safe asking "what even is AI?" before they can meaningfully adopt it.</div></div></div>
+    <div class="stage-panel s1 active" id="panel-1"><div class="hero-band s1"><div class="hero-label">Emerging · 40–59%</div><div class="hero-title">From curiosity to capability</div><div class="hero-desc">There is growing awareness across the department with pockets of real enthusiasm. The challenge now is converting that interest into structured skills — and ensuring the whole team moves forward, not just the early adopters.</div></div></div>
+    <div class="stage-panel s2" id="panel-2"><div class="hero-band s2"><div class="hero-label">Progressing · 60–74%</div><div class="hero-title">From pilots to practice</div><div class="hero-desc">The department has good momentum and most staff have meaningful AI exposure. The risk at this stage is inconsistency — pockets of strong adoption alongside pockets of resistance. The focus now is consolidation, governance, and handling the sceptics constructively.</div></div></div>
+    <div class="stage-panel s3" id="panel-3"><div class="hero-band s3"><div class="hero-label">AI-ready · 75–100%</div><div class="hero-title">Leading, not just using</div><div class="hero-desc">The team has strong AI literacy and genuine confidence. The opportunity now is to shift from adopters to advocates — leading responsible AI use across the organisation and setting the standard for how it's done well.</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 4: LUCKY DRAW ═══════════════════ -->
 <div class="page" id="page-draw">
   <div class="draw-toggle">
     <button class="dt active" id="dt-all"  onclick="swDraw('all')">Draw from Everyone</button>
@@ -665,7 +708,16 @@ const MORE_PAGES = new Set(['grouping','hats']);
 let allData=[], selQ=null, interpBuilt=false, allDrawSpinning=false;
 
 /* ── Navigation ── */
-const PAGES = ['dashboard','interpretation','draw','grouping','hats','reset'];
+const PAGES = ['dashboard','interpretation','guide','draw','grouping','hats','reset'];
+function showGuide(idx){
+  document.querySelectorAll('#page-guide .stage-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#page-guide .stage-btn').forEach(b=>b.classList.remove('active'));
+  const panel=document.querySelector('#page-guide #panel-'+idx);
+  const btn=document.querySelectorAll('#page-guide .stage-btn')[idx];
+  if(panel) panel.classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
 function go(t){
   PAGES.forEach(x=>{
     const tn = document.getElementById('tn-'+x);
