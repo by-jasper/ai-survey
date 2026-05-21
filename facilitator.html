@@ -1016,33 +1016,36 @@ function renderSpectrum(){
   const bottomExcitement=[...rows].sort((a,b)=>a.excitement-b.excitement||a.avg-b.avg||a.name.localeCompare(b.name)).slice(0,3);
   const topAwareness=[...rows].sort((a,b)=>b.awareness-a.awareness||b.avg-a.avg||a.name.localeCompare(b.name)).slice(0,3);
   const bottomAwareness=[...rows].sort((a,b)=>a.awareness-b.awareness||a.avg-b.avg||a.name.localeCompare(b.name)).slice(0,3);
-  const renderGroup=(title,explain,items,klass)=>`
+  const scoreByMetric=(row,metric)=>{
+    if(metric==='excitement') return row.excitement;
+    if(metric==='awareness') return row.awareness;
+    return row.avg;
+  };
+  const renderGroup=(title,explain,items,klass,metricLabel,metric)=>`
     <div class="spectrum-group">
       <h4>${title}</h4>
       <p>${explain}</p>
       <details class="spectrum-expand">
-        <summary>Click to reveal names</summary>
+        <summary>expand</summary>
         <table class="spectrum-table">
-          <thead><tr><th style="width:110px">Rank</th><th>Name</th><th>AI Excitement</th><th>AI Awareness</th><th>Score (avg)</th></tr></thead>
+          <thead><tr><th style="width:110px">Rank</th><th>Name</th><th>${metricLabel}</th></tr></thead>
           <tbody>
             ${items.map((r,i)=>`<tr>
               <td><span class="spectrum-badge ${klass}">#${i+1}</span></td>
               <td>${r.name}</td>
-              <td>${r.excitement!==null?Math.round(r.excitement)+'%':'—'}</td>
-              <td>${r.awareness!==null?Math.round(r.awareness)+'%':'—'}</td>
-              <td><strong>${Math.round(r.avg)}%</strong></td>
+              <td><strong>${scoreByMetric(r,metric)!==null?Math.round(scoreByMetric(r,metric))+'%':'—'}</strong></td>
             </tr>`).join('')}
           </tbody>
         </table>
       </details>
     </div>`;
   host.innerHTML = `<div class="spectrum-grid">
-    ${renderGroup('AI Excitement Leader (top 3 excitement scorer)','These participants are highly energised by AI and often try new tools early. They can help model positive momentum for the team.',topExcitement,'s-top')}
-    ${renderGroup('AI Awareness Leader (top 3 awareness scorer)','These participants have strong understanding of AI concepts and implications. They are good mentors for responsible use and critical evaluation.',topAwareness,'s-top')}
-    ${renderGroup('Overall AI Leader (top 3 overall scorer)','These participants combine high excitement and awareness, and can champion both adoption and informed practice.',topOverall,'s-top')}
-    ${renderGroup('AI Excitement Learners (bottom 3 excitement scorer)','These participants may feel uncertain, skeptical, or unconvinced about AI value yet. They benefit from safe experimentation and practical wins.',bottomExcitement,'s-bottom')}
-    ${renderGroup('AI Awareness Learners (bottom 3 awareness scorer)','These participants may need more fundamentals and context. Clear examples and coaching can build their confidence and judgement.',bottomAwareness,'s-bottom')}
-    ${renderGroup('Overall AI Learners (bottom 3 overall scorer)','These participants are still early in their AI journey across both mindset and understanding. Focus on support, not pressure.',bottomOverall,'s-bottom')}
+    ${renderGroup('AI Excitement Leader','These participants are highly energised by AI and often try new tools early. They can help model positive momentum for the team.',topExcitement,'s-top','AI Excitement','excitement')}
+    ${renderGroup('AI Awareness Leader','These participants have strong understanding of AI concepts and implications. They are good mentors for responsible use and critical evaluation.',topAwareness,'s-top','AI Awareness','awareness')}
+    ${renderGroup('Overall AI Leader','These participants combine high excitement and awareness, and can champion both adoption and informed practice.',topOverall,'s-top','Score (avg)','overall')}
+    ${renderGroup('AI Excitement Learners','These participants may feel uncertain, skeptical, or unconvinced about AI value yet. They benefit from safe experimentation and practical wins.',bottomExcitement,'s-bottom','AI Excitement','excitement')}
+    ${renderGroup('AI Awareness Learners','These participants may need more fundamentals and context. Clear examples and coaching can build their confidence and judgement.',bottomAwareness,'s-bottom','AI Awareness','awareness')}
+    ${renderGroup('Overall AI Learners','These participants are still early in their AI journey across both mindset and understanding. Focus on support, not pressure.',bottomOverall,'s-bottom','Score (avg)','overall')}
   </div>`;
 }
 
