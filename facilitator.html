@@ -55,7 +55,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .s-err{background:var(--red-l);color:var(--red)}
 
 /* ── Dashboard layout ── */
-.dash-layout{display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:18px;align-items:stretch}
+.dash-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:stretch}
 @media(max-width:860px){.dash-layout{grid-template-columns:1fr}.sc-total,.sc-avg{flex:0 0 auto}}
 
 /* ── Scatter card ── */
@@ -72,10 +72,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dot-tooltip{position:fixed;background:var(--navy);color:#fff;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.55;pointer-events:none;z-index:200;display:none;max-width:220px;font-weight:500;white-space:pre-line;box-shadow:0 4px 14px rgba(0,0,0,0.22)}
 
 /* ── Stat sidebar ── */
-.stat-sidebar{display:flex;flex-direction:column;gap:10px;height:100%}
+.stat-sidebar{display:flex;flex-direction:column;gap:8px;height:100%}
 
 /* Total responses */
-.sc-total{background:var(--navy);border-radius:14px;padding:16px;color:#fff;min-height:92px}
+.sc-total{background:var(--navy);border-radius:12px;padding:14px;color:#fff;min-height:84px}
 .sc-total .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;opacity:0.55;margin-bottom:4px}
 .sc-total .val{font-size:44px;font-weight:700;line-height:1;letter-spacing:-1.5px}
 .sc-total .sub{font-size:11px;opacity:0.5;margin-top:3px}
@@ -85,8 +85,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sc-qr{
   background:var(--white);
   border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px;
+  border-radius:12px;
+  padding:12px;
   text-align:center;
   flex:1;
   display:flex;
@@ -101,7 +101,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   margin-bottom:8px;
 }
 .qr-img{
-  width:178px;
+  width:136px;
   max-width:100%;
   height:auto;
   border-radius:10px;
@@ -118,11 +118,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   font-size:11px;
   color:var(--muted);
   line-height:1.35;
-  margin-top:5px;
+  margin-top:4px;
 }
 
 /* Avg readiness — horizontal linear bar */
-.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px}
+.sc-avg{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px}
 .sc-avg .lbl{font-size:10px;font-weight:700;letter-spacing:0.5px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:5px}
 .info-i{width:15px;height:15px;border-radius:50%;border:1px solid var(--border);background:var(--bg);font-size:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;position:relative}
 .info-i .tip{display:none;position:absolute;top:18px;right:0;background:var(--navy);color:#fff;font-size:11px;line-height:1.55;padding:9px 12px;border-radius:8px;width:230px;z-index:50;font-weight:400;pointer-events:none}
@@ -132,9 +132,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .meter-pointer{position:absolute;top:-5px;width:4px;height:20px;background:var(--navy);border-radius:2px;transform:translateX(-50%);transition:left .6s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,0.25)}
 .meter-labels{display:flex;justify-content:space-between;margin-top:4px}
 .meter-lbl{font-size:8px;color:var(--muted);font-weight:600;text-align:center;flex:1}
-.meter-score{font-size:30px;font-weight:800;color:var(--text);line-height:1;margin-top:10px;text-align:center}
+.meter-score{font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-top:8px;text-align:center}
 .meter-stage{font-size:11px;color:var(--muted);font-weight:600;text-align:center;margin-top:3px;margin-bottom:8px}
-.meter-desc{font-size:11px;color:var(--muted);line-height:1.4;background:var(--bg);border-radius:8px;padding:8px 10px}
+.meter-desc{font-size:11px;color:var(--muted);line-height:1.4;background:var(--bg);border-radius:8px;padding:8px 10px;text-align:justify}
 
 /* ── Interpretation cards ── */
 .interp-grid{display:flex;flex-direction:column;gap:16px}
@@ -399,21 +399,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
 
 
-      <!-- Survey QR code -->
-      <div class="sc-qr">
-        <div class="lbl">SCAN TO TAKE SURVEY</div>
-        <img
-          class="qr-img"
-          src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;margin=10&amp;data=https%3A%2F%2Fby-jasper.github.io%2Fai-survey%2F"
-          alt="QR code linking to the AI-Survey"
-        >
-          <div class="qr-note">Scan, Submit, Win!</div>
-      </div>
-
       <!-- Avg readiness — horizontal linear meter -->
       <div class="sc-avg sc-readiness">
         <div class="lbl">AVG READINESS SCORE
-          <span class="info-i">?<div class="tip">Each answer scores 0–3 (A=0 → D=3). Score = total as % of max possible.<br><br>🔵 Early Stage &lt;40% · 🟢 Emerging 40–59% · 🟡 Progressing 60–74% · 🔴 AI-Ready 75%+</div></span>
+          <span class="info-i">?<div class="tip">Each response is scored from 0 to 3 (A=0 to D=3). The readiness score is the average result shown as a percentage of the maximum possible score.<br><br>🔵 Early Stage &lt;40% · 🟢 Emerging 40–59% · 🟡 Progressing 60–74% · 🔴 AI-Ready 75%+</div></span>
         </div>
         <div class="meter-wrap">
           <div class="meter-track">
@@ -429,6 +418,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="meter-score" id="meter-score">—</div>
         <div class="meter-stage" id="meter-stage">No data yet</div>
         <div class="meter-desc" id="meter-desc"></div>
+      </div>
+
+      <!-- Survey QR code -->
+      <div class="sc-qr">
+        <div class="lbl">SCAN TO TAKE SURVEY</div>
+        <img
+          class="qr-img"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;margin=10&amp;data=https%3A%2F%2Fby-jasper.github.io%2Fai-survey%2F"
+          alt="QR code linking to the AI-Survey"
+        >
+        <div class="qr-note">Scan, submit, and see live updates.</div>
       </div>
 
     </div>
