@@ -282,6 +282,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .hero-title { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
 .hero-desc { font-size: 14px; line-height: 1.6; }
 
+.guide-title{font-size:38px;font-weight:700;color:var(--navy);letter-spacing:-0.5px;margin-bottom:8px}
+.guide-sub{font-size:22px;color:#586275;line-height:1.4;margin-bottom:24px}
+.section-title{font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#7C818D;margin:18px 0 14px}
+.action-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.action-card{background:#fff;border:1px solid #D5D9E1;border-radius:10px;padding:16px;min-height:158px}
+.action-icon{font-size:18px;color:#005CB9;margin-bottom:10px;line-height:1}
+.action-head{font-size:31px;font-weight:700;color:#0A2240;line-height:1.25;margin-bottom:8px}
+.action-body{font-size:24px;line-height:1.55;color:#1E293B}
+.signal-row{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.signal-pill{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;font-size:22px;line-height:1.3}
+.signal-pill.watch{background:#F8E5C8;color:#5B3A09}
+.signal-pill.good{background:#E6F2C8;color:#2E4A10}
+.timeline-row{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.tl-badge{display:inline-flex;align-items:center;justify-content:center;background:#B5D4F4;color:#042C53;border-radius:9px;padding:8px 12px;min-width:98px;font-size:20px;font-weight:700;line-height:1;flex-shrink:0}
+.tl-badge.s0{background:#DCD8CC;color:#3A372E}
+.tl-badge.s1{background:#B5D4F4;color:#042C53}
+.tl-badge.s2{background:#CBE4A4;color:#244707}
+.tl-badge.s3{background:#B5E7D7;color:#04463A}
+.tl-text{font-size:25px;line-height:1.5;color:#233247;padding-top:2px}
+@media(max-width:960px){
+  .action-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .guide-title{font-size:28px}.guide-sub{font-size:18px}
+  .action-grid{grid-template-columns:1fr}
+  .action-head{font-size:23px}.action-body,.signal-pill,.tl-text{font-size:18px}
+  .section-title{font-size:16px}
+}
+
 /* ── Buttons ── */
 .btn{padding:11px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;display:inline-block;text-align:center}
 .btn:hover{background:var(--bg)}
@@ -419,8 +448,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <style>
     #page-guide{--color-border-secondary:var(--border);--color-background-primary:var(--white);--color-text-secondary:var(--muted);--border-radius-md:10px;--color-background-secondary:var(--bg);--border-radius-lg:14px;--color-text-primary:var(--text);--color-border-tertiary:var(--border)}
   </style>
-  <h2 class="sr-only">AI awareness stage guide — what to do at each stage</h2>
-  <div style="padding: 1rem 0;">
+  <h2 class="guide-title">AI Awareness Stage Guide</h2>
+  <p class="guide-sub">What to focus on at each stage of the AI readiness journey</p>
+  <div style="padding: 0.5rem 0 1rem;">
     <div class="stage-nav">
       <button class="stage-btn s0" onclick="showGuide(0)">Early stage &nbsp;0–39%</button>
       <button class="stage-btn s1 active" onclick="showGuide(1)">Emerging &nbsp;40–59%</button>
