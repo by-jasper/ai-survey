@@ -196,16 +196,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .prize-label{font-size:12px;font-weight:700;color:var(--muted)}
 .prize-input{width:120px;padding:12px 14px;font-size:18px;font-weight:800;border:2px solid var(--border);border-radius:12px;text-align:center;color:var(--text);background:var(--white);outline:none}
 .prize-input:focus{border-color:var(--green-l);box-shadow:0 0 0 3px rgba(29,158,117,0.12)}
-.winner-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:0 auto 18px;max-width:760px;text-align:left}
+.winner-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0 auto 18px;max-width:980px;text-align:left}
+@media(max-width:960px){.winner-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.winner-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .winner-pill{background:var(--green-xl);color:var(--green-dark);border:1px solid rgba(15,110,86,0.16);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}
 .winner-rank{width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
 .btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-.comet{position:absolute;bottom:-26px;width:10px;height:10px;border-radius:50%;pointer-events:none;opacity:0;filter:drop-shadow(0 0 8px rgba(255,255,255,.8));animation:comet-rise 1.15s cubic-bezier(0.22,0.8,0.2,1) forwards}
-.comet::after{content:"";position:absolute;left:50%;top:50%;width:90px;height:3px;transform:translate(-95%,-50%);background:linear-gradient(90deg,rgba(255,255,255,.75),rgba(255,255,255,0));border-radius:99px}
-.comet-spark{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;opacity:0;animation:comet-spark 520ms ease-out forwards}
-.ray{position:absolute;left:50%;top:50%;width:120px;height:2px;transform-origin:left center;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(255,255,255,.75),rgba(255,255,255,0));animation:ray-flash 460ms ease-out forwards}
-.win-pulse{animation:jackpotPulse .5s ease-out}
+.comet{position:absolute;bottom:-30px;width:13px;height:13px;border-radius:50%;pointer-events:none;opacity:0;filter:drop-shadow(0 0 12px rgba(255,255,255,.9));animation:comet-rise 1.25s cubic-bezier(0.22,0.8,0.2,1) forwards}
+.comet::after{content:"";position:absolute;left:50%;top:50%;width:120px;height:4px;transform:translate(-95%,-50%);background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,0));border-radius:99px}
+.comet-spark{position:absolute;width:9px;height:9px;border-radius:50%;pointer-events:none;opacity:0;animation:comet-spark 700ms ease-out forwards}
+.ray{position:absolute;left:50%;top:50%;width:170px;height:3px;transform-origin:left center;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(255,255,255,.9),rgba(255,255,255,0));animation:ray-flash 560ms ease-out forwards}
+.win-pulse{animation:jackpotPulse .75s ease-out}
 @keyframes comet-rise{0%{transform:translate3d(0,0,0) scale(.7);opacity:0}18%{opacity:1}100%{transform:translate3d(var(--dx),var(--dy),0) scale(1);opacity:0}}
 @keyframes comet-spark{0%{opacity:1;transform:translate3d(0,0,0) scale(.8)}100%{opacity:0;transform:translate3d(var(--sx),var(--sy),0) scale(1.25)}}
 @keyframes ray-flash{0%{opacity:0;transform:rotate(var(--deg)) scaleX(.2)}25%{opacity:.85}100%{opacity:0;transform:rotate(var(--deg)) scaleX(1)}}
@@ -1418,43 +1420,43 @@ function launchComboTwoEffect(boxId,winnerEl){
   const box=document.getElementById(boxId);
   if(!box)return;
   const colors=['#22C55E','#38BDF8','#F59E0B','#A78BFA','#F472B6','#F97316'];
-  const cometCount=2+Math.floor(Math.random()*2);
+  const cometCount=4+Math.floor(Math.random()*3);
   for(let i=0;i<cometCount;i++){
     const c=document.createElement('div');
     c.className='comet';
     c.style.left=(20+Math.random()*60)+'%';
     c.style.background=colors[(i+Math.floor(Math.random()*colors.length))%colors.length];
-    c.style.animationDelay=(i*120)+'ms';
-    c.style.setProperty('--dx',((-35+Math.random()*70))+'px');
-    c.style.setProperty('--dy',(-220-Math.random()*120)+'px');
+    c.style.animationDelay=(i*90)+'ms';
+    c.style.setProperty('--dx',((-60+Math.random()*120))+'px');
+    c.style.setProperty('--dy',(-280-Math.random()*170)+'px');
     box.appendChild(c);
     setTimeout(()=>c.remove(),1600);
   }
-  for(let i=0;i<10;i++){
+  for(let i=0;i<16;i++){
     const ray=document.createElement('div');
     ray.className='ray';
     ray.style.setProperty('--deg',(i*36)+'deg');
     ray.style.animationDelay='180ms';
     box.appendChild(ray);
-    setTimeout(()=>ray.remove(),900);
+    setTimeout(()=>ray.remove(),1100);
   }
-  for(let i=0;i<26;i++){
+  for(let i=0;i<42;i++){
     const sp=document.createElement('div');
     sp.className='comet-spark';
     sp.style.left='50%';
     sp.style.top='52%';
     sp.style.background=colors[i%colors.length];
-    sp.style.animationDelay=(160+Math.random()*220)+'ms';
-    sp.style.setProperty('--sx',((-110+Math.random()*220))+'px');
-    sp.style.setProperty('--sy',((-120+Math.random()*160))+'px');
+    sp.style.animationDelay=(130+Math.random()*260)+'ms';
+    sp.style.setProperty('--sx',((-170+Math.random()*340))+'px');
+    sp.style.setProperty('--sy',((-160+Math.random()*220))+'px');
     box.appendChild(sp);
-    setTimeout(()=>sp.remove(),1200);
+    setTimeout(()=>sp.remove(),1450);
   }
   if(winnerEl){
     winnerEl.classList.remove('win-pulse');
     void winnerEl.offsetWidth;
     winnerEl.classList.add('win-pulse');
-    setTimeout(()=>winnerEl.classList.remove('win-pulse'),650);
+    setTimeout(()=>winnerEl.classList.remove('win-pulse'),900);
   }
 }
 
