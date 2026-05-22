@@ -197,6 +197,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .prize-input{width:120px;padding:12px 14px;font-size:18px;font-weight:800;border:2px solid var(--border);border-radius:12px;text-align:center;color:var(--text);background:var(--white);outline:none}
 .prize-input:focus{border-color:var(--green-l);box-shadow:0 0 0 3px rgba(29,158,117,0.12)}
 .winner-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0 auto 18px;max-width:980px;text-align:left}
+.winner-list.centered{grid-template-columns:repeat(var(--winner-cols,1),minmax(150px,190px));justify-content:center;max-width:none}
 @media(max-width:960px){.winner-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:620px){.winner-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .winner-pill{background:var(--green-xl);color:var(--green-dark);border:1px solid rgba(15,110,86,0.16);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}
@@ -1350,6 +1351,11 @@ function clearAll(){
 function renderWinnerList(winners,listId){
   const list=document.getElementById(listId);
   list.innerHTML='';
+  const count=winners.length;
+  const compact=count>0&&count<5;
+  list.classList.toggle('centered',compact);
+  if(compact) list.style.setProperty('--winner-cols',String(count));
+  else list.style.removeProperty('--winner-cols');
   winners.forEach((w,i)=>{
     const item=document.createElement('div');
     item.className='winner-pill';
@@ -1375,10 +1381,10 @@ function spinMany(pool,count,nameId,listId,btnId,hintId,boxId){
   const drawNext=()=>{
     prizeNo++;
     he.textContent='Drawing prize '+prizeNo+' of '+count+'…';
-    let i=0,rounds=24+Math.floor(Math.random()*12),delay=38;
+    let i=0,rounds=42+Math.floor(Math.random()*18),delay=22;
     const step=()=>{
       ne.textContent=available[i%available.length].name||'—';i++;
-      if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.1,260);}
+      if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.07,180);}
       else{
         const idx=Math.floor(Math.random()*available.length);
         const w=available.splice(idx,1)[0];
@@ -1402,10 +1408,10 @@ function spinMany(pool,count,nameId,listId,btnId,hintId,boxId){
 function spin(pool,nameId,btnId,hintId,boxId){
   const ne=document.getElementById(nameId),be=document.getElementById(btnId),he=document.getElementById(hintId);
   be.disabled=true;he.textContent='Spinning…';
-  let i=0,rounds=28+Math.floor(Math.random()*16),delay=42;
+  let i=0,rounds=52+Math.floor(Math.random()*20),delay=20;
   const step=()=>{
     ne.textContent=pool[i%pool.length].name||'—';i++;
-    if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.09,380);}
+    if(rounds-->0){setTimeout(step,delay);delay=Math.min(delay*1.06,190);}
     else{
       const w=pool[Math.floor(Math.random()*pool.length)];
       ne.textContent=w.name||'—';
