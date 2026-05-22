@@ -1014,12 +1014,12 @@ function renderSpectrum(){
     host.innerHTML='<div class="spectrum-empty">No scoring data yet.</div>';
     return;
   }
-  const topOverall=rows.slice(0,3);
-  const bottomOverall=[...rows].reverse().slice(0,3);
-  const topExcitement=[...rows].sort((a,b)=>b.excitement-a.excitement||b.avg-a.avg||a.name.localeCompare(b.name)).slice(0,3);
-  const bottomExcitement=[...rows].sort((a,b)=>a.excitement-b.excitement||a.avg-b.avg||a.name.localeCompare(b.name)).slice(0,3);
-  const topAwareness=[...rows].sort((a,b)=>b.awareness-a.awareness||b.avg-a.avg||a.name.localeCompare(b.name)).slice(0,3);
-  const bottomAwareness=[...rows].sort((a,b)=>a.awareness-b.awareness||a.avg-b.avg||a.name.localeCompare(b.name)).slice(0,3);
+  const topOverall=rows.slice(0,5);
+  const bottomOverall=[...rows].reverse().slice(0,5);
+  const topExcitement=[...rows].sort((a,b)=>b.excitement-a.excitement||b.avg-a.avg||a.name.localeCompare(b.name)).slice(0,5);
+  const bottomExcitement=[...rows].sort((a,b)=>a.excitement-b.excitement||a.avg-b.avg||a.name.localeCompare(b.name)).slice(0,5);
+  const topAwareness=[...rows].sort((a,b)=>b.awareness-a.awareness||b.avg-a.avg||a.name.localeCompare(b.name)).slice(0,5);
+  const bottomAwareness=[...rows].sort((a,b)=>a.awareness-b.awareness||a.avg-b.avg||a.name.localeCompare(b.name)).slice(0,5);
   const scoreByMetric=(row,metric)=>{
     if(metric==='excitement') return row.excitement;
     if(metric==='awareness') return row.awareness;
